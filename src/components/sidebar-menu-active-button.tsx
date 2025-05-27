@@ -35,7 +35,7 @@ export function SidebarMenuActiveButton({
       asChild
       isActive={isActive}
       className={`w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors ${isActive
-        ? "bg-blue-50 text-blue-700 border-r-2 border-blue-600"
+        ? "bg-gray-700 text-primary"
         : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
         }`}
     >

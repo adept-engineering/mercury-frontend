@@ -13,6 +13,7 @@ import {
   HeartPulse,
   House,
   Library,
+  LogOut,
   Mails,
   MessageCircleQuestion,
   ScreenShare,
@@ -25,6 +26,7 @@ import {
   Trophy,
   User,
   Waypoints,
+  Heart
 } from "lucide-react";
 
 import {
@@ -52,51 +54,44 @@ export const sidebarItems: SidebarItemType[] = [
     id: 1,
     menuItems: [
       {
-        title: "Home",
-        url: "/home",
-        icon: House,
+        title: "Monitors",
+        url: "/monitors",
+        icon: ScreenShare,
       },
-      // {
-      //   title: "Awards",
-      //   url: "/awards",
-      //   icon: Trophy,
-      // },
       {
-        title: "Opportunities",
-        url: "#",
-        icon: ExternalLink,
-        menuSubItems: [
-          {
-            title: "SAM",
-            // url: "/chat/sam",
-            url: "/sam",
-            icon: ScreenShare,
-          },
-          {
-            title: "eBuy",
-            url: "/ebuy",
-            icon: ShoppingBag,
-          },
-          {
-            title: "Custom",
-            url: "/custom",
-            icon: Waypoints,
-          },
-        ],
+        title: "Entities",
+        url: "/entities",
+        icon: Heart,
       },
-      // {
-      //   title: "Forecasts",
-      //   url: "/forecasts",
-      //   icon: ChartNoAxesCombined,
-      // },
       {
-        title: "Settings",
+        title: "NLP",
+        url: "/nlp",
+        icon: ScreenShare,
+      },
+      {
+        title: "Anomaly",
+        url: "/anomaly",
+        icon: ScreenShare,
+      },
+      {
+        title: "Account",
         url: "/settings/profile",
         icon: Settings,
       },
+      {
+        title: "Support",
+        url: "/support",
+        icon: Headset,
+      },
+      {
+        title: "Logout",
+        url: "/logout",
+        icon: LogOut,
+        islogout: true,
+      },
     ],
   },
- 
+
 ];
 
 export const settingsTabsTrigger = [
