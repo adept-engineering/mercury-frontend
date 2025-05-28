@@ -10,21 +10,19 @@ export default async function DashboardLayout({
 
 
   return (
-    <>
-    <AppHeader />
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-gray-50 flex-col">
-       
-        <div className="flex flex-1">
-          <AppSidebar />
-         
-            <main className="flex-1 p-6">
-              {children}
-            </main>
+    
+      <main
+      className={`flex w-full flex-col overflow-hidden`}
+    >
+      <SidebarProvider>
+        <AppSidebar />
+        <main className="flex w-full flex-col pt-18">
           
-        </div>
-      </div>
-    </SidebarProvider>
-    </>
+          <AppHeader />
+          {children}
+        </main>
+      </SidebarProvider>
+    </main>
+    
   );
 }

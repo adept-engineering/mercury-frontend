@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Instrument_Sans, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster"
+
+import Provider from "./provider";
 import "./globals.css";
 
 const instrumentSans = Instrument_Sans({
@@ -28,8 +30,10 @@ export default function RootLayout({
       <body
         className={`${instrumentSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
-        <Toaster />
+        <Provider>
+          {children}
+          <Toaster />
+        </Provider>
       </body>
     </html>
   );

@@ -24,3 +24,12 @@ export interface SidebarItemType {
     islogout?: boolean;
   }[];
 }
+
+export type ProcessLog = {
+  id: string
+  date: string
+  clientFrom: string
+  senderId: string
+  clientTo: string
+  receiverId: string
+}

@@ -52,7 +52,7 @@ export const sidebarItems: SidebarItemType[] = [
       },
       {
         title: "Process Log",
-        url: "/processes",
+        url: "/process-log",
         icon: FileText,
       },
       {
