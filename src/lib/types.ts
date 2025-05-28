@@ -33,3 +33,21 @@ export type ProcessLog = {
   clientTo: string
   receiverId: string
 }
+
+export type AnomalyInstance = {
+  id: string
+  fromEntity: string
+  toEntity: string
+  dateTime: string
+  anomalyDescription: string
+  severity: "Critical" | "Warning" | "Resolved" | "Unresolved"
+}
+
+export type AnomalyDefinition = {
+  id: string
+  anomalyType: string
+  description: string
+  ruleTriggerLogic: string
+  severity: "Critical" | "Warning"
+  editable: boolean
+}
