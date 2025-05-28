@@ -1,32 +1,19 @@
 import {
   Activity,
-  BadgeAlert,
-  Blocks,
-  ChartLine,
-  ChartNoAxesCombined,
   CircleUserRound,
-  CloudAlert,
-  Combine,
-  ExternalLink,
-  FileText,
   Headset,
-  HeartPulse,
-  House,
-  Library,
+  Users,
   LogOut,
-  Mails,
-  MessageCircleQuestion,
-  ScreenShare,
   Settings,
-  ShieldCheck,
-  ShoppingBag,
   SquareTerminal,
   Star,
   Key,
-  Trophy,
   User,
-  Waypoints,
-  Heart
+  Code,
+  FileText,
+  Bug,
+  TestTube,
+  Cog
 } from "lucide-react";
 
 import {
@@ -54,24 +41,34 @@ export const sidebarItems: SidebarItemType[] = [
     id: 1,
     menuItems: [
       {
-        title: "Monitors",
-        url: "/monitors",
-        icon: ScreenShare,
+        title: "APIs",
+        url: "/apis",
+        icon: Code,
       },
       {
         title: "Entities",
         url: "/entities",
-        icon: Heart,
+        icon: Users,
       },
       {
-        title: "NLP",
-        url: "/nlp",
-        icon: ScreenShare,
+        title: "Process Log",
+        url: "/processes",
+        icon: FileText,
       },
       {
-        title: "Anomaly",
+        title: "Anomaly Log",
         url: "/anomaly",
-        icon: ScreenShare,
+        icon: Bug,
+      },
+      {
+        title: "NLP Config",
+        url: "/nlp",
+        icon: Cog,
+      },
+      {
+        title: "Perform A Test",
+        url: "/test",
+        icon: TestTube,
       },
       {
         title: "Account",
@@ -91,7 +88,6 @@ export const sidebarItems: SidebarItemType[] = [
       },
     ],
   },
-
 ];
 
 export const settingsTabsTrigger = [
