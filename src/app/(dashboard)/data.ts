@@ -51,17 +51,17 @@ export const sidebarItems: SidebarItemType[] = [
         icon: Users,
       },
       {
-        title: "Process Log",
-        url: "/process-log",
+        title: "Data Audit",
+        url: "/data-audit",
         icon: FileText,
       },
       {
-        title: "Anomaly Log",
+        title: "Anomaly Audit",
         url: "/anomaly",
         icon: Bug,
       },
       {
-        title: "NLP Config",
+        title: "NLP",
         url: "/nlp",
         icon: Cog,
       },
