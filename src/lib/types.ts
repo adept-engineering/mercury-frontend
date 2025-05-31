@@ -25,13 +25,18 @@ export interface SidebarItemType {
   }[];
 }
 
-export type ProcessLog = {
+export type DataAuditLog = {
   id: string
-  date: string
-  clientFrom: string
-  senderId: string
-  clientTo: string
-  receiverId: string
+  created_at: string
+  client_id_from: string
+  interchange_sender: string
+  interchange_receiver: string
+  client_id_to: string
+  transaction_name: string
+  interchange_control_number: string
+  type: string
+  edi_data_id: string
+  nlp_data_id: string
 }
 
 export type AnomalyInstance = {

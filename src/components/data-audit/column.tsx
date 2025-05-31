@@ -1,6 +1,6 @@
 "use client"
 
-import { ProcessLog } from "@/lib/types"
+import { DataAuditLog } from "@/lib/types"
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,49 +9,82 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Eye, Copy, Download } from "lucide-react"
+import { MoreHorizontal, Eye, Copy, Download, FileJson, FileText, FileCode, FileSpreadsheet, FileType, FileCode2 } from "lucide-react"
+import { cn, typeConfig } from "@/lib/utils"
+import { useRouter } from "next/navigation"
 
-export const columns: ColumnDef<ProcessLog>[] = [
+
+
+
+type DataType = keyof typeof typeConfig;
+
+export function TypeBadge({ type }: { type: string }) {
+    const config = typeConfig[type as DataType] || {
+        icon: FileText,
+        color: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
+    };
+    const Icon = config.icon;
+
+    return (
+        <div className={cn(
+            "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium",
+            config.color
+        )}>
+            <Icon className="w-3 h-3" />
+            {type}
+        </div>
+    );
+}
+
+export const columns: ColumnDef<DataAuditLog>[] = [
     {
-        accessorKey: "date",
+        accessorKey: "created_at",
         header: "DATE",
         cell: ({ row }) => {
-            const dateString = row.getValue("date") as string
+            const dateString = row.getValue("created_at") as string
             const date = new Date(dateString)
             return <div className="text-sm">{date.toLocaleDateString('en-GB')}</div>
         },
     },
     {
-        accessorKey: "clientFrom",
+        accessorKey: "type",
+        header: "TYPE",
+        cell: ({ row }) => {
+            return <TypeBadge type={row.getValue("type")} />
+        },
+    },
+    {
+        accessorKey: "client_id_from",
         header: "CLIENT FROM",
         cell: ({ row }) => {
-            return <div className="text-sm">{row.getValue("clientFrom")}</div>
+            return <div className="text-sm">{row.getValue("client_id_from")}</div>
         },
     },
     {
-        accessorKey: "senderId",
+        accessorKey: "interchange_sender",
         header: "SENDER ID",
         cell: ({ row }) => {
-            return <div className="text-sm font-mono">{row.getValue("senderId")}</div>
+            return <div className="text-sm font-mono">{row.getValue("interchange_sender")}</div>
         },
     },
     {
-        accessorKey: "clientTo",
+        accessorKey: "client_id_to",
         header: "CLIENT TO",
         cell: ({ row }) => {
-            return <div className="text-sm">{row.getValue("clientTo")}</div>
+            return <div className="text-sm">{row.getValue("client_id_to")}</div>
         },
     },
     {
-        accessorKey: "receiverId",
+        accessorKey: "interchange_receiver",
         header: "RECEIVER ID",
         cell: ({ row }) => {
-            return <div className="text-sm font-mono">{row.getValue("receiverId")}</div>
+            return <div className="text-sm font-mono">{row.getValue("interchange_receiver")}</div>
         },
     },
     {
         id: "actions",
         cell: ({ row }) => {
+            const router = useRouter()
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -60,7 +93,9 @@ export const columns: ColumnDef<ProcessLog>[] = [
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                            router.push(`/data-audit/${row.original.id}`)
+                        }}>
                             <Eye className="mr-2 h-4 w-4" />
                             View details
                         </DropdownMenuItem>
@@ -68,10 +103,10 @@ export const columns: ColumnDef<ProcessLog>[] = [
                             <Copy className="mr-2 h-4 w-4" />
                             Copy ID
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        {/* <DropdownMenuItem>
                             <Download className="mr-2 h-4 w-4" />
                             Export
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                     </DropdownMenuContent>
                 </DropdownMenu>
             )

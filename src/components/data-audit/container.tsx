@@ -1,12 +1,12 @@
 "use client"
-import { ProcessLog } from "@/lib/types";
+import { DataAuditLog } from "@/lib/types";
 import { columns } from "./column";
 import { DataTable } from "./data-table";
 import { DateRangeFilter } from "./date-range-filter";
 import { useQueryState } from "nuqs";
 import { dummyProcessLogs } from "./dummy-data";
 
-export default function DataAuditContainer({ data }: { data: ProcessLog[] }) {
+export default function DataAuditContainer({ data }: { data: DataAuditLog[] }) {
     const today = new Date();
     const todayString = today.toISOString().split('T')[0];
 
