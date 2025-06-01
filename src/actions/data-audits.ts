@@ -13,6 +13,7 @@ export async function getDataAuditLogs(fromDate: string, toDate: string) {
 export async function getDataAuditLogDetails(id: string) {
     try {
         const response = await axiosInstance.get(`/edi-info/${id}`);
+       
         return response.data;
     } catch (error) {
         console.error(error);

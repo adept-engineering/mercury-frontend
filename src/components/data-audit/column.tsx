@@ -60,13 +60,7 @@ export const columns: ColumnDef<DataAuditLog>[] = [
             return <div className="text-sm">{row.getValue("client_id_from")}</div>
         },
     },
-    {
-        accessorKey: "interchange_sender",
-        header: "SENDER ID",
-        cell: ({ row }) => {
-            return <div className="text-sm font-mono">{row.getValue("interchange_sender")}</div>
-        },
-    },
+   
     {
         accessorKey: "client_id_to",
         header: "CLIENT TO",
@@ -75,10 +69,17 @@ export const columns: ColumnDef<DataAuditLog>[] = [
         },
     },
     {
-        accessorKey: "interchange_receiver",
-        header: "RECEIVER ID",
+        accessorKey: "interchange_control_number",
+        header: "CONTROL NUMBER",
         cell: ({ row }) => {
-            return <div className="text-sm font-mono">{row.getValue("interchange_receiver")}</div>
+            return <div className="text-sm font-mono">{row.getValue("interchange_control_number")}</div>
+        },
+    },
+    {
+        accessorKey: "transaction_name",
+        header: "TRANSACTION NAME",
+        cell: ({ row }) => {
+            return <div className="text-sm font-mono">{row.getValue("transaction_name")}</div>
         },
     },
     {
