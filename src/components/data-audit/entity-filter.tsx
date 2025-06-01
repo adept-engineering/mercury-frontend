@@ -27,7 +27,7 @@ export function EntityFilter({ entityIds }: EntityFilterProps) {
                 <SelectValue placeholder="Select Entity" />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem value="all">All Entities</SelectItem>
+                <SelectItem value="all">All Company</SelectItem>
                 {entityIds.map((entityId) => (
                     <SelectItem key={entityId} value={entityId}>
                         {entityId}

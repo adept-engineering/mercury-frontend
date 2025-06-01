@@ -39,7 +39,7 @@ export default function DataAuditContainer({ data, entityIds }: { data: DataAudi
     return (
         <div>
             <div className="flex items-center justify-between mb-4">
-                <h1 className="text-2xl font-semibold">Process Log</h1>
+                <h1 className="text-2xl font-semibold">Data Audit</h1>
                 <div className="flex items-center gap-4">
                     <EntityFilter entityIds={entityIds} />
                     <DateRangeFilter
