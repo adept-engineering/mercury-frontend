@@ -1,40 +1,15 @@
+"use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format, parse } from "date-fns";
-
-interface PartnersProps {
-    clientIdFrom: string;
-    clientIdTo: string;
-    senderId: string;
-    receiverId: string;
-}
-
-export function PartnersCard({ clientIdFrom, clientIdTo, senderId, receiverId }: PartnersProps) {
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="text-sm font-medium text-muted-foreground">Partners</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">From:</span>
-                    <span className="font-medium">{clientIdFrom}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">To:</span>
-                    <span className="font-medium">{clientIdTo}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">Sender ID:</span>
-                    <span className="font-medium font-mono">{senderId}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">Receiver ID:</span>
-                    <span className="font-medium font-mono">{receiverId}</span>
-                </div>
-            </CardContent>
-        </Card>
-    );
-}
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, Copy } from "lucide-react";
+import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 interface TransactionInfoProps {
     transactionName: string;
@@ -46,7 +21,7 @@ export function TransactionInfoCard({ transactionName, standardVersion, version 
     return (
         <Card>
             <CardHeader>
-                <CardTitle className="text-sm font-medium text-muted-foreground">Transaction Information</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Transaction Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
                 <div className="flex justify-between">
@@ -56,10 +31,6 @@ export function TransactionInfoCard({ transactionName, standardVersion, version 
                 <div className="flex justify-between">
                     <span className="text-muted-foreground">Standard Version:</span>
                     <span className="font-medium">{standardVersion}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">Version:</span>
-                    <span className="font-medium">{version}</span>
                 </div>
             </CardContent>
         </Card>
@@ -82,18 +53,10 @@ export function InterchangeDetailsCard({
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Interchange Details</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Interchange Details</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="space-y-2">
-                    <div className="flex justify-between">
-                        <span className="text-muted-foreground">Control Number:</span>
-                        <span className="font-medium">{controlNumber}</span>
-                    </div>
-                    <div className="flex justify-between">
-                        <span className="text-muted-foreground">Time:</span>
-                        <span className="font-medium">{formattedTime}</span>
-                    </div>
                     <div className="flex justify-between">
                         <span className="text-muted-foreground">Sender:</span>
                         <span className="font-medium">{sender}</span>
@@ -101,6 +64,14 @@ export function InterchangeDetailsCard({
                     <div className="flex justify-between">
                         <span className="text-muted-foreground">Receiver:</span>
                         <span className="font-medium">{receiver}</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span className="text-muted-foreground">Control Number:</span>
+                        <span className="font-medium">{controlNumber}</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span className="text-muted-foreground">Date:</span>
+                        <span className="font-medium">{formattedTime}</span>
                     </div>
                 </div>
             </CardContent>
@@ -113,19 +84,51 @@ interface EDIDataCardProps {
 }
 
 export function EDIDataCard({ ediData }: EDIDataCardProps) {
+    const [isOpen, setIsOpen] = useState(false);
 
+    const copyToClipboard = async () => {
+        try {
+            await navigator.clipboard.writeText(ediData);
+            toast({
+                title: "Copied to clipboard",
+            });
+        } catch (err) {
+            toast({
+                title: "Failed to copy",
+            });
+        }
+    };
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="text-sm font-medium text-muted-foreground">EDI Data</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
-                    {ediData}
-                </div>
-            </CardContent>
-        </Card>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">EDI Data</CardTitle>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={copyToClipboard}
+                            className="h-8 w-8"
+                        >
+                            <Copy className="h-4 w-4" />
+                        </Button>
+                        <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                            </Button>
+                        </CollapsibleTrigger>
+                    </div>
+                </CardHeader>
+                <CollapsibleContent>
+                    <CardContent>
+                        <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
+                            {ediData}
+                        </div>
+                    </CardContent>
+                </CollapsibleContent>
+            </Card>
+        </Collapsible>
     );
 }
 
@@ -134,20 +137,53 @@ interface NLPDataCardProps {
 }
 
 export function NLPDataCard({ nlpData }: NLPDataCardProps) {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const copyToClipboard = async () => {
+        try {
+            await navigator.clipboard.writeText(nlpData);
+            toast({
+                title: "Copied to clipboard",
+            });
+        } catch (err) {
+            toast({
+                title: "Failed to copy",
+            });
+        }
+    };
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="text-sm font-medium text-muted-foreground">NLP Data</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
-                    <pre className="whitespace-pre-wrap break-words">
-                        {nlpData}
-                    </pre>
-                </div>
-            </CardContent>
-        </Card>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">NLP Data</CardTitle>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={copyToClipboard}
+                            className="h-8 w-8"
+                        >
+                            <Copy className="h-4 w-4" />
+                        </Button>
+                        <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                            </Button>
+                        </CollapsibleTrigger>
+                    </div>
+                </CardHeader>
+                <CollapsibleContent>
+                    <CardContent>
+                        <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
+                            <pre className="whitespace-pre-wrap break-words">
+                                {nlpData}
+                            </pre>
+                        </div>
+                    </CardContent>
+                </CollapsibleContent>
+            </Card>
+        </Collapsible>
     );
 }
 
@@ -168,7 +204,7 @@ export function GroupDetailsCard({
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Group Details</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Group Details</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="space-y-2">
@@ -188,6 +224,32 @@ export function GroupDetailsCard({
                         <span className="text-muted-foreground">Date:</span>
                         <span className="font-medium">{formattedDate}</span>
                     </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
+interface DocRefData {
+    value: string;
+    description: string;
+    position: string;
+    segment_id: string;
+}
+
+export function DocRefCard({ docRefData }: { docRefData?: DocRefData[] }) {
+    if (!docRefData || docRefData.length === 0) return null;
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Document Reference</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-2">
+                    {docRefData.map((item, index) => (
+                        <div key={index} className="flex justify-between"><span className="text-muted-foreground">{item.description} ({item.segment_id}{item.position.padStart(2, '0')}):</span><span className="font-medium">{item.value}</span></div>
+                    ))}
                 </div>
             </CardContent>
         </Card>

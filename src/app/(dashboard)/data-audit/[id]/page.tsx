@@ -1,22 +1,23 @@
 import { getDataAuditLogDetails } from "@/actions/data-audits";
 import { TypeBadge } from "@/components/data-audit/column";
-import { TransactionInfoCard, PartnersCard, InterchangeDetailsCard, EDIDataCard, NLPDataCard, GroupDetailsCard } from "@/components/data-audit/data-cards";
+import { TransactionInfoCard, InterchangeDetailsCard, EDIDataCard, NLPDataCard, GroupDetailsCard, DocRefCard } from "@/components/data-audit/data-cards";
 import { BackButton } from "@/components/ui/back-button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DataInformation } from "@/components/data-audit/data-information";
 
 export default async function DataAuditDetailsPage({ params }: { params: { id: string } }) {
     const { id } = await params;
     const dataAuditLog = await getDataAuditLogDetails(id);
-    console.log('Date fields:', {
-        interchange_date_time: dataAuditLog.interchange_date_time,
-        group_date_time: dataAuditLog.group_date_time
-    });
+
 
     return (
         <div className="container mx-auto p-8 space-y-8">
             <BackButton />
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <h1 className="text-3xl font-bold">Data Audit Details</h1>
+                    <h1 className="text-3xl font-bold">Data Audit Details for {dataAuditLog.client_id_from} to {dataAuditLog.client_id_to}</h1>
                 </div>
                 <TypeBadge type={dataAuditLog.type} />
             </div>
@@ -39,18 +40,13 @@ export default async function DataAuditDetailsPage({ params }: { params: { id: s
                     standardVersion={dataAuditLog.standard_version}
                     version={dataAuditLog.version}
                 />
-                <PartnersCard
-                    clientIdFrom={dataAuditLog.client_id_from}
-                    clientIdTo={dataAuditLog.client_id_to}
-                    senderId={dataAuditLog.interchange_sender}
-                    receiverId={dataAuditLog.interchange_receiver}
-                />
+                {dataAuditLog.docRefData && <DocRefCard docRefData={dataAuditLog.docRefData} />}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <EDIDataCard ediData={dataAuditLog.ediData} />
-                <NLPDataCard nlpData={dataAuditLog.nlpData} />
-            </div>
+            <DataInformation
+                ediData={dataAuditLog.ediData}
+                nlpData={dataAuditLog.nlpData}
+            />
         </div>
     );
 }

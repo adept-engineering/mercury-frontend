@@ -40,7 +40,7 @@ export function DateRangeFilter({ onDateRangeChange, fromDate, toDate }: DateRan
 
     return (
         <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Date Range:</span>
+
 
             <DatePicker
                 date={fromDate || undefined}
