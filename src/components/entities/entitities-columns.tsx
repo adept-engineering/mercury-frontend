@@ -14,9 +14,7 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
     accessorKey: "entityName",
     header: "ENTITY Name",
     cell: ({ row }) => {
-      return (
-        <div className="text-sm font-medium">{row.getValue("entityName")}</div>
-      );
+      return <div className="text-sm pl-2">{row.getValue("entityName")}</div>;
     },
   },
   {
@@ -32,7 +30,7 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
     cell: ({ row }) => {
       const dateString = row.getValue("dateTime") as string;
       const date = new Date(dateString);
-      return <div className="text-sm">{date.toLocaleString("en-GB")}</div>;
+      return <div className="text-sm">{date.toLocaleDateString("en-US")}</div>;
     },
   },
   {

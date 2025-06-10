@@ -59,10 +59,7 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-medium">Entities</h3>
-          <p className="text-sm text-gray-500">Manage your system entities</p>
-        </div>
+        <div></div>
         <div className="flex items-center gap-3">
           <Button className="bg-pink-500 hover:bg-pink-600 text-white">
             <Plus className="h-4 w-4 mr-2" />
@@ -80,7 +77,7 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableHead
                       key={header.id}
-                      className="text-xs font-medium text-muted-foreground uppercase"
+                      className="text-xs font-medium text-muted-foreground uppercase pl-2"
                     >
                       {header.isPlaceholder
                         ? null
