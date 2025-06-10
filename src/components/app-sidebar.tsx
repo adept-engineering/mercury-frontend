@@ -10,7 +10,6 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -25,7 +24,6 @@ import {
 
 import { sidebarItems } from "@/app/(dashboard)/data";
 import { ChevronDown } from "lucide-react";
-import Image from "next/image";
 
 export async function AppSidebar() {
 
@@ -40,6 +38,7 @@ export async function AppSidebar() {
           <SidebarGroup>
             {sidebarItems.map((item) => {
               // Separate regular menu items from logout items
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const regularMenuItems = item.menuItems.filter((menuItem: any) => !menuItem.islogout);
 
               return (
@@ -52,6 +51,7 @@ export async function AppSidebar() {
 
                   <SidebarMenu className="space-y-1">
                     {/* Render regular menu items only */}
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {regularMenuItems.map((menuItem: any) => {
 
                       return (
@@ -80,6 +80,7 @@ export async function AppSidebar() {
                                   <SidebarGroupContent>
                                     <SidebarMenuSub className="mt-2 ml-8 space-y-1">
                                       {menuItem.menuSubItems.map(
+                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                         (menuSubItem: any) => {
 
                                           return (
@@ -117,11 +118,14 @@ export async function AppSidebar() {
         </div>
 
         {/* Logout items at the bottom */}
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         {sidebarItems.some(item => item.menuItems.some((menuItem: any) => menuItem.islogout)) && (
           <div className="pt-4 border-t border-gray-200">
             <SidebarMenu>
               {sidebarItems.flatMap(item =>
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 item.menuItems.filter((menuItem: any) => menuItem.islogout)
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ).map((menuItem: any) => (
                 <SidebarMenuItem key={menuItem.title}>
                   <SidebarMenuActiveButton

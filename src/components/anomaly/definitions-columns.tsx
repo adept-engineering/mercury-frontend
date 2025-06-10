@@ -70,7 +70,7 @@ export const definitionsColumns: ColumnDef<AnomalyDefinition>[] = [
     },
     {
         id: "actions",
-        cell: ({ row }) => {
+        cell: () => {
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

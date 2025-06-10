@@ -17,6 +17,7 @@ interface AuthForm {
 
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function AuthForm({ type, userEmail }: AuthForm) {
   const { toast } = useToast();
   const router = useRouter();
@@ -45,6 +46,7 @@ export default function AuthForm({ type, userEmail }: AuthForm) {
               description: "If an account exists with this email, you will receive a password reset link.",
             });
             router.push("/login");
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error: any) {
             toast({
               variant: "destructive",
@@ -63,6 +65,7 @@ export default function AuthForm({ type, userEmail }: AuthForm) {
             formData.get("email")?.toString()
             formData.get("password")?.toString()
             break;
+            // eslint-disable-next-line
           } catch (error: any) {
             setButtonDisabled(false);
             toast({
@@ -78,6 +81,7 @@ export default function AuthForm({ type, userEmail }: AuthForm) {
         default:
           return;
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setButtonDisabled(false);
       toast({

@@ -4,16 +4,7 @@ import { AnomalyInstance, AnomalyDefinition } from "@/lib/types";
 import { instancesColumns } from "./instances-columns";
 import { definitionsColumns } from "./definitions-columns";
 import { DataTable } from "./data-table";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Plus, ChevronDown } from "lucide-react";
-import { useState } from "react";
 
 interface AnomalyContainerProps {
     instancesData: AnomalyInstance[]
@@ -21,9 +12,6 @@ interface AnomalyContainerProps {
 }
 
 export default function AnomalyContainer({ instancesData, definitionsData }: AnomalyContainerProps) {
-    const [instancesFilter, setInstancesFilter] = useState("all");
-    const [definitionsFilter, setDefinitionsFilter] = useState("all");
-
     return (
         <div className="space-y-6">
             {/* Header */}

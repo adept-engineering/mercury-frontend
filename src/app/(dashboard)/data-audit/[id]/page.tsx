@@ -1,13 +1,10 @@
 import { getDataAuditLogDetails } from "@/actions/data-audits";
 import { TypeBadge } from "@/components/data-audit/column";
-import { TransactionInfoCard, InterchangeDetailsCard, EDIDataCard, NLPDataCard, GroupDetailsCard, DocRefCard } from "@/components/data-audit/data-cards";
+import { TransactionInfoCard, InterchangeDetailsCard, GroupDetailsCard, DocRefCard } from "@/components/data-audit/data-cards";
 import { BackButton } from "@/components/ui/back-button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { DataInformation } from "@/components/data-audit/data-information";
 
-export default async function DataAuditDetailsPage({ params }: { params: { id: string } }) {
+export default async function DataAuditDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const dataAuditLog = await getDataAuditLogDetails(id);
 

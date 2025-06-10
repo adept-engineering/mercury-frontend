@@ -71,7 +71,7 @@ export const instancesColumns: ColumnDef<AnomalyInstance>[] = [
     },
     {
         id: "actions",
-        cell: ({ row }) => {
+        cell: () => {
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

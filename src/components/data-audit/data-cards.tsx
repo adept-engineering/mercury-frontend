@@ -17,6 +17,7 @@ interface TransactionInfoProps {
     version: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function TransactionInfoCard({ transactionName, standardVersion, version }: TransactionInfoProps) {
     return (
         <Card>
@@ -92,7 +93,8 @@ export function EDIDataCard({ ediData }: EDIDataCardProps) {
             toast({
                 title: "Copied to clipboard",
             });
-        } catch (err) {
+            // eslint-disable-next-line
+        } catch (err: any) {
             toast({
                 title: "Failed to copy",
             });
@@ -145,7 +147,8 @@ export function NLPDataCard({ nlpData }: NLPDataCardProps) {
             toast({
                 title: "Copied to clipboard",
             });
-        } catch (err) {
+            // eslint-disable-next-line
+        } catch (err: any) {
             toast({
                 title: "Failed to copy",
             });

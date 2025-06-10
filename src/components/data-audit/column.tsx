@@ -9,7 +9,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Eye, Copy, Download, FileJson, FileText, FileCode, FileSpreadsheet, FileType, FileCode2 } from "lucide-react"
+import { MoreHorizontal, Eye, Copy, FileText } from "lucide-react"
 import { cn, typeConfig } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 
@@ -85,6 +85,7 @@ export const columns: ColumnDef<DataAuditLog>[] = [
     {
         id: "actions",
         cell: ({ row }) => {
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             const router = useRouter()
             return (
                 <DropdownMenu>

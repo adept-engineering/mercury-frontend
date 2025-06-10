@@ -2,7 +2,7 @@ import DataAuditContainer from "@/components/data-audit/container"
 import { getDataAuditLogs } from "@/actions/data-audits";
 import { getEntityIds } from "@/actions/entity";
 
-export default async function DataAuditPage({ searchParams }: { searchParams: { fromDate: string, toDate: string } }) {
+export default async function DataAuditPage({ searchParams }: { searchParams: Promise<{ fromDate: string, toDate: string }> }) {
     const { fromDate, toDate } = await searchParams;
 
     const dataAuditLogs = await getDataAuditLogs(fromDate || new Date().toISOString(), toDate || new Date().toISOString());
