@@ -19,7 +19,11 @@ export default function EntitiesContainer({
 }: {
   entitiesData: Entities[];
 }) {
-  const [view, setView] = useState<"data" | "create">("create");
+  const [view, setView] = useState<"data" | "create">("data");
+
+  const handleScreenMove = (state: "data" | "create") => {
+    setView(state);
+  };
 
   return (
     <div className="space-y-6">
@@ -34,6 +38,7 @@ export default function EntitiesContainer({
             columns={entititiesColumns}
             data={entitiesData}
             tableType="entities"
+            onSwitch={handleScreenMove}
           />
         </>
       ) : (

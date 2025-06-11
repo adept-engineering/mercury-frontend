@@ -36,12 +36,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   tableType: "entities";
+  onSwitch: (state: "data" | "create") => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   tableType,
+  onSwitch,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -61,7 +63,12 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-between">
         <div></div>
         <div className="flex items-center gap-3">
-          <Button className="bg-pink-500 hover:bg-pink-600 text-white">
+          <Button
+            className="bg-pink-500 hover:bg-pink-600 text-white"
+            onClick={() => {
+              onSwitch("create");
+            }}
+          >
             <Plus className="h-4 w-4 mr-2" />
             Add Entity
           </Button>
