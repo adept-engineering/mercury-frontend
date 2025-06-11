@@ -233,62 +233,67 @@ export function EntryForm() {
             </header>
 
             {form.watch("referenceIDs")?.map((reference, i) => (
-              <div key={i} className="grid grid-cols-2 gap-4 p-4">
-                <FormField
-                  control={form.control}
-                  name={`referenceIDs.${i}.name`}
-                  render={({ field }: { field: any }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={refIDS[0]}
-                          value={field.value}
-                        >
-                          <SelectTrigger className="w-full py-4">
-                            <SelectValue placeholder="Select type" />
-                          </SelectTrigger>
-                          <SelectContent className="text-left w-full ">
-                            {refIDS.map((r, i) => (
-                              <SelectItem key={i} value={r}>
-                                {r}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex gap-2">
+              <div key={i}>
+                <div className="grid grid-cols-2 gap-4 p-4">
                   <FormField
                     control={form.control}
-                    name={`referenceIDs.${i}.value`}
+                    name={`referenceIDs.${i}.name`}
                     render={({ field }: { field: any }) => (
-                      <FormItem className="w-full">
+                      <FormItem>
                         <FormControl>
-                          <Input placeholder="Enter value" {...field} />
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={refIDS[0]}
+                            value={field.value}
+                          >
+                            <SelectTrigger className="w-full !h-[50px]">
+                              <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                            <SelectContent className="text-left w-full ">
+                              {refIDS.map((r, i) => (
+                                <SelectItem key={i} value={r}>
+                                  {r}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="p-2 bg-[#F1335A14]"
-                    onClick={() => {
-                      const currentRefs = form.getValues("referenceIDs");
-                      form.setValue(
-                        "referenceIDs",
-                        currentRefs.filter((_, index) => index !== i)
-                      );
-                    }}
-                  >
-                    <Trash2 className="text-[#F1335A]" />
-                  </Button>
+                  <div className="flex gap-2">
+                    <FormField
+                      control={form.control}
+                      name={`referenceIDs.${i}.value`}
+                      render={({ field }: { field: any }) => (
+                        <FormItem className="w-full">
+                          <FormControl>
+                            <Input placeholder="Enter value" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="p-2 bg-[#F1335A14] h-full w-[50px]"
+                      onClick={() => {
+                        const currentRefs = form.getValues("referenceIDs");
+                        form.setValue(
+                          "referenceIDs",
+                          currentRefs.filter((_, index) => index !== i)
+                        );
+                      }}
+                    >
+                      <Trash2 className="text-[#F1335A] h-6 w-6" />
+                    </Button>
+                  </div>
                 </div>
+                {i < form.watch("referenceIDs").length - 1 && (
+                  <div className="border-b border-gray-100" />
+                )}
               </div>
             ))}
           </section>
