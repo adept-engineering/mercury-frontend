@@ -35,7 +35,7 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  tableType: "entities";
+  tableType: "entities" | "relationships";
   onSwitch: (state: "data" | "create") => void;
 }
 
@@ -70,7 +70,7 @@ export function DataTable<TData, TValue>({
             }}
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add Entity
+            {tableType === "entities" ? "Add Entity" : "Add Relationship"}
           </Button>
         </div>
       </div>
