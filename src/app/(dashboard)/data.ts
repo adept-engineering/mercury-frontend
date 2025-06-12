@@ -13,13 +13,11 @@ import {
   FileText,
   Bug,
   TestTube,
-  Cog
+  Cog,
+  Cable,
 } from "lucide-react";
 
-import {
-  DropdownMenuType,
-  SidebarItemType,
-} from "@/lib/types";
+import { DropdownMenuType, SidebarItemType } from "@/lib/types";
 
 export const dropdownMenu: DropdownMenuType[] = [
   {
@@ -59,6 +57,11 @@ export const sidebarItems: SidebarItemType[] = [
         title: "Anomaly Audit",
         url: "/anomaly",
         icon: Bug,
+      },
+      {
+        title: "Relationships and Rules",
+        url: "/relationships",
+        icon: Cable,
       },
       {
         title: "NLP",
@@ -116,4 +119,3 @@ export const settingsTabsTrigger = [
     icon: Key,
   },
 ];
-
