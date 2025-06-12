@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2 } from "lucide-react";
+import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import { MouseEventHandler, useState } from "react";
 import {
   Select,
@@ -20,8 +20,14 @@ import {
   SelectValue,
   SelectTrigger,
 } from "../ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
-const refIDS = ["JSON", "IDOC", "CVS", "API", "EDI"];
+const refIDS = ["EDI/X12", "EDI/EDIFACT", "XML", "JSON", "IDOC", "CSV", "API"];
 const formSchema = z.object({
   entityName: z.string().min(2, {
     message: "Entity name must be at least 2 characters.",
@@ -47,8 +53,9 @@ const formSchema = z.object({
   }),
   referenceIDs: z.array(
     z.object({
-      name: z.string(),
-      value: z.string(),
+      docType: z.string(),
+      id: z.string(),
+      groupID: z.string().optional(),
     })
   ),
 });
@@ -75,11 +82,11 @@ export function EntryForm() {
     console.log(values);
   }
 
-  const insertNewRefrenceID = () => {
+  const insertNewRefrenceID = (refID: string) => {
     const currentRefs = form.getValues("referenceIDs") || [];
     form.setValue(
       "referenceIDs",
-      [...currentRefs, { name: refIDS[0], value: "" }],
+      [...currentRefs, { docType: refID, id: "" }],
       { shouldDirty: false, shouldTouch: false }
     );
   };
@@ -89,7 +96,7 @@ export function EntryForm() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         {/* header section before the main form */}
         <section className="flex items-center justify-between my-6">
-          <h1 className="text-2xl font-semibold">Create New Entity</h1>
+          <h1 className="text-2xl font-semibold"></h1>
           <Button
             className="bg-pink-500 hover:bg-pink-600 text-white"
             type="submit"
@@ -218,19 +225,30 @@ export function EntryForm() {
 
           <section className="flex items-center justify-between my-6">
             <h1 className="text-xl font-medium">Reference IDs</h1>
-            <Button
-              className="bg-pink-500 hover:bg-pink-600 text-white px-6"
-              onClick={insertNewRefrenceID}
-            >
-              Add Reference ID
-              <Plus className="h-4 w-4 mr-2" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="bg-pink-500 hover:bg-pink-600 text-white px-6">
+                  Add Reference ID
+                  <ChevronDown className="ml-1 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {refIDS.map((ref, index) => (
+                  <DropdownMenuItem
+                    key={index}
+                    onClick={() => insertNewRefrenceID(ref)}
+                  >
+                    {ref}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </section>
 
           <section className="border rounded-md">
             <header className="bg-[#F7F7F7] grid grid-cols-2 p-4">
-              <h2 className="font-medium">NAME</h2>
-              <h2 className="font-medium">VALUE</h2>
+              <h2 className="font-medium">DOCUMENT FORMAT</h2>
+              <h2 className="font-medium">ID</h2>
             </header>
 
             {form.watch("referenceIDs")?.map((reference, i) => (
@@ -238,7 +256,7 @@ export function EntryForm() {
                 <div className="grid grid-cols-2 gap-4 p-4">
                   <FormField
                     control={form.control}
-                    name={`referenceIDs.${i}.name`}
+                    name={`referenceIDs.${i}.docType`}
                     render={({ field }: { field: any }) => (
                       <FormItem>
                         <FormControl>
@@ -263,10 +281,11 @@ export function EntryForm() {
                       </FormItem>
                     )}
                   />
+
                   <div className="flex gap-2">
                     <FormField
                       control={form.control}
-                      name={`referenceIDs.${i}.value`}
+                      name={`referenceIDs.${i}.id`}
                       render={({ field }: { field: any }) => (
                         <FormItem className="w-full">
                           <FormControl>
