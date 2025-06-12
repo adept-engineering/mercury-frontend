@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -77,10 +77,11 @@ export function EntryForm() {
 
   const insertNewRefrenceID = () => {
     const currentRefs = form.getValues("referenceIDs") || [];
-    form.setValue("referenceIDs", [
-      ...currentRefs,
-      { name: refIDS[0], value: "" },
-    ]);
+    form.setValue(
+      "referenceIDs",
+      [...currentRefs, { name: refIDS[0], value: "" }],
+      { shouldDirty: false, shouldTouch: false }
+    );
   };
 
   return (
