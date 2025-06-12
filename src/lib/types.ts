@@ -63,3 +63,22 @@ export type Entities = {
   lastUpdatedBy: string;
   dateTime: string;
 };
+
+export type EntityTbl = {
+  id: number;
+  entityid_id: string;
+  reference_id: string;
+  reference_id_type: string;
+  entityidtbl_id: string;
+};
+
+export type Relationships = {
+  id: number;
+  entityid_id_sender: string;
+  entityid_id_receiver: string;
+  entityidtbl_relationship_id: string;
+  transaction_name: string;
+  sender_id: string;
+  receiver_id: string;
+  std_version: string;
+};
