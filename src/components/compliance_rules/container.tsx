@@ -33,7 +33,9 @@ export default function ComplianceRulesContainer({
         <>
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-semibold">Compliance Rules</h1>
+            <h1 className="text-2xl font-semibold">
+              Compliance Rules for {entityid_relationship_id}
+            </h1>
           </div>
 
           <DataTable
