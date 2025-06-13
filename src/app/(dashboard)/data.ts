@@ -49,6 +49,11 @@ export const sidebarItems: SidebarItemType[] = [
         icon: Users,
       },
       {
+        title: "Relationships",
+        url: "/relationships",
+        icon: Cable,
+      },
+      {
         title: "Data Audit",
         url: "/data-audit",
         icon: FileText,
@@ -57,11 +62,6 @@ export const sidebarItems: SidebarItemType[] = [
         title: "Anomaly Audit",
         url: "/anomaly",
         icon: Bug,
-      },
-      {
-        title: "Relationships and Rules",
-        url: "/relationships",
-        icon: Cable,
       },
       {
         title: "NLP",

@@ -4,7 +4,6 @@ import { dummyEntities } from "@/components/entities/dummy-data";
 import RelationshipsContainer from "@/components/relationships/container";
 
 const relationshipsData = await getRelationships();
-console.log(relationshipsData);
 
 export default function RelationshipsPage() {
   return (

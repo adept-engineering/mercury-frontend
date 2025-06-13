@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { createRelationshipController, getEntityIds } from "@/actions/entity";
+
 import {
   useEntities,
   useEntityIds,
@@ -28,6 +28,7 @@ import { EntityTbl } from "@/lib/types";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { createRelationshipController } from "@/actions/relationships";
 
 const formSchema = z.object({
   entityid_id_sender: z.string(),
@@ -38,18 +39,6 @@ const formSchema = z.object({
   receiver_id: z.string(),
   std_version: z.string(),
 });
-
-const dummySenders = [
-  { id: "6303207447", name: "Company A" },
-  { id: "925485US00", name: "Company B" },
-];
-
-const dummyReceivers = [
-  { id: "6303207447", name: "Company A" },
-  { id: "925485US00", name: "Company B" },
-];
-
-const dummyVersions = ["004010", "005010", "006010"];
 
 export function RelationshipForm() {
   const form = useForm<z.infer<typeof formSchema>>({

@@ -82,3 +82,9 @@ export type Relationships = {
   receiver_id: string;
   std_version: string;
 };
+export type ComplianceRules = {
+  id: number;
+  entityid_relationship_id: string;
+  rule: string;
+  rule_title: string;
+};
