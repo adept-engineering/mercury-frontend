@@ -19,3 +19,13 @@ export function useEntities(entityID: string) {
     enabled: !!entityID,
   });
 }
+
+export function useTransactionNames(entitydttbl_id: string) {
+  return useQuery({
+    queryKey: ["trnsaction-names", entitydttbl_id],
+    queryFn: async () => {
+      return [810, 997, 856, 850];
+    },
+    enabled: !!entitydttbl_id,
+  });
+}

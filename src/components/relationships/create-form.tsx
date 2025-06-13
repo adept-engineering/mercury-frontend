@@ -18,8 +18,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { getEntityIds } from "@/actions/entity";
-import { useEntities, useEntityIds } from "@/hooks/use-entityIds";
+import { createRelationshipController, getEntityIds } from "@/actions/entity";
+import {
+  useEntities,
+  useEntityIds,
+  useTransactionNames,
+} from "@/hooks/use-entityIds";
+import { EntityTbl } from "@/lib/types";
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   entityid_id_sender: z.string(),
@@ -57,16 +65,37 @@ export function RelationshipForm() {
     },
   });
 
+  const { toast } = useToast();
+  const router = useRouter();
+  const { mutate } = useMutation({
+    mutationFn: createRelationshipController,
+    onSuccess: (data) => {
+      toast({
+        title: "Successfully created Relationship",
+      });
+      router.refresh();
+      console.log("Relationship created successfully:", data);
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to create",
+      });
+      console.error("Error creating relationship:", error);
+    },
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    mutate(values);
   }
 
   const { data: entityIds } = useEntityIds();
 
   const { data: senderEntity } = useEntities(form.watch("entityid_id_sender"));
   const { data: receiverEntity } = useEntities(
-    form.watch("entityid_id_sender")
+    form.watch("entityid_id_receiver")
   );
+
+  const { data: transactionNames } = useTransactionNames("test");
 
   return (
     <Form {...form}>
@@ -83,7 +112,7 @@ export function RelationshipForm() {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="!h-[50px] w-full">
                       <SelectValue placeholder="Select sender entity" />
                     </SelectTrigger>
                   </FormControl>
@@ -112,7 +141,7 @@ export function RelationshipForm() {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="!h-[50px] w-full">
                       <SelectValue placeholder="Select receiver entity" />
                     </SelectTrigger>
                   </FormControl>
@@ -142,15 +171,21 @@ export function RelationshipForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Transaction Name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Auto-generated"
-                  value={`${form.watch("sender_id")}_${form.watch(
-                    "receiver_id"
-                  )}_${field.value}`}
-                  disabled
-                />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="!h-[50px] w-full">
+                    <SelectValue placeholder="Select transaction name" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {transactionNames &&
+                    transactionNames.map((name: number) => (
+                      <SelectItem key={name} value={name.toString()}>
+                        {name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -168,16 +203,26 @@ export function RelationshipForm() {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="!h-[50px] w-full">
                       <SelectValue placeholder="Select sender ID" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {dummySenders.map((sender) => (
-                      <SelectItem key={sender.id} value={sender.id}>
-                        {sender.id}
-                      </SelectItem>
-                    ))}
+                    {senderEntity &&
+                      senderEntity
+                        .filter(
+                          (sender: EntityTbl) =>
+                            sender.entityid_id ===
+                            form.getValues("entityid_id_sender")
+                        )
+                        .map((entity: EntityTbl) => (
+                          <SelectItem
+                            key={entity.reference_id}
+                            value={entity.reference_id}
+                          >
+                            {entity.reference_id}
+                          </SelectItem>
+                        ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -196,16 +241,26 @@ export function RelationshipForm() {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="!h-[50px] w-full">
                       <SelectValue placeholder="Select receiver ID" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {dummyReceivers.map((receiver) => (
-                      <SelectItem key={receiver.id} value={receiver.id}>
-                        {receiver.id}
-                      </SelectItem>
-                    ))}
+                    {receiverEntity &&
+                      receiverEntity
+                        .filter(
+                          (receiver: EntityTbl) =>
+                            receiver.entityid_id ===
+                            form.getValues("entityid_id_receiver")
+                        )
+                        .map((receiver: EntityTbl) => (
+                          <SelectItem
+                            key={receiver.reference_id}
+                            value={receiver.reference_id}
+                          >
+                            {receiver.reference_id}
+                          </SelectItem>
+                        ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -220,20 +275,9 @@ export function RelationshipForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Standard Version</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select version" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {dummyVersions.map((version) => (
-                    <SelectItem key={version} value={version}>
-                      {version}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormControl>
+                <Input type="text" placeholder="Enter version" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
