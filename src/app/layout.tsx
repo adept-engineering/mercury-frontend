@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Mercury",
   description: "Mercury Library",
+  icons: {
+    icon: [{ url: "/auth-Logo.svg" }],
+  },
 };
 
 export default function RootLayout({
