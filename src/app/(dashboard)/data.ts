@@ -39,11 +39,6 @@ export const sidebarItems: SidebarItemType[] = [
     id: 1,
     menuItems: [
       {
-        title: "APIs",
-        url: "/apis",
-        icon: Code,
-      },
-      {
         title: "Entities",
         url: "/entities",
         icon: Users,
@@ -82,7 +77,20 @@ export const sidebarItems: SidebarItemType[] = [
         title: "Support",
         url: "/support",
         icon: Headset,
+        menuSubItems: [
+          {
+            title: "Contact Support",
+            url: "/support",
+            icon: Headset,
+          },
+          {
+            title: "APIs",
+            url: "/apis",
+            icon: Code,
+          },
+        ],
       },
+
       {
         title: "Logout",
         url: "/logout",
