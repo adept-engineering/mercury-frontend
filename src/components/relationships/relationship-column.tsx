@@ -6,9 +6,46 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+
+const ActionCell = ({
+  row,
+}: {
+  row: { getValue: (key: string) => string };
+}) => {
+  const router = useRouter();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem
+          onClick={() =>
+            router.push(
+              `/relationships/${row.getValue(
+                "entityidtbl_relationship_id"
+              )}/compliance/rules`
+            )
+          }
+        >
+          <Eye className="mr-2 h-4 w-4" />
+          View Compliance Rules
+        </DropdownMenuItem>
+
+        <DropdownMenuItem className="text-red-600">
+          <Trash2 className="mr-2 h-4 w-4" />
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 export const relationshipColumns: ColumnDef<Relationships>[] = [
   {
@@ -56,36 +93,6 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const router = useRouter();
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              onClick={() =>
-                router.push(
-                  `/relationships/${row.getValue(
-                    "entityidtbl_relationship_id"
-                  )}/compliance/rules`
-                )
-              }
-            >
-              <Eye className="mr-2 h-4 w-4" />
-              View Compliance Rules
-            </DropdownMenuItem>
-
-            <DropdownMenuItem className="text-red-600">
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <ActionCell row={row} />,
   },
 ];

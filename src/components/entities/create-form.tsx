@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { ControllerRenderProps, useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,8 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, Plus, Trash2 } from "lucide-react";
-import { MouseEventHandler, useState } from "react";
+import { ChevronDown, Trash2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -111,7 +110,11 @@ export function EntryForm() {
             <FormField
               control={form.control}
               name="entityName"
-              render={({ field }: { field: any }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<FormValues, "entityName">;
+              }) => (
                 <FormItem>
                   <FormLabel>Entity Name</FormLabel>
                   <FormControl>
@@ -124,7 +127,11 @@ export function EntryForm() {
             <FormField
               control={form.control}
               name="email"
-              render={({ field }: { field: any }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<FormValues, "email">;
+              }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
@@ -140,7 +147,11 @@ export function EntryForm() {
             <FormField
               control={form.control}
               name="addressLine1"
-              render={({ field }: { field: any }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<FormValues, "addressLine1">;
+              }) => (
                 <FormItem>
                   <FormLabel>Address Line 1</FormLabel>
                   <FormControl>
@@ -153,7 +164,11 @@ export function EntryForm() {
             <FormField
               control={form.control}
               name="addressLine2"
-              render={({ field }: { field: any }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<FormValues, "addressLine2">;
+              }) => (
                 <FormItem>
                   <FormLabel>Address Line 2</FormLabel>
                   <FormControl>
@@ -169,7 +184,11 @@ export function EntryForm() {
             <FormField
               control={form.control}
               name="phoneNumber"
-              render={({ field }: { field: any }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<FormValues, "phoneNumber">;
+              }) => (
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
@@ -182,7 +201,11 @@ export function EntryForm() {
             <FormField
               control={form.control}
               name="city"
-              render={({ field }: { field: any }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<FormValues, "city">;
+              }) => (
                 <FormItem>
                   <FormLabel>City</FormLabel>
                   <FormControl>
@@ -198,7 +221,11 @@ export function EntryForm() {
             <FormField
               control={form.control}
               name="country"
-              render={({ field }: { field: any }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<FormValues, "country">;
+              }) => (
                 <FormItem>
                   <FormLabel>Country</FormLabel>
                   <FormControl>
@@ -211,7 +238,11 @@ export function EntryForm() {
             <FormField
               control={form.control}
               name="state"
-              render={({ field }: { field: any }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<FormValues, "state">;
+              }) => (
                 <FormItem>
                   <FormLabel>State</FormLabel>
                   <FormControl>
@@ -257,7 +288,14 @@ export function EntryForm() {
                   <FormField
                     control={form.control}
                     name={`referenceIDs.${i}.docType`}
-                    render={({ field }: { field: any }) => (
+                    render={({
+                      field,
+                    }: {
+                      field: ControllerRenderProps<
+                        FormValues,
+                        `referenceIDs.${typeof i}.docType`
+                      >;
+                    }) => (
                       <FormItem>
                         <FormControl>
                           <Select
@@ -286,7 +324,14 @@ export function EntryForm() {
                     <FormField
                       control={form.control}
                       name={`referenceIDs.${i}.id`}
-                      render={({ field }: { field: any }) => (
+                      render={({
+                        field,
+                      }: {
+                        field: ControllerRenderProps<
+                          FormValues,
+                          `referenceIDs.${typeof i}.id`
+                        >;
+                      }) => (
                         <FormItem className="w-full">
                           <FormControl>
                             <Input placeholder="Enter value" {...field} />

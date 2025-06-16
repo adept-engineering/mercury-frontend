@@ -1,22 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
-import { useState } from "react";
-import { CompliantDataCard, EDIDataCard } from "./data-cards";
-import { NLPDataCard } from "./data-cards";
+import { CompliantDataCard } from "./data-cards";
 
 interface CompliantDataProps {
   compliantData: string;
 }
 
 export function CompliantData({ compliantData }: CompliantDataProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
   return (
     //     <Collapsible open={isOpen} onOpenChange={setIsOpen}>

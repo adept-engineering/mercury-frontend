@@ -21,7 +21,6 @@ interface TransactionInfoProps {
 export function TransactionInfoCard({
   transactionName,
   standardVersion,
-  version,
 }: TransactionInfoProps) {
   return (
     <Card>

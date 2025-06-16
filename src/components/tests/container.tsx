@@ -1,9 +1,5 @@
 "use client";
-import {
-  FileChartColumnIncreasingIcon,
-  FileText,
-  Settings,
-} from "lucide-react";
+import { FileText, Settings } from "lucide-react";
 import { useState } from "react";
 import { FileUploader } from "../file-uploader/uploadContainer";
 import { Button } from "../ui/button";
@@ -12,7 +8,7 @@ export default function PerformTestContainer() {
   const [file, setFile] = useState<File>();
 
   const [view, setView] = useState<"upload" | "process">("upload");
-
+  console.log(view);
   const handleScreenMove = (state: "upload" | "process") => {
     setView(state);
   };
