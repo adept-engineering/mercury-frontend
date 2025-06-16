@@ -54,7 +54,7 @@ export default async function DataAuditDetailsPage({
         )}
       </div>
 
-      <CompliantData compliantData="" />
+      <CompliantData compliantData={dataAuditLog.complianceData} />
 
       <DataInformation
         ediData={dataAuditLog.ediData}
