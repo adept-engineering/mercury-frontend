@@ -301,7 +301,7 @@ export function CompliantDataCard({ compliantData }: CompliantDataProps) {
     const sections = data.split("/n");
 
     // Format each section
-    const formattedSections = sections.map((section, index) => {
+    const formattedSections = sections.map((section) => {
       // If it's an odd index, it's a bold section
       // if (section.includes(":")) {
       //   return `<strong className="pt-4">${section}</strong>`;
