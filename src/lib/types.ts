@@ -88,3 +88,16 @@ export type ComplianceRules = {
   rule: string;
   rule_title: string;
 };
+
+export type UserRole = "system_admin" | "sub_user";
+
+export interface User {
+  id: string | number;
+  email: string;
+  name?: string;
+  client?: string;
+  tenantId?: string;
+  isActive?: boolean;
+  role: UserRole;
+  entityId?: string; // For sub users, this will be the entity they belong to
+}
