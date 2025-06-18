@@ -1,6 +1,6 @@
 "use client";
 
-import { ComplianceRules, Relationships } from "@/lib/types";
+import { ComplianceRules } from "@/lib/types";
 import { DataTable } from "../entities/data-table";
 import { useState } from "react";
 import {

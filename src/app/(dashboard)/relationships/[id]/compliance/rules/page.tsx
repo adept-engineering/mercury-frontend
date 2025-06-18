@@ -4,7 +4,7 @@ import ComplianceRulesContainer from "@/components/compliance_rules/container";
 export default async function ComplianceRulesPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
   const complianceRulesData = await getComplianceRules(id);

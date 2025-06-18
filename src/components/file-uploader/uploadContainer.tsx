@@ -2,7 +2,7 @@
 
 import { useToast } from "@/hooks/use-toast";
 
-import { FileText, Folder, Upload, UploadCloud, X } from "lucide-react";
+import { FileText, Folder, UploadCloud, X } from "lucide-react";
 import Image from "next/image";
 import * as React from "react";
 import Dropzone, {

@@ -1,5 +1,3 @@
-import EntitiesContainer from "@/components/entities/container";
-import { dummyEntities } from "@/components/entities/dummy-data";
 import PerformTestContainer from "@/components/tests/container";
 
 export default function PerformTestsPage() {

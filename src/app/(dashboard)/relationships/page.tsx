@@ -1,6 +1,4 @@
 import { getRelationships } from "@/actions/relationships";
-import EntitiesContainer from "@/components/entities/container";
-import { dummyEntities } from "@/components/entities/dummy-data";
 import RelationshipsContainer from "@/components/relationships/container";
 
 const relationshipsData = await getRelationships();

@@ -107,7 +107,7 @@ export function RelationshipForm() {
                   </FormControl>
                   <SelectContent>
                     {entityIds &&
-                      entityIds.map((sender: string, i: any) => (
+                      entityIds.map((sender: string, i: number) => (
                         <SelectItem key={i} value={sender}>
                           {sender}
                         </SelectItem>
@@ -141,7 +141,7 @@ export function RelationshipForm() {
                           (receiver: string) =>
                             receiver !== form.watch("entityid_id_sender")
                         )
-                        .map((receiver: string, i: any) => (
+                        .map((receiver: string, i: number) => (
                           <SelectItem key={i} value={receiver}>
                             {receiver}
                           </SelectItem>

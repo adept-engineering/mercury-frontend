@@ -21,7 +21,6 @@ interface TransactionInfoProps {
 export function TransactionInfoCard({
   transactionName,
   standardVersion,
-  version,
 }: TransactionInfoProps) {
   return (
     <Card>
@@ -297,6 +296,38 @@ interface CompliantDataProps {
 export function CompliantDataCard({ compliantData }: CompliantDataProps) {
   const [isOpen, setIsOpen] = useState(false);
 
+  const formatCompliantData = (data: string) => {
+    // Split by double asterisks to separate sections
+    const sections = data.split("/n");
+
+    // Format each section
+    const formattedSections = sections.map((section) => {
+      // If it's an odd index, it's a bold section
+      // if (section.includes(":")) {
+      //   return `<strong className="pt-4">${section}</strong>`;
+      // }
+      // If it's an even index, it's a regular section
+      return section;
+    });
+
+    // Join all sections and split by newlines
+    const formattedText = formattedSections
+      .join("")
+      .split("\n")
+      .map((line) => {
+        const trimmedLine = line.trim().replace(/--/g, "").replace(/\*\*/g, "");
+        if (trimmedLine.includes(":")) {
+          const [beforeColon, afterColon] = trimmedLine.split(":");
+          return `<strong>${beforeColon}</strong>:${afterColon}`;
+        }
+        return trimmedLine;
+      })
+      .filter((line) => line.length > 0)
+      .join("<br/><br/>"); // Changed to double line break
+
+    return formattedText;
+  };
+
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(compliantData);
@@ -340,9 +371,12 @@ export function CompliantDataCard({ compliantData }: CompliantDataProps) {
         </CardHeader>
         <CollapsibleContent>
           <CardContent>
-            <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
-              {compliantData}
-            </div>
+            <div
+              className="bg-muted rounded-lg p-4 text-sm overflow-x-auto"
+              dangerouslySetInnerHTML={{
+                __html: formatCompliantData(compliantData),
+              }}
+            />
           </CardContent>
         </CollapsibleContent>
       </Card>
