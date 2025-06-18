@@ -5,7 +5,6 @@ export async function getDataAuditLogs(fromDate: string, toDate: string) {
     const response = await axiosInstance.get(
       `/edi-info?dateFrom=${fromDate}&dateTo=${toDate}`
     );
-    console.log("data audit", response.data);
     return response.data;
   } catch (error) {
     console.error(error);

@@ -47,6 +47,7 @@ declare module "next-auth" {
 }
 
 export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/login",
     signOut: "/login",
@@ -65,7 +66,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
 
         try {
           const { data: tokens } = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+            `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
             {
               email: credentials?.email as string,
               password: credentials?.password as string,
@@ -85,10 +86,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
             name: user.name,
             image: "",
             tenantId: user.tenantId,
-            groupId: user.groupId,
             isActive: user.isActive,
-            ratingPreference: user.ratingPreference,
-            subscription_id: user.subscriptionId,
             token: tokens.token,
             refreshToken: tokens.refreshToken,
             role: user.role,

@@ -19,7 +19,7 @@ export async function login(formData: FormData, returnUrl: string | null) {
       email: email?.toLowerCase(),
       password: password,
       redirect: true,
-      // redirectTo: returnUrl || "/home",
+      redirectTo: returnUrl || "/data-audit",
     })) as LoginResult;
   } catch (error: any) {
     console.error("Login error:", error);

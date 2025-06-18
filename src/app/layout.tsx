@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Instrument_Sans, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
-
 import Provider from "./provider";
 import "./globals.css";
 import { auth } from "@/auth";
+
 
 const instrumentSans = Instrument_Sans({
   variable: "--font-instrument-sans",

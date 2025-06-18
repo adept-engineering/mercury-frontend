@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { LoadingDots } from "@/components/ui/loading-dots";
+import { login } from "@/auth/login";
 
 interface AuthForm {
   type: "login" | "forgot-password";
@@ -60,8 +61,9 @@ export default function AuthForm({ type, userEmail }: AuthForm) {
         case "login":
           setButtonDisabled(true);
           try {
-            // await login(formData, returnUrl)
+            await login(formData, null)
             // const shouldShowMfa = ;
+            router.push("/data-audit");
             formData.get("email")?.toString()
             formData.get("password")?.toString()
             break;

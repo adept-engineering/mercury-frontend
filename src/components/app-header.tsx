@@ -9,8 +9,17 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { auth } from "@/auth";
 
-export default function AppHeader() {
+export default async function AppHeader() {
+    const session = await auth()
+    if (!session?.user) return null
+
+    const initials = session.user.name
+        ?.split(' ')
+        .map(word => word[0])
+        .join('') || 'U'
+
     return (
         <header className="bg-white border-b border-gray-200 px-6 py-3 fixed top-0 inset-x-0 z-50">
             <div className="flex items-center justify-between">
@@ -38,7 +47,7 @@ export default function AppHeader() {
                             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                                 <Avatar className="h-8 w-8">
                                     <AvatarFallback className="bg-blue-600 text-white text-sm font-medium">
-                                        RK
+                                        {initials}
                                     </AvatarFallback>
                                 </Avatar>
                             </Button>
