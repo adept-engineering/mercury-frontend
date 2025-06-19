@@ -1,7 +1,6 @@
 "use client";
 import { DataTable } from "@/components/entities/data-table";
 import columns from "./column";
-import mockUsers from "./mock-users";
 import { User } from "@/lib/types";
 
 export function AccountContainer({ data }: { data: User[] }) {
