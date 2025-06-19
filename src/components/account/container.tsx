@@ -1,5 +1,5 @@
 "use client";
-import { DataTable } from "@/components/entities/data-table";
+import { DataTable } from "@/components/account/data-table";
 import columns from "./column";
 import { User } from "@/lib/types";
 

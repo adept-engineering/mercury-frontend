@@ -63,6 +63,10 @@ export default function AuthForm({ type, userEmail }: AuthForm) {
           try {
             await login(formData, null)
             // const shouldShowMfa = ;
+            toast({
+              variant:"success",
+              title:"login successfull"
+            })
             router.push("/data-audit");
             formData.get("email")?.toString()
             formData.get("password")?.toString()
