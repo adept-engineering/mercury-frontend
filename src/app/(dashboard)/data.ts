@@ -70,7 +70,7 @@ export const sidebarItems: SidebarItemType[] = [
       },
       {
         title: "Account",
-        url: "/settings/profile",
+        url: "/account",
         icon: Settings,
       },
       {
