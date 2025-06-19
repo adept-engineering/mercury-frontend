@@ -70,11 +70,7 @@ export function DataTable<TData, TValue>({
             }}
           >
             <Plus className="h-4 w-4 mr-2" />
-            {tableType === "entities"
-              ? "Add Entity"
-              : tableType === "complianceRules"
-              ? "Add Compliance Rule"
-              : "Add Relationship"}
+           Create User
           </Button>
         </div>
       </div>
