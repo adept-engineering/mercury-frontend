@@ -1,8 +1,8 @@
-import axiosInstance from "@/lib/axios";
+import {axiosLocal} from "@/lib/axios";
 
 export async function getComplianceRules(id: string) {
   try {
-    const response = await axiosInstance.get(
+    const response = await axiosLocal.get(
       `/compliance-rules?entityid_relationship_id=${id}`
     );
     return response.data;
@@ -18,7 +18,7 @@ export async function createComplianceRuleController(data: {
   rule_title: string;
 }) {
   try {
-    const response = await axiosInstance.post("/compliance-rules/create", data);
+    const response = await axiosLocal.post("/compliance-rules/create", data);
     return response.data;
   } catch (error) {
     console.error(error);

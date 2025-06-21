@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { CreateUserDialogue } from "./create-user-dialogue";
+import { useCreateUser } from "@/hooks/use-create-user";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -58,11 +59,12 @@ export function DataTable<TData, TValue>({
       },
     },
   });
-
+  const { mutate: createUser } = useCreateUser();
   // Handler for user creation
-  const handleCreateUser = (email: string, entityIds: string[]) => {
+  const handleCreateUser = (email: string, entityIds: string[], firstName: string, lastName: string, role: string) => {
     // Implement your user creation logic here
     // e.g., call an API or update state
+    createUser({ email, entityIds, firstName, lastName, role });
   };
 
   return (

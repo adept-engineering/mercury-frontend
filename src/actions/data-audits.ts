@@ -1,8 +1,8 @@
-import axiosInstance from "@/lib/axios";
+import {axiosLocal} from "@/lib/axios";
 
 export async function getDataAuditLogs(fromDate: string, toDate: string) {
   try {
-    const response = await axiosInstance.get(
+    const response = await axiosLocal.get(
       `/edi-info?dateFrom=${fromDate}&dateTo=${toDate}`
     );
     return response.data;
@@ -14,7 +14,7 @@ export async function getDataAuditLogs(fromDate: string, toDate: string) {
 
 export async function getDataAuditLogDetails(id: string) {
   try {
-    const response = await axiosInstance.get(`/edi-info/${id}`);
+    const response = await axiosLocal.get(`/edi-info/${id}`);
     return response.data;
   } catch (error) {
     console.error(error);

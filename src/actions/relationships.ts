@@ -1,8 +1,8 @@
-import axiosInstance from "@/lib/axios";
+import {axiosInstance, axiosLocal} from "@/lib/axios";
 
 export async function getRelationships() {
   try {
-    const response = await axiosInstance.get("/relationships");
+    const response = await axiosLocal.get("/relationships");
     return response.data;
   } catch (error) {
     console.error(error);
@@ -19,7 +19,7 @@ export async function createRelationshipController(data: {
   std_version: string;
 }) {
   try {
-    const response = await axiosInstance.post("/relationships/create", data);
+    const response = await axiosLocal.post("/relationships/create", data);
     return response.data;
   } catch (error) {
     console.error(error);

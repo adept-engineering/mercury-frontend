@@ -11,18 +11,21 @@ import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { LoadingDots } from "@/components/ui/loading-dots";
 import { login } from "@/auth/login";
+import { resetPassword } from "@/actions/auth";
 
 interface AuthForm {
-  type: "login" | "forgot-password";
+  type: "login" | "forgot-password" | "reset-password";
   userEmail?: string;
+  token?: string;
 
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function AuthForm({ type, userEmail }: AuthForm) {
+export default function AuthForm({ type, userEmail, token }: AuthForm) {
   const { toast } = useToast();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
 
@@ -30,6 +33,43 @@ export default function AuthForm({ type, userEmail }: AuthForm) {
     setButtonDisabled(true);
     try {
       switch (type) {
+        case "reset-password":
+          const password = formData.get("password")?.toString();
+          const confirmPassword = formData.get("confirmPassword")?.toString();
+          if (!password || !confirmPassword) {
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "Please enter both password fields.",
+            });
+            setButtonDisabled(false);
+            return;
+          }
+          if (password !== confirmPassword) {
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "Passwords do not match.",
+            });
+            setButtonDisabled(false);
+            return;
+          }
+          try {
+            await resetPassword(password, token || "");
+            toast({
+              variant: "success",
+              title: "Password Reset",
+              description: "Your password has been reset successfully. Please login with your new password.",
+            });
+            router.push("/login");
+          } catch (error: any) {
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: error.message || "Failed to reset password. Please try again.",
+            });
+          }
+          break;
         case "forgot-password":
           const email = formData.get("email")?.toString();
           if (!email) {
@@ -64,8 +104,8 @@ export default function AuthForm({ type, userEmail }: AuthForm) {
             await login(formData, null)
             // const shouldShowMfa = ;
             toast({
-              variant:"success",
-              title:"login successfull"
+              variant: "success",
+              title: "login successfull"
             })
             router.push("/data-audit");
             formData.get("email")?.toString()
@@ -124,6 +164,68 @@ export default function AuthForm({ type, userEmail }: AuthForm) {
                 className={inputClassName}
               />
             </div>
+          ) : type === "reset-password" ? (
+            <>
+              <div className="text-secondary-foreground space-y-1 max-lg:space-y-0.5 relative">
+                <Label
+                  htmlFor="password"
+                  className="text-base max-lg:text-sm text-secondary-foreground font-medium"
+                >
+                  New Password
+                </Label>
+                <Input
+                  name="password"
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter new password"
+                  required
+                  className={inputClassName}
+                />
+                {showPassword ? (
+                  <Eye
+                    className="absolute right-2 bottom-3 transform cursor-pointer text-secondary-foreground"
+                    onClick={() => setShowPassword(!showPassword)}
+                    size={16}
+                  />
+                ) : (
+                  <EyeOff
+                    className="absolute right-2 bottom-3 transform cursor-pointer text-secondary-foreground"
+                    onClick={() => setShowPassword(!showPassword)}
+                    size={16}
+                  />
+                )}
+              </div>
+
+              <div className="text-secondary-foreground space-y-1 max-lg:space-y-0.5 relative">
+                <Label
+                  htmlFor="confirmPassword"
+                  className="text-base max-lg:text-sm text-secondary-foreground font-medium"
+                >
+                  Confirm Password
+                </Label>
+                <Input
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm new password"
+                  required
+                  className={inputClassName}
+                />
+                {showConfirmPassword ? (
+                  <Eye
+                    className="absolute right-2 bottom-3 transform cursor-pointer text-secondary-foreground"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    size={16}
+                  />
+                ) : (
+                  <EyeOff
+                    className="absolute right-2 bottom-3 transform cursor-pointer text-secondary-foreground"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    size={16}
+                  />
+                )}
+              </div>
+            </>
           ) : (
             <>
               <div className="text-secondary-foreground space-y-1 max-lg:space-y-0.5">
@@ -202,6 +304,8 @@ function Submit({ type, disabled }: AuthForm & { disabled: boolean }) {
         <LoadingDots />
       ) : type === "forgot-password" ? (
         "Send Reset Link"
+      ) : type === "reset-password" ? (
+        "Reset Password"
       ) : (
         "Login"
       )}
