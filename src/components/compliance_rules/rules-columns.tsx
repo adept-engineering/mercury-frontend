@@ -6,19 +6,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
-import { useCurrentSession } from "@/hooks/use-current-session";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const ActionsCell = ({ row }: { row: any }) => {
-  const { session } = useCurrentSession();
-  const currentUser = session?.user;
+  const { canDelete, canEdit,  } = usePermissions();
 
-  // Check if current user is system admin
-  const isSystemAdmin = currentUser?.role === "system_admin";
-
-  // Only system admins can delete compliance rules
-  const canDelete = isSystemAdmin;
+ 
 
   // If user has no permissions for this row, don't show dropdown
   if (!canDelete) {
@@ -33,12 +28,19 @@ const ActionsCell = ({ row }: { row: any }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+      {canEdit && (
+          <DropdownMenuItem >
+            <Pencil className="mr-2 h-4 w-4" />
+            Edit
+          </DropdownMenuItem>
+        )}
         {canDelete && (
           <DropdownMenuItem className="text-red-600">
             <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </DropdownMenuItem>
         )}
+        
       </DropdownMenuContent>
     </DropdownMenu>
   );

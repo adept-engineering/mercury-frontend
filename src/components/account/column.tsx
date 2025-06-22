@@ -5,23 +5,14 @@ import { User } from "@/lib/types";
 import { MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { useCurrentSession } from "@/hooks/use-current-session";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const ActionsCell = ({ row }: { row: any }) => {
-    const { session } = useCurrentSession();
-    const currentUser = session?.user;
     const rowUser = row.original as User;
+    const { canDelete, canEdit, canResetPassword } = usePermissions(Number(rowUser.id));
 
     // Check if current user is system admin
-    const isSystemAdmin = currentUser?.role === "system_admin";
-
-    // Check if current user is viewing their own row
-    const isOwnAccount = currentUser?.id === rowUser.id || currentUser?.email === rowUser.email;
-
-    // Determine what actions to show
-    const canEdit = isSystemAdmin || isOwnAccount;
-    const canResetPassword = isSystemAdmin || isOwnAccount;
-    const canDelete = isSystemAdmin && !isOwnAccount; // Admin can't delete their own account
+    
 
     // If user has no permissions for this row, don't show dropdown
     if (!canEdit && !canResetPassword && !canDelete) {

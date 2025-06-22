@@ -9,19 +9,16 @@ import {
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { useCurrentSession } from "@/hooks/use-current-session";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const ActionCell = ({
   row,
 }: {
-  row: { getValue: (key: string) => string };
+  row: { original: { entityidtbl_relationship_id: string } };
 }) => {
   const router = useRouter();
-  const { session } = useCurrentSession();
-  const currentUser = session?.user;
+  const { isSystemAdmin } = usePermissions();
 
-  // Check if current user is system admin
-  const isSystemAdmin = currentUser?.role === "system_admin";
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -33,9 +30,7 @@ const ActionCell = ({
         <DropdownMenuItem
           onClick={() =>
             router.push(
-              `/relationships/${row.getValue(
-                "entityidtbl_relationship_id"
-              )}/compliance/rules`
+              `/relationships/${row.original.entityidtbl_relationship_id}/compliance/rules`
             )
           }
         >
@@ -78,17 +73,17 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
       return <div className="text-sm">{row.getValue("transaction_name")}</div>;
     },
   },
-  {
-    accessorKey: "entityidtbl_relationship_id",
-    header: "RELATIONSHIP ID",
-    cell: ({ row }) => {
-      return (
-        <div className="text-sm">
-          {row.getValue("entityidtbl_relationship_id")}
-        </div>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "entityidtbl_relationship_id",
+  //   header: "RELATIONSHIP ID",
+  //   cell: ({ row }) => {
+  //     return (
+  //       <div className="text-sm">
+  //         {row.getValue("entityidtbl_relationship_id")}
+  //       </div>
+  //     );
+  //   },
+  // },
   {
     accessorKey: "std_version",
     header: "VERSION",
