@@ -1,7 +1,7 @@
 "use client";
 
 import { ComplianceRules } from "@/lib/types";
-import { DataTable } from "../entities/data-table";
+import { DataTable } from "./data-table";
 import { useState } from "react";
 import {
   Breadcrumb,
