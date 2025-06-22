@@ -9,8 +9,10 @@ import {
 import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 export const entititiesColumns: ColumnDef<Entities>[] = [
+ 
   {
     accessorKey: "name",
     header: "ENTITY Name",
@@ -42,7 +44,8 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
  
   {
     id: "actions",
-    cell: () => {
+    cell: ({ row }) => {
+      const router = useRouter();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -55,7 +58,7 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
               <Eye className="mr-2 h-4 w-4" />
               View
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push(`/entities/${row.original.id}/edit`)}>
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
