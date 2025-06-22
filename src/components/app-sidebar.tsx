@@ -1,3 +1,4 @@
+"use client";
 import {
   Collapsible,
   CollapsibleContent,
@@ -15,6 +16,7 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import {
@@ -24,14 +26,58 @@ import {
 
 import { sidebarItems } from "@/app/(dashboard)/data";
 import { ChevronDown } from "lucide-react";
+import { logout } from "@/actions/logout";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
-export async function AppSidebar() {
+// Custom logout button component
+const LogoutButton = ({ menuItem }: { menuItem: any }) => {
+  const { toast } = useToast();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { setOpenMobile } = useSidebar();
 
+  const handleLogout = async () => {
+    if (isLoggingOut) return; // Prevent double clicks
+
+    try {
+      setIsLoggingOut(true);
+      setOpenMobile(false); // Close mobile sidebar
+      await logout();
+      toast({
+        title: "Logged out successfully",
+        description: "You have been logged out of your account.",
+        variant: "default",
+      });
+    } catch (error: any) {
+      console.error("Logout error:", error);
+      toast({
+        title: "Logout failed",
+        description: error.message || "Failed to log out. Please try again.",
+        variant: "destructive",
+      });
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
+    <SidebarMenuButton
+      onClick={handleLogout}
+      disabled={isLoggingOut}
+      className="w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors text-red-600 hover:bg-red-50 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      <div className="flex items-center gap-3">
+        <span>
+          <menuItem.icon className="h-5 w-5" strokeWidth={1.5} />
+        </span>
+        <span>{isLoggingOut ? "Logging out..." : menuItem.title}</span>
+      </div>
+    </SidebarMenuButton>
+  );
+};
+
+export function AppSidebar() {
+  return (
     <Sidebar variant="sidebar" >
-
-
       <SidebarContent className="pl-7 pr-3 max-lg:pr-14 pt-[5.5rem] max-lg:pt-12 pb-8 custom-scroll font-medium flex flex-col h-full">
         {/* Sidebar start */}
         <div className="flex-1">
@@ -128,11 +174,7 @@ export async function AppSidebar() {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ).map((menuItem: any) => (
                 <SidebarMenuItem key={menuItem.title}>
-                  <SidebarMenuActiveButton
-                    url={menuItem.url}
-                    icon={<menuItem.icon className="h-5 w-5" strokeWidth={1.5} />}
-                    title={menuItem.title}
-                  />
+                  <LogoutButton menuItem={menuItem} />
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
