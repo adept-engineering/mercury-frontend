@@ -34,6 +34,7 @@ import {
 import { useState } from "react";
 import { CreateUserDialogue } from "./create-user-dialogue";
 import { useCreateUser } from "@/hooks/use-create-user";
+import { useCurrentSession } from "@/hooks/use-current-session";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -60,6 +61,7 @@ export function DataTable<TData, TValue>({
     },
   });
   const { mutate: createUser } = useCreateUser();
+  const { session} = useCurrentSession();
   // Handler for user creation
   const handleCreateUser = (email: string, entityIds: string[], firstName: string, lastName: string, role: string) => {
     // Implement your user creation logic here
@@ -73,7 +75,9 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-between">
         <div></div>
         <div className="flex items-center gap-3">
-          <CreateUserDialogue onCreate={handleCreateUser} />
+          {session?.user?.role === "admin" && (
+            <CreateUserDialogue onCreate={handleCreateUser} />
+          )}
         </div>
       </div>
 

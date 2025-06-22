@@ -31,6 +31,7 @@ import {
   ChevronsRight,
   Plus,
 } from "lucide-react";
+import { useCurrentSession } from "@/hooks/use-current-session";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -56,13 +57,15 @@ export function DataTable<TData, TValue>({
       },
     },
   });
-
+  const { session} = useCurrentSession();
+  
   return (
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div></div>
         <div className="flex items-center gap-3">
+          {session?.user?.role === "admin" && (
           <Button
             className="bg-pink-500 hover:bg-pink-600 text-white"
             onClick={() => {
@@ -70,8 +73,9 @@ export function DataTable<TData, TValue>({
             }}
           >
             <Plus className="h-4 w-4 mr-2" />
-           Create User
+           Create Entity
           </Button>
+          )}
         </div>
       </div>
 

@@ -1,8 +1,10 @@
-import {axiosLocal} from "@/lib/axios";
+import {axiosLocal,axiosInstance} from "@/lib/axios";
+import {auth} from "./auth";
 
 export async function getComplianceRules(id: string) {
   try {
-    const response = await axiosLocal.get(
+    const session = await auth();
+    const response = await axiosInstance(session?.user?.token ?? "").get(
       `/compliance-rules?entityid_relationship_id=${id}`
     );
     return response.data;

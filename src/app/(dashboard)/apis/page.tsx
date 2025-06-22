@@ -2,9 +2,9 @@ import { getAllApis } from "@/actions/all-apis";
 import { APIContainer } from "@/components/apis/container";
 import { Suspense } from "react";
 
-const apisData = await getAllApis();
+export default async function APIPage() {
+  const apisData = await getAllApis();
 
-export default function APIPage() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div>

@@ -8,31 +8,38 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
+import { format } from "date-fns";
 
 export const entititiesColumns: ColumnDef<Entities>[] = [
   {
-    accessorKey: "entityName",
+    accessorKey: "name",
     header: "ENTITY Name",
     cell: ({ row }) => {
-      return <div className="text-sm pl-2">{row.getValue("entityName")}</div>;
+      return <div className="text-sm pl-2">{row.getValue("name")}</div>;
     },
   },
   {
-    accessorKey: "lastUpdatedBy",
+    accessorKey: "organization_type",
+    header: "ORGANIZATION TYPE",
+  },
+  {
+    accessorKey: "updated_by",
     header: "LAST UPDATED BY",
     cell: ({ row }) => {
-      return <div className="text-sm">{row.getValue("lastUpdatedBy")}</div>;
+      const updatedBy = format(new Date(row.getValue("updated_by") as string), "MMM d, yyyy");
+      return <div className="text-sm">{updatedBy}</div>;
     },
   },
   {
-    accessorKey: "dateTime",
+    accessorKey: "created_date",
     header: "DATE & TIME",
     cell: ({ row }) => {
-      const dateString = row.getValue("dateTime") as string;
-      const date = new Date(dateString);
-      return <div className="text-sm">{date.toLocaleDateString("en-US")}</div>;
+      const dateString = row.getValue("created_date") as string;
+      const date = format(new Date(dateString), "MMM d, yyyy");
+      return <div className="text-sm">{date}</div>;
     },
   },
+ 
   {
     id: "actions",
     cell: () => {

@@ -8,7 +8,7 @@ export default async function ComplianceRulesPage({
 }) {
   const { id } = await params;
   const complianceRulesData = await getComplianceRules(id);
-  console.log(complianceRulesData);
+
   return (
     <div className="flex flex-col gap-6 p-6">
       <ComplianceRulesContainer

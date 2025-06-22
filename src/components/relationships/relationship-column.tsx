@@ -9,6 +9,7 @@ import {
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { useCurrentSession } from "@/hooks/use-current-session";
 
 const ActionCell = ({
   row,
@@ -16,7 +17,11 @@ const ActionCell = ({
   row: { getValue: (key: string) => string };
 }) => {
   const router = useRouter();
+  const { session } = useCurrentSession();
+  const currentUser = session?.user;
 
+  // Check if current user is system admin
+  const isSystemAdmin = currentUser?.role === "system_admin";
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -38,10 +43,10 @@ const ActionCell = ({
           View Compliance Rules
         </DropdownMenuItem>
 
-        <DropdownMenuItem className="text-red-600">
-          <Trash2 className="mr-2 h-4 w-4" />
-          Delete
-        </DropdownMenuItem>
+       {isSystemAdmin &&   <DropdownMenuItem className="text-red-600">
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete
+          </DropdownMenuItem>}
       </DropdownMenuContent>
     </DropdownMenu>
   );

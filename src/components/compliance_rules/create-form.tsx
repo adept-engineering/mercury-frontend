@@ -45,7 +45,7 @@ export function ComplianceRuleForm({
         title: "Successfully created Compliance Rule",
       });
       router.refresh();
-      console.log("Compliance rule created successfully:", data);
+
     },
     onError: (error) => {
       toast({

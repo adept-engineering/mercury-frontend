@@ -8,7 +8,7 @@ export default function PerformTestContainer() {
   const [file, setFile] = useState<File>();
 
   const [view, setView] = useState<"upload" | "process">("upload");
-  console.log(view);
+
   const handleScreenMove = (state: "upload" | "process") => {
     setView(state);
   };

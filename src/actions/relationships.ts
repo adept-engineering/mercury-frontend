@@ -1,8 +1,10 @@
-import {axiosInstance, axiosLocal} from "@/lib/axios";
+import { axiosInstance, axiosLocal } from "@/lib/axios";
+import { auth } from "./auth";
 
 export async function getRelationships() {
   try {
-    const response = await axiosLocal.get("/relationships");
+    const session = await auth();
+    const response = await axiosInstance(session?.user?.token ?? "").get("/relationships");
     return response.data;
   } catch (error) {
     console.error(error);
