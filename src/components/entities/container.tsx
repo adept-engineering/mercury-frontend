@@ -3,7 +3,7 @@
 import { Entities } from "@/lib/types";
 import { entititiesColumns } from "./entitities-columns";
 import { DataTable } from "./data-table";
-import { useState } from "react";
+import { useQueryState } from "nuqs";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,16 +13,24 @@ import {
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
 import { EntryForm } from "./create-form";
+import { Button } from "../ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export default function EntitiesContainer({
   entitiesData,
 }: {
   entitiesData: Entities[];
 }) {
-  const [view, setView] = useState<"data" | "create">("data");
+  const [view, setView] = useQueryState("view", {
+    defaultValue: "data",
+  });
 
   const handleScreenMove = (state: "data" | "create") => {
     setView(state);
+  };
+
+  const handleBackToData = () => {
+    setView("data");
   };
 
   return (
@@ -43,6 +51,19 @@ export default function EntitiesContainer({
         </>
       ) : (
         <>
+          {/* Back Button */}
+          <div className="flex items-center gap-4 mb-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-2"
+              onClick={handleBackToData}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Entities
+            </Button>
+          </div>
+
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-2xl font-semibold">Create New Entity</h1>
@@ -54,7 +75,11 @@ export default function EntitiesContainer({
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/entities" className="text-primary">
+                  <BreadcrumbLink
+                    href="#"
+                    className="text-primary cursor-pointer"
+                    onClick={handleBackToData}
+                  >
                     Entities
                   </BreadcrumbLink>
                 </BreadcrumbItem>

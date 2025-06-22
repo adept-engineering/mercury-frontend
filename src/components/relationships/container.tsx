@@ -1,8 +1,8 @@
 "use client";
 
 import { Relationships } from "@/lib/types";
-import { DataTable } from "../entities/data-table";
-import { useState } from "react";
+import { DataTable } from "./data-table";
+import { useQueryState } from "nuqs";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,16 +13,25 @@ import {
 } from "../ui/breadcrumb";
 import { RelationshipForm } from "./create-form";
 import { relationshipColumns } from "./relationship-column";
+import { BackButton } from "../ui/back-button";
+import { Button } from "../ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export default function RelationshipsContainer({
   relationshipsData,
 }: {
   relationshipsData: Relationships[];
 }) {
-  const [view, setView] = useState<"data" | "create">("data");
+  const [view, setView] = useQueryState("view", {
+    defaultValue: "data",
+  });
 
   const handleScreenMove = (state: "data" | "create") => {
     setView(state);
+  };
+
+  const handleBackToData = () => {
+    setView("data");
   };
 
   return (
@@ -43,6 +52,19 @@ export default function RelationshipsContainer({
         </>
       ) : (
         <>
+          {/* Back Button */}
+          <div className="flex items-center gap-4 mb-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-2"
+              onClick={handleBackToData}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Relationships
+            </Button>
+          </div>
+
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-2xl font-semibold">
@@ -57,8 +79,9 @@ export default function RelationshipsContainer({
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink
-                    href="/relationships"
-                    className="text-primary"
+                    href="#"
+                    className="text-primary cursor-pointer"
+                    onClick={handleBackToData}
                   >
                     Relationships
                   </BreadcrumbLink>
