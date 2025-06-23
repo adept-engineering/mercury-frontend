@@ -18,18 +18,19 @@ export default async function EditEntityPage({ params }: EditEntityPageProps) {
         }
 
         const defaultValues = {
-            entityName: entityData.entityName || "",
-            email: entityData.email || "",
-            addressLine1: entityData.addressLine1 || "",
-            addressLine2: entityData.addressLine2 || "",
-            phoneNumber: entityData.phoneNumber || "",
+            entityName: entityData.name || "",
+            email: entityData.email_address || "",
+            addressLine1: entityData.address1 || "",
+            addressLine2: entityData.address2 || "",
+            // phoneNumber: entityData.phone_number || "",
             city: entityData.city || "",
             country: entityData.country || "",
             state: entityData.state || "",
+            zipCode: entityData.zip_code || "",
             referenceIDs: entityData.referenceIDs || [],
         };
 
-        return <EditEntityForm defaultValues={defaultValues} />;
+        return <EditEntityForm defaultValues={defaultValues} id={id} />;
     } catch (error) {
         console.error("Error loading entity:", error);
         notFound();

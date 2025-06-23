@@ -30,6 +30,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { useUpdateEntity } from "@/hooks/use-entity";
 
 const refIDS = ["EDI/X12", "EDI/EDIFACT", "XML", "JSON", "IDOC", "CSV", "API"];
 
@@ -44,8 +45,11 @@ const formSchema = z.object({
         message: "Address line 1 is required.",
     }),
     addressLine2: z.string().optional(),
-    phoneNumber: z.string().min(10, {
-        message: "Please enter a valid phone number.",
+    // phoneNumber: z.string().min(10, {
+    //     message: "Please enter a valid phone number.",
+    // }),
+    zipCode: z.string().min(1, {
+        message: "Zip code is required.",
     }),
     city: z.string().min(1, {
         message: "City is required.",
@@ -69,11 +73,13 @@ type FormValues = z.infer<typeof formSchema>;
 
 interface EditEntityFormProps {
     defaultValues?: Partial<FormValues>;
+    id: string;
 }
 
-export function EditEntityForm({ defaultValues }: EditEntityFormProps) {
+export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { mutate: updateEntity } = useUpdateEntity();
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -82,10 +88,11 @@ export function EditEntityForm({ defaultValues }: EditEntityFormProps) {
             email: defaultValues?.email || "",
             addressLine1: defaultValues?.addressLine1 || "",
             addressLine2: defaultValues?.addressLine2 || "",
-            phoneNumber: defaultValues?.phoneNumber || "",
+            // phoneNumber: entityData.phone_number || "",
             city: defaultValues?.city || "",
             country: defaultValues?.country || "",
             state: defaultValues?.state || "",
+            zipCode: defaultValues?.zipCode || "",
             referenceIDs: defaultValues?.referenceIDs || [],
         },
     });
@@ -95,6 +102,18 @@ export function EditEntityForm({ defaultValues }: EditEntityFormProps) {
         try {
             // TODO: Implement entity update API call
             console.log("Updating entity:", values);
+            updateEntity({
+                entityId: id,
+                name: values.entityName,
+                email_address: values.email,
+                address1: values.addressLine1,
+                address2: values.addressLine2,
+                city: values.city,
+                country: values.country,
+                state: values.state,
+                zipcode: values.zipCode,
+                referenceIDs: values.referenceIDs,
+            });
 
             toast({
                 title: "Success",
@@ -103,6 +122,7 @@ export function EditEntityForm({ defaultValues }: EditEntityFormProps) {
 
             router.push("/entities");
         } catch (error) {
+            console.error(error);
             toast({
                 title: "Error",
                 description: "Failed to update entity",
@@ -224,44 +244,6 @@ export function EditEntityForm({ defaultValues }: EditEntityFormProps) {
                                 )}
                             />
                         </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                                control={form.control}
-                                name="phoneNumber"
-                                render={({
-                                    field,
-                                }: {
-                                    field: ControllerRenderProps<FormValues, "phoneNumber">;
-                                }) => (
-                                    <FormItem>
-                                        <FormLabel>Phone Number</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter phone number" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="city"
-                                render={({
-                                    field,
-                                }: {
-                                    field: ControllerRenderProps<FormValues, "city">;
-                                }) => (
-                                    <FormItem>
-                                        <FormLabel>City</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter city" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
                         <div className="grid grid-cols-2 gap-4">
                             <FormField
                                 control={form.control}
@@ -298,6 +280,45 @@ export function EditEntityForm({ defaultValues }: EditEntityFormProps) {
                                 )}
                             />
                         </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name="zipCode"
+                                render={({
+                                    field,
+                                }: {
+                                    field: ControllerRenderProps<FormValues, "zipCode">;
+                                }) => (
+                                    <FormItem>
+                                        <FormLabel>Zip Code</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter zip code" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="city"
+                                render={({
+                                    field,
+                                }: {
+                                    field: ControllerRenderProps<FormValues, "city">;
+                                }) => (
+                                    <FormItem>
+                                        <FormLabel>City</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter city" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+
 
                         {/* Reference IDs Section */}
                         <section className="flex items-center justify-between my-6">

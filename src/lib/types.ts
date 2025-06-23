@@ -101,3 +101,16 @@ export interface User {
   role: UserRole;
   entityId?: string; // For sub users, this will be the entity they belong to
 }
+
+export type EntityData = {
+  name: string;
+  address1?: string;
+  address2?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  zipcode?: string;
+  email_address?: string;
+  status?: string;
+  entityid_id?: string;
+}
