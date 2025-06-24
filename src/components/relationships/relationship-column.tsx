@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import { Eye, FileText, MoreHorizontal, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/use-permissions";
@@ -37,11 +37,15 @@ const ActionCell = ({
           <Eye className="mr-2 h-4 w-4" />
           View Compliance Rules
         </DropdownMenuItem>
-
+        <DropdownMenuItem>
+          <FileText className="mr-2 h-4 w-4" />
+          Implementation Guide
+        </DropdownMenuItem>
        {isSystemAdmin &&   <DropdownMenuItem className="text-red-600">
             <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </DropdownMenuItem>}
+        
       </DropdownMenuContent>
     </DropdownMenu>
   );
