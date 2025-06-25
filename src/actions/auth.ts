@@ -27,3 +27,10 @@ export async function resetPassword(password: string, token: string) {
   });
   return response.data;
 }
+export async function ForgotPassword(email: string) {
+  
+  const response = await axiosLocal.post("/auth/forgot/password", {
+    email,
+  });
+  return response.data;
+}

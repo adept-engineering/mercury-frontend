@@ -11,7 +11,7 @@ import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { LoadingDots } from "@/components/ui/loading-dots";
 import { login } from "@/auth/login";
-import { resetPassword } from "@/actions/auth";
+import { ForgotPassword, resetPassword } from "@/actions/auth";
 
 interface AuthForm {
   type: "login" | "forgot-password" | "reset-password";
@@ -81,6 +81,7 @@ export default function AuthForm({ type, userEmail, token }: AuthForm) {
             return;
           }
           try {
+            await ForgotPassword(email);
             toast({
               variant: "success",
               title: "Reset Link Sent",
