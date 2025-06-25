@@ -49,7 +49,7 @@ export function CurrentPathBreadcrumbs() {
     return (
         <Breadcrumb>
             <BreadcrumbList>
-                {allBreadcrumbs.map((breadcrumb, index) => (
+                {allBreadcrumbs.map((breadcrumb) => (
                     <div key={breadcrumb.href} className="flex items-center">
                         <BreadcrumbItem className="text-sm text-primary">
                             {breadcrumb.isLast ? (

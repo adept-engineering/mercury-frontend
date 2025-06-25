@@ -88,7 +88,7 @@ export default function AuthForm({ type, userEmail, token }: AuthForm) {
               description: "If an account exists with this email, you will receive a password reset link.",
             });
             router.push("/login");
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          
           } catch (error: any) {
             toast({
               variant: "destructive",
@@ -128,7 +128,7 @@ export default function AuthForm({ type, userEmail, token }: AuthForm) {
         default:
           return;
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    
     } catch (err: any) {
       setButtonDisabled(false);
       toast({

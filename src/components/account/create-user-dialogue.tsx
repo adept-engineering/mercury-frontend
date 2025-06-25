@@ -3,10 +3,9 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Combobox, MultiSelectCombobox } from "@/components/ui/combobox";
+import {  MultiSelectCombobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getEntityIds } from "@/actions/entity";
 import { useEntityIds } from "@/hooks/use-entityIds";
 import { toast } from "@/hooks/use-toast";
 
@@ -39,7 +38,7 @@ export function CreateUserDialogue({ onCreate }: { onCreate: (email: string, ent
         setRole("user");
         setSelectedEntities([]);
     };
-    const { data: entityIds, isLoading } = useEntityIds()
+    const { data: entityIds } = useEntityIds()
     const entityOptions = (entityIds ?? []).map((entity: any) => ({
         label: entity,
         value: entity,

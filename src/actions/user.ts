@@ -1,4 +1,4 @@
-import {axiosInstance, axiosLocal} from "@/lib/axios";
+import {axiosLocal} from "@/lib/axios";
 import { User } from "@/lib/types";
 
 export async function getUsers() {

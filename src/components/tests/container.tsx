@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 export default function PerformTestContainer() {
   const [file, setFile] = useState<File>();
 
-  const [view, setView] = useState<"upload" | "process">("upload");
+  const [, setView] = useState<"upload" | "process">("upload");
 
   const handleScreenMove = (state: "upload" | "process") => {
     setView(state);

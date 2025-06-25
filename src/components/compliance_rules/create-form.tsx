@@ -40,7 +40,7 @@ export function ComplianceRuleForm({
   const router = useRouter();
   const { mutate } = useMutation({
     mutationFn: createComplianceRuleController,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast({
         title: "Successfully created Compliance Rule",
       });

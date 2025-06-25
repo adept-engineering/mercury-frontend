@@ -11,8 +11,37 @@ import { Button } from "../ui/button";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 
+// Separate component for actions cell to use hooks
+function ActionsCell({ entity }: { entity: Entities }) {
+  const router = useRouter();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => router.push(`/entities/${entity.id}`)}>
+          <Eye className="mr-2 h-4 w-4" />
+          View
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push(`/entities/${entity.id}/edit`)}>
+          <Edit className="mr-2 h-4 w-4" />
+          Edit
+        </DropdownMenuItem>
+        <DropdownMenuItem className="text-red-600">
+          <Trash2 className="mr-2 h-4 w-4" />
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 export const entititiesColumns: ColumnDef<Entities>[] = [
- 
+
   {
     accessorKey: "name",
     header: "ENTITY Name",
@@ -41,34 +70,11 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
       return <div className="text-sm">{date}</div>;
     },
   },
- 
+
   {
     id: "actions",
     cell: ({ row }) => {
-      const router = useRouter();
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => router.push(`/entities/${row.original.id}`)}>
-              <Eye className="mr-2 h-4 w-4" />
-              View
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push(`/entities/${row.original.id}/edit`)}>
-              <Edit className="mr-2 h-4 w-4" />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <ActionsCell entity={row.original} />;
     },
   },
 ];

@@ -10,7 +10,7 @@ import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { usePermissions } from "@/hooks/use-permissions";
 
-const ActionsCell = ({ row }: { row: any }) => {
+const ActionsCell = () => {
   const { canDelete, canEdit,  } = usePermissions();
 
  

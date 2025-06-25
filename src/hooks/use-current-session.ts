@@ -1,5 +1,5 @@
 "use client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -10,11 +10,10 @@ const publicRoutes = [
 ];
 
 export function useCurrentSession() {
-  const queryClient = useQueryClient();
   const router = useRouter();
   const pathname = usePathname();
 
-  const { data, isLoading, isPending, refetch } = useQuery({
+  const { data, isLoading, isPending } = useQuery({
     queryKey: ["session"],
     queryFn: async () => {
       const session = await getSession();

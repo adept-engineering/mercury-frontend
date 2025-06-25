@@ -1,5 +1,4 @@
 import EntitiesContainer from "@/components/entities/container";
-import { dummyEntities } from "@/components/entities/dummy-data";
 import { getEntities } from "@/actions/entity";
 
 export default async function EntitiesPage() {

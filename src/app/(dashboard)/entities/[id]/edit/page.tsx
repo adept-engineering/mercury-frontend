@@ -3,9 +3,9 @@ import { EditEntityForm } from "@/components/entities/edit-form";
 import { notFound } from "next/navigation";
 
 interface EditEntityPageProps {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 }
 
 export default async function EditEntityPage({ params }: EditEntityPageProps) {

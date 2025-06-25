@@ -431,7 +431,7 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
 
                             {(!form.watch("referenceIDs") || form.watch("referenceIDs").length === 0) && (
                                 <div className="p-8 text-center text-gray-500">
-                                    No reference IDs added yet. Click "Add Reference ID" to get started.
+                                    No reference IDs added yet. Click Add Reference ID to get started.
                                 </div>
                             )}
                         </section>

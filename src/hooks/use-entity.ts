@@ -46,7 +46,7 @@ export function useCreateEntity() {
 
             return await createEntity(apiData, session?.user?.token ?? "");
         },
-        onSuccess: (data) => {
+        onSuccess: () => {
             toast({
                 title: "Success",
                 description: "Entity created successfully",

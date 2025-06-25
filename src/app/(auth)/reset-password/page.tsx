@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export default async function ResetPasswordPage({ searchParams }: { searchParams: { token: string } }) {
-    const token = await searchParams.token;
+export default async function ResetPasswordPage({ searchParams }: { searchParams: Promise<{ token: string }> }) {
+    const { token } = await searchParams;
     if (!token) {
         return <div>Invalid token</div>;
     }
@@ -41,7 +41,7 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
                             Reset Password
                         </h1>
                         <p className="text-sm text-gray-600">
-                            Enter your new password below. Make sure it's strong and secure.
+                            Enter your new password below. Make sure it&apos;s strong and secure.
                         </p>
                     </div>
 

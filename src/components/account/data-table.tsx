@@ -29,9 +29,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsRight,
-  Plus,
 } from "lucide-react";
-import { useState } from "react";
 import { CreateUserDialogue } from "./create-user-dialogue";
 import { useCreateUser } from "@/hooks/use-create-user";
 
@@ -47,8 +45,6 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
-  tableType,
-  onSwitch,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,

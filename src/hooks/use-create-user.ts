@@ -24,7 +24,7 @@ export function useCreateUser() {
                 userData.role
             );
         },
-        onSuccess: (data) => {
+        onSuccess: () => {
             toast({
                 title: "Success",
                 description: "User created successfully",

@@ -1,4 +1,3 @@
-import { User } from "@/lib/types";
 import axios, { AxiosError } from "axios";
 import NextAuth, { type DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
@@ -156,7 +155,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
     }),
   ],
   callbacks: {
-    jwt: ({ user, token, trigger, session, account }) => {
+    jwt: ({ user, token, trigger }) => {
       if (!user) return token;
 
       if (trigger === "update") {
@@ -174,7 +173,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         entityId: user?.entityId,
       };
     },
-    session: ({ session, token, trigger, newSession }) => {
+    session: ({ session, token, trigger }) => {
       if (trigger === "update") {
       }
 
@@ -182,7 +181,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         ...session,
         user: {
           ...session.user,
-          client: (token as any).client,
+          client: (token as any).client, 
           id: (token as any).id,
           tenantId: (token as any).tenantId,
           isActive: (token as any).isActive,
