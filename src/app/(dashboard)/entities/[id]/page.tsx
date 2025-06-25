@@ -31,9 +31,7 @@ const dummyTimestamps = [
 export default async function EntityPage({ params }: { params: { id: string } }) {
     const { id } = await params;
     const entity = await getEntity(id);
-    console.log(entity);
     const { CompanyInfo, Address, Timestamps } = MapEntityObjToArray(entity);
-    // console.log(CompanyInfo, Address, Timestamps);
 
     return (
         <div className="container mx-auto p-6 space-y-6">
@@ -41,7 +39,6 @@ export default async function EntityPage({ params }: { params: { id: string } })
                 <h1 className="text-2xl font-bold">Entity Details</h1>
                 <CurrentPathBreadcrumbs />
             </div>
-
             <div className="grid gap-6 grid-cols-1 md:grid-cols-2 ">
                 <EntityCard title="Company Information" details={CompanyInfo} />
                 <EntityCard title="Address" details={Address} />
