@@ -28,7 +28,6 @@ export async function getEntity(id: string) {
   try {
     if (!id) return [];
     const response = await axiosLocal.get(`/entities/entity?entityId=${id}`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);

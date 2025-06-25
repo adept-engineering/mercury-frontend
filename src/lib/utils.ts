@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { FileJson, FileCode, FileCode2, FileSpreadsheet, FileType, FileText } from "lucide-react";
 import { twMerge } from "tailwind-merge"
+import { format } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -40,3 +41,19 @@ export const typeConfig = {
     color: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
   },
 } as const;
+
+export const MapEntityObjToArray = (obj: Record<string, any>) => {
+  return Object.entries(obj).map(([key, value]) => {
+    if(value === null || value === undefined )return null ;
+    if(key === "id" || key === "tenant_id")return null ;
+    if(key === "created_date" || key === "updated_date")return {
+      name:key,
+      value:format(value, "MM/dd/yyyy")
+    } ;
+  
+    return {
+     name: key,
+      value,
+    };
+  }).filter((item) => item !== null);
+};
