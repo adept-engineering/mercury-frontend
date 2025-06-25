@@ -43,7 +43,7 @@ export const typeConfig = {
 } as const;
 
 export const MapEntityObjToArray = (obj: Record<string, any>) => {
-  return Object.entries(obj).map(([key, value]) => {
+  const array = Object.entries(obj).map(([key, value]) => {
     if(value === null || value === undefined )return null ;
     if(key === "id" || key === "tenant_id")return null ;
     if(key === "created_date" || key === "updated_date")return {
@@ -56,4 +56,14 @@ export const MapEntityObjToArray = (obj: Record<string, any>) => {
       value,
     };
   }).filter((item) => item !== null);
+
+  const CompanyInfo = array.filter((item) => item.name === "name" || item.name === "organization_type" || item.name === "entityid_id"|| item.name === "email_address");
+  const Address = array.filter((item) => item.name === "address1" || item.name === "address2" || item.name === "city" || item.name === "state" || item.name === "zipcode" || item.name === "country");
+  const Timestamps = array.filter((item) => item.name === "created_date" || item.name === "updated_date" || item.name === "updated_by");
+
+  return {
+    CompanyInfo,
+    Address,
+    Timestamps
+  }
 };
