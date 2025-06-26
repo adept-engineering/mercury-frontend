@@ -1,6 +1,8 @@
 import { getComplianceRules } from "@/actions/compliance-rules";
 import ComplianceRulesContainer from "@/components/compliance_rules/container";
 
+export const dynamic = 'force-dynamic';
+
 export default async function ComplianceRulesPage({
   params,
 }: {

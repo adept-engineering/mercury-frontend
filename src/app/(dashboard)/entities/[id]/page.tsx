@@ -3,6 +3,8 @@ import { MapEntityObjToArray } from "@/lib/utils";
 import { EntityCard } from "@/components/entities/entity-card";
 import { CurrentPathBreadcrumbs } from "@/components/current-path-breadcrumbs";
 
+export const dynamic = 'force-dynamic';
+
 interface EntityPageProps {
     params: Promise<{
         id: string;

@@ -10,6 +10,8 @@ import { BackButton } from "@/components/ui/back-button";
 import { DataInformation } from "@/components/data-audit/data-information";
 import { CompliantData } from "@/components/data-audit/compliace-data";
 
+export const dynamic = 'force-dynamic';
+
 export default async function DataAuditDetailsPage({
   params,
 }: {

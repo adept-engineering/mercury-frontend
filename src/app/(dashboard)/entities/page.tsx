@@ -1,6 +1,8 @@
 import EntitiesContainer from "@/components/entities/container";
 import { getEntities } from "@/actions/entity";
 
+export const dynamic = 'force-dynamic';
+
 export default async function EntitiesPage() {
   const entitiesData = await getEntities();
   return (

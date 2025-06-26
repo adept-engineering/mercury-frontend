@@ -2,6 +2,8 @@ import DataAuditContainer from "@/components/data-audit/container";
 import { getDataAuditLogs } from "@/actions/data-audits";
 import { getEntityIds } from "@/actions/entity";
 
+export const dynamic = 'force-dynamic';
+
 export default async function DataAuditPage({
   searchParams,
 }: {

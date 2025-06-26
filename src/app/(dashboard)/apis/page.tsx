@@ -2,6 +2,8 @@ import { getAllApis } from "@/actions/all-apis";
 import { APIContainer } from "@/components/apis/container";
 import { Suspense } from "react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function APIPage() {
   const apisData = await getAllApis();
 
