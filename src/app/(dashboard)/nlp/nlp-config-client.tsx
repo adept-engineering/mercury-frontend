@@ -1,39 +1,29 @@
 'use client';
 
 import { useQueryState } from 'nuqs';
-import { FormatSelector, VersionSelector, DetailsPanel } from '@/components/nlp';
+import { FormatSelector, Selector, NLPBreadcrumbList } from '@/components/nlp';
+import {
+    useGetAllFormats,
+    useGetSegmentByTransactionSet,
+    useGetTransactionSetByVersion,
+    useGetVersionByFormat,
+} from '@/hooks/use-nlp';
 
-interface Format {
-    name: string;
-    versions: string[];
-}
 
-interface FormatsData {
-    [key: string]: Format;
-}
 
-interface VersionDetail {
-    transactionSets: string[];
-    segments: string[];
-    codeLists: string[];
-}
 
-interface VersionDetails {
-    [key: string]: VersionDetail;
-}
 
-interface NLPConfigClientProps {
-    formatsData: FormatsData;
-    versionDetails: VersionDetails;
-}
 
-export function NLPConfigClient({ formatsData, versionDetails }: NLPConfigClientProps) {
+export function NLPConfigClient() {
     const [selectedFormat, setSelectedFormat] = useQueryState('format');
     const [selectedVersion, setSelectedVersion] = useQueryState('version');
+    const [selectedTransactionSet, setSelectedTransactionSet] = useQueryState('transactionSet');
+    const [selectedSegment, setSelectedSegment] = useQueryState('segment');
+    const { data: formats } = useGetAllFormats();
+    const { data: versions } = useGetVersionByFormat(selectedFormat || '');
+    const { data: transactionSets } = useGetTransactionSetByVersion(selectedVersion || '', selectedFormat || '');
 
-    const formats = Object.keys(formatsData);
-    const versions = selectedFormat ? formatsData[selectedFormat]?.versions || [] : [];
-    const currentVersionDetail = selectedVersion ? versionDetails[selectedVersion] : null;
+    const { data: segments } = useGetSegmentByTransactionSet(selectedTransactionSet || '', selectedVersion || '', selectedFormat || '');
 
     const handleFormatSelect = (format: string) => {
         setSelectedFormat(format);
@@ -42,35 +32,56 @@ export function NLPConfigClient({ formatsData, versionDetails }: NLPConfigClient
 
     const handleVersionSelect = (version: string) => {
         setSelectedVersion(version);
+        setSelectedTransactionSet(null); // Reset transaction set when version changes
+        setSelectedSegment(null); // Reset segment when version changes
     };
-
+    const handleTransactionSetSelect = (transactionSet: string) => {
+        setSelectedTransactionSet(transactionSet);
+        setSelectedSegment(null); // Reset segment when transaction set changes
+    };
+    const handleSegmentSelect = (segment: string) => {
+        setSelectedSegment(segment);
+    };
+    const getFormatDescription = (format: string) => {
+        const formatData = formats?.find((f: any) => f.Agency === format);
+        return formatData?.Description;
+    }
+    const description = getFormatDescription(selectedFormat || '');
+    console.log(transactionSets, "selectedTransactionSet");
     return (
-        <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
-            <FormatSelector
-                formats={formats}
-                selectedFormat={selectedFormat}
-                onFormatSelect={handleFormatSelect}
+        <>
+            <NLPBreadcrumbList
+                selectedFormat={description}
+                selectedVersion={selectedVersion}
+                selectedTransactionSet={selectedTransactionSet}
+                selectedSegment={selectedSegment}
             />
-
-            <VersionSelector
-                versions={versions}
-                selectedFormat={selectedFormat}
-                onVersionSelect={handleVersionSelect}
-            />
-
-            {selectedVersion && currentVersionDetail ? (
-                <DetailsPanel
-                    selectedFormat={selectedFormat!}
-                    selectedVersion={selectedVersion}
-                    versionDetail={currentVersionDetail}
+            <div className="flex gap-4">
+                {!selectedTransactionSet && <FormatSelector
+                    formats={formats || []}
+                    selectedFormat={selectedFormat || ''}
+                    onFormatSelect={handleFormatSelect}
                 />
-            ) : (
-                <div className="col-span-6 flex items-center justify-center h-full">
-                    <p className="text-muted-foreground">
-                        {!selectedFormat ? 'Select a format and version to view details' : 'Select a version to view details'}
-                    </p>
-                </div>
-            )}
-        </div>
+                }
+                <Selector
+                    type="version"
+                    data={versions || []}
+                    selected={selectedVersion || ''}
+                    onSelect={handleVersionSelect}
+                />
+                <Selector
+                    type="transactionSet"
+                    data={transactionSets}
+                    selected={selectedTransactionSet || ''}
+                    onSelect={handleTransactionSetSelect}
+                />
+                {selectedTransactionSet && <Selector
+                    type="segment"
+                    data={segments || []}
+                    selected={selectedSegment || ''}
+                    onSelect={handleSegmentSelect}
+                />}
+            </div>
+        </>
     );
 } 
