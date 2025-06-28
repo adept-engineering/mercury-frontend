@@ -1,9 +1,10 @@
 'use client';
 
 import { useQueryState } from 'nuqs';
-import { FormatSelector, Selector, NLPBreadcrumbList } from '@/components/nlp';
+import { FormatSelector, Selector, NLPBreadcrumbList, ElementSelector } from '@/components/nlp';
 import {
     useGetAllFormats,
+    useGetElementBySegment,
     useGetSegmentByTransactionSet,
     useGetTransactionSetByVersion,
     useGetVersionByFormat,
@@ -22,32 +23,36 @@ export function NLPConfigClient() {
     const { data: formats } = useGetAllFormats();
     const { data: versions } = useGetVersionByFormat(selectedFormat || '');
     const { data: transactionSets } = useGetTransactionSetByVersion(selectedVersion || '', selectedFormat || '');
-
     const { data: segments } = useGetSegmentByTransactionSet(selectedTransactionSet || '', selectedVersion || '', selectedFormat || '');
+    const { data: elements } = useGetElementBySegment(selectedSegment || '', selectedVersion || '', selectedFormat || '');
 
     const handleFormatSelect = (format: string) => {
         setSelectedFormat(format);
-        setSelectedVersion(null); // Reset version when format changes
+        setSelectedVersion(null);
+        setSelectedTransactionSet(null);
+        setSelectedSegment(null);
     };
 
     const handleVersionSelect = (version: string) => {
         setSelectedVersion(version);
-        setSelectedTransactionSet(null); // Reset transaction set when version changes
-        setSelectedSegment(null); // Reset segment when version changes
+        setSelectedTransactionSet(null);
+        setSelectedSegment(null);
     };
     const handleTransactionSetSelect = (transactionSet: string) => {
         setSelectedTransactionSet(transactionSet);
-        setSelectedSegment(null); // Reset segment when transaction set changes
+        setSelectedSegment(null);
     };
     const handleSegmentSelect = (segment: string) => {
         setSelectedSegment(segment);
     };
+   
     const getFormatDescription = (format: string) => {
         const formatData = formats?.find((f: any) => f.Agency === format);
         return formatData?.Description;
     }
     const description = getFormatDescription(selectedFormat || '');
-    console.log(transactionSets, "selectedTransactionSet");
+ console.log(elements, "elements");
+
     return (
         <>
             <NLPBreadcrumbList
@@ -55,8 +60,12 @@ export function NLPConfigClient() {
                 selectedVersion={selectedVersion}
                 selectedTransactionSet={selectedTransactionSet}
                 selectedSegment={selectedSegment}
+                handleFormatChange={handleFormatSelect}
+                handleVersionChange={handleVersionSelect}
+                handleTransactionSetChange={handleTransactionSetSelect}
+                handleSegmentChange={handleSegmentSelect}
             />
-            <div className="flex gap-4">
+          {!selectedSegment && <div className="flex gap-4">
                 {!selectedTransactionSet && <FormatSelector
                     formats={formats || []}
                     selectedFormat={selectedFormat || ''}
@@ -81,6 +90,13 @@ export function NLPConfigClient() {
                     selected={selectedSegment || ''}
                     onSelect={handleSegmentSelect}
                 />}
+            </div>
+            }
+            <div className="flex ">
+            {selectedSegment && <ElementSelector
+                data={elements || []}
+            
+            />}
             </div>
         </>
     );

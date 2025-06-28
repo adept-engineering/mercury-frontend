@@ -19,7 +19,7 @@ export const getSegmentByTransactionSet = async (transactionSet: string, version
     const response = await axiosLocal.get(`${BASEROUTE}/segment/${transactionSet}/${version}/${agency}`);
     return response.data.data;
 }
-export const getElementBySegment = async (segment: string, agency: string) => {
-    const response = await axiosLocal.get(`${BASEROUTE}/element/${segment}/${agency}`);
-    return response.data;
+export const getElementBySegment = async (segment: string, version: string, agency: string, tenant_id: string) => {
+    const response = await axiosLocal.get(`${BASEROUTE}/element/${segment}/${version}/${agency}?tenant_id=${tenant_id}`);
+    return response.data.data;
 }

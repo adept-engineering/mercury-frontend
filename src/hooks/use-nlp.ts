@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllFormats, getVersionByFormat, getTransactionSetByVersion, getSegmentByTransactionSet, getElementBySegment } from "../actions/nlp";
+import { useCurrentSession } from "./use-current-session";
 
 export const useGetAllFormats = () => {
     return useQuery({
@@ -32,10 +33,12 @@ export const useGetSegmentByTransactionSet = (transactionSet: string, version: s
     });
 }
 
-export const useGetElementBySegment = (segment: string, agency: string) => {
+export const useGetElementBySegment = (segment: string, version: string, agency: string) => {
+    const { session } = useCurrentSession();
+    const tenant_id = session?.user?.tenantId;
     return useQuery({
-        queryKey: ["element", segment, agency],
-        queryFn: () => getElementBySegment(segment, agency),
+        queryKey: ["element", segment, version, agency],
+        queryFn: () => getElementBySegment(segment, version, agency, tenant_id??""),
         enabled: !!segment && !!agency,
     });
 }

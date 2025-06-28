@@ -4,7 +4,8 @@ import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
 import { usePagination } from '@/hooks/use-pagination';
-
+import SearchInput from '../ui/search-input';
+import { useState } from 'react';
 
 
 interface SelectorProps {
@@ -28,17 +29,19 @@ export function Selector({ type, data, selected, onSelect, itemsPerPage = 10 }: 
         canGoNext,
         canGoPrevious
     } = usePagination({ data: data || [], itemsPerPage, storageKey });
-    if(type ==="transactionSet"){
-        console.log(data, "data in transactionSet",paginatedData);    
-    }
-  return (
-        <Card className=" mb-0 min-w-[300px]">
+
+    const [search, setSearch] = useState("");
+    const filteredData = paginatedData.filter((item: any) => {
+        return type === "version" ? item.Version.toLowerCase().includes(search.toLowerCase()) : type === "transactionSet" ? item.TransactionSet.toLowerCase().includes(search.toLowerCase()) : item.segmentid.toLowerCase().includes(search.toLowerCase());
+    });
+    return (
+        <Card className=" mb-0 min-w-[300px] gap-0">
             <CardHeader className="bg-gray-100 px-3 py-2 h-12  rounded-t-xl border-b">
                 <CardTitle className="text-sm font-semibold mr-auto text-foreground uppercase tracking-wide">
                     {type === "version" ? "Versions" : type === "transactionSet" ? "Transaction" : "Segments"}
                 </CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 h-full ">
                 {!data || !Array.isArray(data) || data.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
                         <div className="text-muted-foreground text-sm mb-2">
@@ -47,8 +50,11 @@ export function Selector({ type, data, selected, onSelect, itemsPerPage = 10 }: 
                     </div>
                 ) : (
                     <>
+                        <div className="px-3 py-2 bg-gray-100 border-b">
+                            <SearchInput value={search} onChange={setSearch} />
+                        </div>
                         <div className="flex flex-col w-full">
-                            {paginatedData.map((item: any, index: any) => {
+                            {filteredData.map((item: any, index: any) => {
                                 const selectedItem = type === "version" ? item.Version : type === "transactionSet" ? item.TransactionSet : item.segmentid;
                                 return (
                                     <Button
@@ -65,8 +71,9 @@ export function Selector({ type, data, selected, onSelect, itemsPerPage = 10 }: 
                                 );
                             })}
                         </div>
+                        
 
-                        {totalPages > 1 && (
+                        {totalPages > 1 && search === "" && (
                             <div className="flex items-center justify-between px-4 py-3 border-t bg-gray-50">
                                 <div className="text-sm text-muted-foreground">
                                     Showing {startIndex}-{endIndex} of {data.length}
