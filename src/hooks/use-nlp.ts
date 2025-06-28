@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { getAllFormats, getVersionByFormat, getTransactionSetByVersion, getSegmentByTransactionSet, getElementBySegment } from "../actions/nlp";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAllFormats, getVersionByFormat, getTransactionSetByVersion, getSegmentByTransactionSet, getElementBySegment, setElementBySegment } from "../actions/nlp";
 import { useCurrentSession } from "./use-current-session";
 
 export const useGetAllFormats = () => {
@@ -40,6 +40,18 @@ export const useGetElementBySegment = (segment: string, version: string, agency:
         queryKey: ["element", segment, version, agency],
         queryFn: () => getElementBySegment(segment, version, agency, tenant_id??""),
         enabled: !!segment && !!agency,
+    });
+}
+
+export const useSetElementBySegment = (segment: string, version: string, agency: string) => {
+    const { session } = useCurrentSession();
+    const tenant_id = session?.user?.tenantId;
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (elements: any) => setElementBySegment(segment, version, agency, tenant_id??"", elements),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["element", segment, version, agency] });
+        },
     });
 }
 

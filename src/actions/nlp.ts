@@ -23,3 +23,8 @@ export const getElementBySegment = async (segment: string, version: string, agen
     const response = await axiosLocal.get(`${BASEROUTE}/element/${segment}/${version}/${agency}?tenant_id=${tenant_id}`);
     return response.data.data;
 }
+
+export const setElementBySegment = async (segment: string, version: string, agency: string, tenant_id: string, elements: any) => {
+    const response = await axiosLocal.post(`${BASEROUTE}/element/${segment}/${version}/${agency}?tenant_id=${tenant_id}`, { elements });
+    return response.data.data;
+}

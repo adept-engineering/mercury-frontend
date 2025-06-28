@@ -9,11 +9,8 @@ import {
     useGetTransactionSetByVersion,
     useGetVersionByFormat,
 } from '@/hooks/use-nlp';
-
-
-
-
-
+import { useSetElementBySegment } from '@/hooks/use-nlp';
+import { toast } from '@/hooks/use-toast';
 
 export function NLPConfigClient() {
     const [selectedFormat, setSelectedFormat] = useQueryState('format');
@@ -25,6 +22,7 @@ export function NLPConfigClient() {
     const { data: transactionSets } = useGetTransactionSetByVersion(selectedVersion || '', selectedFormat || '');
     const { data: segments } = useGetSegmentByTransactionSet(selectedTransactionSet || '', selectedVersion || '', selectedFormat || '');
     const { data: elements } = useGetElementBySegment(selectedSegment || '', selectedVersion || '', selectedFormat || '');
+    const { mutate: setElementBySegment } = useSetElementBySegment(selectedSegment || '', selectedVersion || '', selectedFormat || '');
 
     const handleFormatSelect = (format: string) => {
         setSelectedFormat(format);
@@ -45,7 +43,21 @@ export function NLPConfigClient() {
     const handleSegmentSelect = (segment: string) => {
         setSelectedSegment(segment);
     };
-   
+    const handleSave = (elements: any) => {
+        try {
+            setElementBySegment(elements);
+            toast({
+                title: "Element saved",
+                description: "Element saved successfully",
+            });
+        } catch (error) {
+            console.error(error);
+            toast({
+                title: "Error",
+                description: "Error saving element",
+            });
+        }
+    }
     const getFormatDescription = (format: string) => {
         const formatData = formats?.find((f: any) => f.Agency === format);
         return formatData?.Description;
@@ -95,7 +107,7 @@ export function NLPConfigClient() {
             <div className="flex ">
             {selectedSegment && <ElementSelector
                 data={elements || []}
-            
+                onSave={handleSave}
             />}
             </div>
         </>

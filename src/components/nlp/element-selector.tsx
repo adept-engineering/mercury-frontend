@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 
 interface SelectorProps {
     data: { description: string }[];
-    onSave?: (updatedData: { description: string }[]) => void;
+    onSave?: (updatedData: string ) => void;
 }
 
 export function ElementSelector({ data, onSave }: SelectorProps) {
@@ -34,7 +34,7 @@ export function ElementSelector({ data, onSave }: SelectorProps) {
 
     const handleSave = () => {
         if (onSave) {
-            onSave(editedData);
+            onSave(editedData[0].description);
         }
         setEditingIndex(null);
         setHasChanges(false);

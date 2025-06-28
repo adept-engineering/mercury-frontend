@@ -26,16 +26,16 @@ export function NLPBreadcrumbList(
         <Breadcrumb>
             <BreadcrumbList>
                 <BreadcrumbItem >
-                    {selectedFormat && <BreadcrumbLink className='text-primary flex flex-row items-center gap-2' onClick={() => handleFormatChange(selectedFormat)}>{selectedFormat} <ChevronRight className="w-4 h-4" /></BreadcrumbLink>}
+                    {selectedFormat && <BreadcrumbLink className='text-primary cursor-default flex flex-row items-center gap-2' onClick={() => handleFormatChange(selectedFormat)}>{selectedFormat} <ChevronRight className="w-4 h-4" /></BreadcrumbLink>}
                 </BreadcrumbItem>
                 <BreadcrumbItem>
-                    {selectedVersion && <BreadcrumbLink className='text-primary flex flex-row items-center gap-2' onClick={() => handleVersionChange(selectedVersion)}>{selectedVersion} <ChevronRight className="w-4 h-4" /></BreadcrumbLink>}
+                    {selectedVersion && <BreadcrumbLink className='text-primary cursor-default flex flex-row items-center gap-2' onClick={() => handleVersionChange(selectedVersion)}>{selectedVersion} <ChevronRight className="w-4 h-4" /></BreadcrumbLink>}
                 </BreadcrumbItem>
                 <BreadcrumbItem>
-                    {selectedTransactionSet && <BreadcrumbLink className='text-primary flex flex-row items-center gap-2' onClick={() => handleTransactionSetChange(selectedTransactionSet)}>{selectedTransactionSet} <ChevronRight className="w-4 h-4" /></BreadcrumbLink>}
+                    {selectedTransactionSet && <BreadcrumbLink className='text-primary cursor-default flex flex-row items-center gap-2' onClick={() => handleTransactionSetChange(selectedTransactionSet)}>{selectedTransactionSet} <ChevronRight className="w-4 h-4" /></BreadcrumbLink>}
                 </BreadcrumbItem>
                 <BreadcrumbItem>
-                    {selectedSegment && <BreadcrumbLink className='text-primary flex flex-row items-center gap-2' onClick={() => handleSegmentChange(selectedSegment)}>{selectedSegment} <ChevronRight className="w-4 h-4" /></BreadcrumbLink>}
+                    {selectedSegment && <BreadcrumbLink className=' cursor-default flex flex-row items-center gap-2' onClick={() => handleSegmentChange(selectedSegment)}>{selectedSegment} </BreadcrumbLink>}
                 </BreadcrumbItem>
               
             </BreadcrumbList>
