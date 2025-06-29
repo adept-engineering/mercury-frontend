@@ -32,18 +32,19 @@ import {
   Plus,
 } from "lucide-react";
 import { usePermissions } from "@/hooks/use-permissions";
+import { useRouter } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   tableType: "entities" | "relationships" | "complianceRules";
-  onSwitch: (state: "data" | "create") => void;
+
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  onSwitch,
+ 
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -57,6 +58,7 @@ export function DataTable<TData, TValue>({
     },
   });
   const { isSystemAdmin } = usePermissions();
+  const router = useRouter();
   
   return (
     <div className="space-y-4">
@@ -68,7 +70,7 @@ export function DataTable<TData, TValue>({
           <Button
             className="bg-pink-500 hover:bg-pink-600 text-white"
             onClick={() => {
-              onSwitch("create");
+              router.push("/relationships/create");
             }}
           >
             <Plus className="h-4 w-4 mr-2" />

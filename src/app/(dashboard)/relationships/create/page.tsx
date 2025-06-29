@@ -1,4 +1,8 @@
 "use client";
+import { ReceiverInformation } from "@/components/relationships/createFlow/reciever-information";
+import { RelationshipRules } from "@/components/relationships/createFlow/relationship-rules";
+import { RelationshipName } from "@/components/relationships/createFlow/RelationshipName";
+import { SenderInformation } from "@/components/relationships/createFlow/sender-information";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Stepper,
@@ -8,7 +12,8 @@ import {
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, MoveLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useQueryState, parseAsInteger } from "nuqs";
+
 
 const steps = [
   {
@@ -34,7 +39,9 @@ const steps = [
 ];
 
 export default function CreateRelationshipFlow() {
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useQueryState("currentTab",
+    parseAsInteger.withDefault(0)
+  );
   const lastPage = steps.length - 1;
   const router = useRouter();
 
@@ -60,33 +67,33 @@ export default function CreateRelationshipFlow() {
           <StepperVertical steps={steps} currentStep={currentTab} />
 
           <section className="md:col-span-3 px-12 w-full 2xl:max-w-3xl max-md:px-3 flex flex-col min-h-[70vh]">
-            <div className="flex-1">
-              <StepperContent step={0}>
-                <div className="md:py-6 animate-fade-up">
 
-                </div>
-              </StepperContent>
+            <StepperContent step={0}>
+              <div className="md:py-6 animate-fade-up h-full">
+                <RelationshipName />
+              </div>
+            </StepperContent>
 
-              <StepperContent step={1}>
-                <div className="md:py-6 animate-fade-up w-full">
+            <StepperContent step={1}>
+              <div className="md:py-6 animate-fade-up w-full">
+                <SenderInformation />
+              </div>
+            </StepperContent>
 
-                </div>
-              </StepperContent>
+            <StepperContent step={2}>
+              <div className="md:py-6 animate-fade-up">
+                <ReceiverInformation />
+              </div>
+            </StepperContent>
 
-              <StepperContent step={2}>
-                <div className="md:py-6 animate-fade-up">
+            <StepperContent step={3}>
+              <div className="md:py-6 animate-fade-up">
+                <RelationshipRules />
+              </div>
+            </StepperContent>
 
-                </div>
-              </StepperContent>
 
-              <StepperContent step={3}>
-                <div className="md:py-6 animate-fade-up">
-
-                </div>
-              </StepperContent>
-            </div>
-
-            <footer className="flex justify-between pb-8 items-center mt-auto">
+            <footer className="flex justify-between pb-8 items-center ">
               <Button
                 onClick={() =>
                   setCurrentTab(currentTab - 1 >= 0 ? currentTab - 1 : 0)
