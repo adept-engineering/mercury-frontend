@@ -11,6 +11,7 @@ interface RelationshipRulesData {
 }
 
 export function RelationshipRules() {
+    const [isLoaded, setIsLoaded] = useState(false);
     const [formData, setFormData] = useState<RelationshipRulesData>({
         implementationChoice: null
     });
@@ -26,20 +27,24 @@ export function RelationshipRules() {
                 }
             } catch (error) {
                 console.warn('Failed to read from localStorage:', error);
+            } finally {
+                setIsLoaded(true);
             }
+        } else {
+            setIsLoaded(true);
         }
     }, []);
 
-    // Save to localStorage whenever formData changes
+    // Save to localStorage whenever formData changes (but only after initial load)
     useEffect(() => {
-        if (typeof window !== 'undefined') {
+        if (isLoaded && typeof window !== 'undefined') {
             try {
                 localStorage.setItem('createRelationship_choice', JSON.stringify(formData));
             } catch (error) {
                 console.warn('Failed to write to localStorage:', error);
             }
         }
-    }, [formData]);
+    }, [formData, isLoaded]);
 
     const handleChoiceSelect = (choice: 'upload' | 'generate' | null) => {
         setFormData({ implementationChoice: choice });

@@ -20,6 +20,7 @@ interface ReceiverFormData {
 }
 
 export function ReceiverInformation() {
+    const [isLoaded, setIsLoaded] = useState(false);
     const [formData, setFormData] = useState<ReceiverFormData>({
         entityType: 'EDI',
         receiverEntity: '',
@@ -41,20 +42,24 @@ export function ReceiverInformation() {
                 }
             } catch (error) {
                 console.warn('Failed to read from localStorage:', error);
+            } finally {
+                setIsLoaded(true);
             }
+        } else {
+            setIsLoaded(true);
         }
     }, []);
 
-    // Save to localStorage whenever formData changes
+    // Save to localStorage whenever formData changes (but only after initial load)
     useEffect(() => {
-        if (typeof window !== 'undefined') {
+        if (isLoaded && typeof window !== 'undefined') {
             try {
                 localStorage.setItem('createRelationship_receiverInfo', JSON.stringify(formData));
             } catch (error) {
                 console.warn('Failed to write to localStorage:', error);
             }
         }
-    }, [formData]);
+    }, [formData, isLoaded]);
 
     const updateFormData = (field: keyof ReceiverFormData, value: string) => {
         setFormData(prev => ({

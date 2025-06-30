@@ -20,6 +20,7 @@ interface SenderFormData {
 }
 
 export function SenderInformation() {
+    const [isLoaded, setIsLoaded] = useState(false);
     const [formData, setFormData] = useState<SenderFormData>({
         entityType: 'EDI',
         senderEntity: '',
@@ -41,20 +42,24 @@ export function SenderInformation() {
                 }
             } catch (error) {
                 console.warn('Failed to read from localStorage:', error);
+            } finally {
+                setIsLoaded(true);
             }
+        } else {
+            setIsLoaded(true);
         }
     }, []);
 
-    // Save to localStorage whenever formData changes
+    // Save to localStorage whenever formData changes (but only after initial load)
     useEffect(() => {
-        if (typeof window !== 'undefined') {
+        if (isLoaded && typeof window !== 'undefined') {
             try {
                 localStorage.setItem('createRelationship_senderInfo', JSON.stringify(formData));
             } catch (error) {
                 console.warn('Failed to write to localStorage:', error);
             }
         }
-    }, [formData]);
+    }, [formData, isLoaded]);
 
     const updateFormData = (field: keyof SenderFormData, value: string) => {
         setFormData(prev => ({
@@ -93,7 +98,7 @@ export function SenderInformation() {
                     <Label htmlFor="sender-entity" className="text-sm font-medium">
                         Sender Entity
                     </Label>
-                    <Select value={formData.senderEntity}  onValueChange={(value) => updateFormData('senderEntity', value)}>
+                    <Select value={formData.senderEntity} onValueChange={(value) => updateFormData('senderEntity', value)}>
                         <SelectTrigger className="w-full" id="sender-entity">
                             <SelectValue placeholder="Select sender entity" />
                         </SelectTrigger>

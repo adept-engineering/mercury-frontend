@@ -1,4 +1,5 @@
 "use client";
+import { Confirmation } from "@/components/relationships/createFlow/confirmation";
 import { ReceiverInformation } from "@/components/relationships/createFlow/reciever-information";
 import { RelationshipRules } from "@/components/relationships/createFlow/relationship-rules";
 import { RelationshipName } from "@/components/relationships/createFlow/RelationshipName";
@@ -89,6 +90,12 @@ export default function CreateRelationshipFlow() {
             <StepperContent step={3}>
               <div className="md:py-6 animate-fade-up">
                 <RelationshipRules />
+              </div>
+            </StepperContent>
+
+            <StepperContent step={4}>
+              <div className="md:py-6 animate-fade-up">
+                <Confirmation />
               </div>
             </StepperContent>
 

@@ -24,6 +24,7 @@ interface GenerateImplementationGuideProps {
 }
 
 export function GenerateImplementationGuide({ onChangeChoice }: GenerateImplementationGuideProps) {
+    const [isLoaded, setIsLoaded] = useState(false);
     const [formData, setFormData] = useState<GenerateFormData>({
         selectedFormat: '',
         selectedVersion: '',
@@ -48,20 +49,24 @@ export function GenerateImplementationGuide({ onChangeChoice }: GenerateImplemen
                 }
             } catch (error) {
                 console.warn('Failed to read from localStorage:', error);
+            } finally {
+                setIsLoaded(true);
             }
+        } else {
+            setIsLoaded(true);
         }
     }, []);
 
-    // Save to localStorage whenever formData changes
+    // Save to localStorage whenever formData changes (but only after initial load)
     useEffect(() => {
-        if (typeof window !== 'undefined') {
+        if (isLoaded && typeof window !== 'undefined') {
             try {
                 localStorage.setItem('createRelationship_generateGuide', JSON.stringify(formData));
             } catch (error) {
                 console.warn('Failed to write to localStorage:', error);
             }
         }
-    }, [formData]);
+    }, [formData, isLoaded]);
 
     const handleFormatSelect = (format: string) => {
         setFormData(prev => ({

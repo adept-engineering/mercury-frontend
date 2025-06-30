@@ -18,10 +18,10 @@ export function NLPConfigClient() {
     const [selectedTransactionSet, setSelectedTransactionSet] = useQueryState('transactionSet');
     const [selectedSegment, setSelectedSegment] = useQueryState('segment');
     const { data: formats } = useGetAllFormats();
-    const { data: versions } = useGetVersionByFormat(selectedFormat || '');
-    const { data: transactionSets } = useGetTransactionSetByVersion(selectedVersion || '', selectedFormat || '');
-    const { data: segments } = useGetSegmentByTransactionSet(selectedTransactionSet || '', selectedVersion || '', selectedFormat || '');
-    const { data: elements } = useGetElementBySegment(selectedSegment || '', selectedVersion || '', selectedFormat || '');
+    const { data: versions,isLoading: isLoadingVersions } = useGetVersionByFormat(selectedFormat || '');
+    const { data: transactionSets,isLoading: isLoadingTransactionSets } = useGetTransactionSetByVersion(selectedVersion || '', selectedFormat || '');
+    const { data: segments,isLoading: isLoadingSegments } = useGetSegmentByTransactionSet(selectedTransactionSet || '', selectedVersion || '', selectedFormat || '');
+    const { data: elements,isLoading: isLoadingElements } = useGetElementBySegment(selectedSegment || '', selectedVersion || '', selectedFormat || '');
     const { mutate: setElementBySegment } = useSetElementBySegment(selectedSegment || '', selectedVersion || '', selectedFormat || '');
 
     const handleFormatSelect = (format: string) => {
@@ -89,18 +89,21 @@ export function NLPConfigClient() {
                     data={versions || []}
                     selected={selectedVersion || ''}
                     onSelect={handleVersionSelect}
+                    isLoading={isLoadingVersions}
                 />
                 <Selector
                     type="transactionSet"
                     data={transactionSets}
                     selected={selectedTransactionSet || ''}
                     onSelect={handleTransactionSetSelect}
+                    isLoading={isLoadingTransactionSets}
                 />
                 {selectedTransactionSet && <Selector
                     type="segment"
                     data={segments || []}
                     selected={selectedSegment || ''}
                     onSelect={handleSegmentSelect}
+                    isLoading={isLoadingSegments}
                 />}
             </div>
             }
@@ -108,6 +111,7 @@ export function NLPConfigClient() {
             {selectedSegment && <ElementSelector
                 data={elements || []}
                 onSave={handleSave}
+                isLoading={isLoadingElements}
             />}
             </div>
         </>

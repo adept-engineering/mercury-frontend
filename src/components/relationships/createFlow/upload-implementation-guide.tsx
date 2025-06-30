@@ -12,7 +12,9 @@ interface UploadImplementationGuideProps {
 }
 
 export function UploadImplementationGuide({ onChangeChoice }: UploadImplementationGuideProps) {
+    const [isLoaded, setIsLoaded] = useState(false);
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+    const [uploadedFileData, setUploadedFileData] = useState<any>(null);
 
     // Load from localStorage on component mount
     useEffect(() => {
@@ -21,18 +23,23 @@ export function UploadImplementationGuide({ onChangeChoice }: UploadImplementati
                 const stored = localStorage.getItem('createRelationship_uploadedFile');
                 if (stored) {
                     const fileData = JSON.parse(stored);
+                    setUploadedFileData(fileData);
                     // Note: We can't restore the actual File object, just the metadata
                     console.log('Previously uploaded file:', fileData.name);
                 }
             } catch (error) {
                 console.warn('Failed to read from localStorage:', error);
+            } finally {
+                setIsLoaded(true);
             }
+        } else {
+            setIsLoaded(true);
         }
     }, []);
 
-    // Save to localStorage whenever uploadedFile changes
+    // Save to localStorage whenever uploadedFile changes (but only after initial load)
     useEffect(() => {
-        if (typeof window !== 'undefined' && uploadedFile) {
+        if (isLoaded && typeof window !== 'undefined' && uploadedFile) {
             try {
                 const fileData = {
                     name: uploadedFile.name,
@@ -41,11 +48,12 @@ export function UploadImplementationGuide({ onChangeChoice }: UploadImplementati
                     lastModified: uploadedFile.lastModified
                 };
                 localStorage.setItem('createRelationship_uploadedFile', JSON.stringify(fileData));
+                setUploadedFileData(fileData);
             } catch (error) {
                 console.warn('Failed to write to localStorage:', error);
             }
         }
-    }, [uploadedFile]);
+    }, [uploadedFile, isLoaded]);
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -93,11 +101,16 @@ export function UploadImplementationGuide({ onChangeChoice }: UploadImplementati
                                 className="mt-4"
                             />
                         </div>
-                        {uploadedFile && (
+                        {(uploadedFile || uploadedFileData) && (
                             <div className="p-3 bg-green-50 border border-green-200 rounded-md">
                                 <p className="text-sm text-green-800">
-                                    Uploaded: {uploadedFile.name}
+                                    Uploaded: {uploadedFile?.name || uploadedFileData?.name}
                                 </p>
+                                {uploadedFileData && !uploadedFile && (
+                                    <p className="text-xs text-green-600 mt-1">
+                                        Previously uploaded file (size: {(uploadedFileData.size / 1024).toFixed(2)} KB)
+                                    </p>
+                                )}
                             </div>
                         )}
                     </div>

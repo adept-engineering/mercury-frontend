@@ -1,6 +1,6 @@
 "use client"
 import { cn } from '@/lib/utils';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
 import { usePagination } from '@/hooks/use-pagination';
@@ -14,9 +14,10 @@ interface SelectorProps {
     selected: string | null;
     onSelect: (selected: string) => void;
     itemsPerPage?: number;
+    isLoading?: boolean;
 }
 
-export function Selector({ type, data, selected, onSelect, itemsPerPage = 10 }: SelectorProps) {
+export function Selector({ type, data, selected, onSelect, itemsPerPage = 10, isLoading = false }: SelectorProps) {
     const storageKey = type === "version" ? "version" : type === "transactionSet" ? "transactionSet" : "segment";
     const {
         currentPage,
@@ -42,13 +43,20 @@ export function Selector({ type, data, selected, onSelect, itemsPerPage = 10 }: 
                 </CardTitle>
             </CardHeader>
             <CardContent className="p-0 h-full ">
-                {!data || !Array.isArray(data) || data.length === 0 ? (
+                {isLoading && (
                     <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
-                        <div className="text-muted-foreground text-sm mb-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                    </div>
+                )}
+                {
+                    !isLoading && (data && Array.isArray(data) && data.length === 0) && (   
+                        <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
                             No data available
                         </div>
-                    </div>
-                ) : (
+                    )
+                }
+
+                {!isLoading && (data && Array.isArray(data) && data.length > 0) && (
                     <>
                         <div className="px-3 py-2 bg-gray-100 border-b">
                             <SearchInput value={search} onChange={setSearch} />
@@ -71,7 +79,7 @@ export function Selector({ type, data, selected, onSelect, itemsPerPage = 10 }: 
                                 );
                             })}
                         </div>
-                        
+
 
                         {totalPages > 1 && search === "" && (
                             <div className="flex items-center justify-between px-4 py-3 border-t bg-gray-50">

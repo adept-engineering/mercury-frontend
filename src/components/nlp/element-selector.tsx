@@ -4,13 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
 import { Input } from '@/components/ui/input';
 import { useState, useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 
 interface SelectorProps {
     data: { description: string }[];
     onSave?: (updatedData: string ) => void;
+    isLoading?: boolean;
 }
 
-export function ElementSelector({ data, onSave }: SelectorProps) {
+export function ElementSelector({ data, onSave, isLoading = false }: SelectorProps) {
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
     const [editedData, setEditedData] = useState(data);
     const [hasChanges, setHasChanges] = useState(false);
@@ -45,6 +47,7 @@ export function ElementSelector({ data, onSave }: SelectorProps) {
         setEditingIndex(null);
         setHasChanges(false);
     };
+   
 
     return (
         <Card className="mb-0 gap-0 w-full">
@@ -54,13 +57,20 @@ export function ElementSelector({ data, onSave }: SelectorProps) {
                 </CardTitle>
             </CardHeader>
             <CardContent className="p-0 h-full">
-                {!data || !Array.isArray(data) || data.length === 0 ? (
+                {isLoading && (
+                    <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                    </div>
+                )}
+
+                {!isLoading && (!data || !Array.isArray(data) || data.length === 0) && (
                     <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
                         <div className="text-muted-foreground text-sm mb-2">
                             No data available
                         </div>
                     </div>
-                ) : (
+                )}
+                {!isLoading && (data && Array.isArray(data) && data.length > 0) && (
                     <>
                         <div className="flex flex-col w-full">
                             {editedData.map((item, index) => (

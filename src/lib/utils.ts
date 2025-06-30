@@ -43,23 +43,33 @@ export const typeConfig = {
 } as const;
 
 export const MapEntityObjToArray = (obj: Record<string, any>) => {
-  const array = Object.entries(obj).map(([key, value]) => {
-    if(value === null || value === undefined )return null ;
-    if(key === "id" || key === "tenant_id")return null ;
-    if(key === "created_date" || key === "updated_date")return {
-      name:key,
-      value:format(value, "MM/dd/yyyy")
-    } ;
-  
+  const entity = {
+    Name: obj.name,
+    "Address 1": obj.address1,
+    "Address 2": obj.address2,
+    City: obj.city,
+    State: obj.state,
+    Zipcode: obj.zipcode,
+    Country: obj.country,
+    Email: obj.email_address,
+    "Created By": obj.created_by, 
+    "Created Date": format(obj.created_date, "MM/dd/yyyy"),
+    "Updated By": obj.updated_by,
+    "Updated Date": format(obj.updated_date, "MM/dd/yyyy"),
+    Status: obj.status,
+    "Organization Type": obj.organization_type,  
+  }
+  const array = Object.entries(entity).map(([key, value]) => {
+   
     return {
      name: key,
-      value,
+      value:value?value:"N/A",
     };
-  }).filter((item) => item !== null);
+  })
 
-  const CompanyInfo = array.filter((item) => item.name === "name" || item.name === "organization_type" || item.name === "entityid_id"|| item.name === "email_address");
-  const Address = array.filter((item) => item.name === "address1" || item.name === "address2" || item.name === "city" || item.name === "state" || item.name === "zipcode" || item.name === "country");
-  const Timestamps = array.filter((item) => item.name === "created_date" || item.name === "updated_date" || item.name === "updated_by");
+  const CompanyInfo = array.filter((item) => item.name === "Name" || item.name === "Organization Type" || item.name === "Status"|| item.name === "Email");
+  const Address = array.filter((item) => item.name === "Address 1" || item.name === "Address 2" || item.name === "City" || item.name === "State" || item.name === "Zipcode" || item.name === "Country");
+  const Timestamps = array.filter((item) => item.name === "Created Date" || item.name === "Updated Date" || item.name === "Updated By");
 
   return {
     CompanyInfo,
