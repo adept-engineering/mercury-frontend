@@ -3,10 +3,9 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useManageCreateRelationship } from '@/hooks/use-manage-create-relationship';
-import { CheckCircle, FileText, Settings, ChevronDown, ChevronRight } from 'lucide-react';
+import { CheckCircle, FileText, Settings, ChevronDown, ChevronRight, XCircle } from 'lucide-react';
 
 export function Confirmation() {
     const { getCreateRelationshipData, isDataComplete } = useManageCreateRelationship();
@@ -46,23 +45,20 @@ export function Confirmation() {
         <div className="space-y-6">
             {/* Header */}
             <div className="text-center space-y-2">
-                <div className="flex items-center justify-center gap-2">
-                    <CheckCircle className="w-6 h-6 text-green-500" />
-                    <h2 className="text-xl font-semibold text-foreground">
-                        Relationship Configuration Summary
-                    </h2>
-                </div>
+                <h2 className="text-xl font-semibold text-foreground">
+                    Relationship Configuration Summary
+                </h2>
                 <p className="text-muted-foreground">
                     Please review your relationship configuration before creating
                 </p>
             </div>
 
             {/* Completion Status */}
-            <Card className={`border-2 ${isComplete ? 'border-green-200 bg-green-50' : 'border-yellow-200 bg-yellow-50'}`}>
+            <Card className={`border-2 ${isComplete ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'}`}>
                 <CardContent className="pt-4">
                     <div className="flex items-center gap-3">
-                        <div className={`w-3 h-3 rounded-full ${isComplete ? 'bg-green-500' : 'bg-yellow-500'}`} />
-                        <span className={`font-medium ${isComplete ? 'text-green-800' : 'text-yellow-800'}`}>
+                        {isComplete ? <CheckCircle className="w-6 h-6 text-green-500" /> : <XCircle className="w-6 h-6 text-red-500" />}
+                        <span className={`font-medium `}>
                             {isComplete ? 'Configuration Complete' : 'Configuration Incomplete'}
                         </span>
                     </div>
@@ -70,38 +66,20 @@ export function Confirmation() {
             </Card>
 
             {/* Relationship Name */}
-            <Collapsible open={openSections.name} onOpenChange={() => toggleSection('name')}>
-                <Card>
-                    <CollapsibleTrigger className="w-full pt-3">
-                        <CardHeader>
-                            <CardTitle className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <FileText className="w-5 h-5" />
-                                    Relationship Name
-                                </div>
-                                {openSections.name ? (
-                                    <ChevronDown className="w-4 h-4" />
-                                ) : (
-                                    <ChevronRight className="w-4 h-4" />
-                                )}
-                            </CardTitle>
-                        </CardHeader>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                        <CardContent>
-                            <p className="text-lg font-medium">
-                                {relationshipData.name || <span className="text-muted-foreground italic">Not specified</span>}
-                            </p>
-                        </CardContent>
-                    </CollapsibleContent>
-                </Card>
-            </Collapsible>
+           
+              <div className='flex w-full bg-card text-card-foreground rounded-xl p-4 border shadow-sm justify-between gap-2'>
+                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2"><FileText className="w-5 h-5" />Relationship Name</h2>
+                <p className="text-muted-foreground">
+                    {relationshipData.name || <span className="text-muted-foreground italic">Not specified</span>}
+                </p>
+              </div>
+          
 
             {/* Sender Information */}
             <Collapsible open={openSections.sender} onOpenChange={() => toggleSection('sender')}>
-                <Card>
-                    <CollapsibleTrigger className="w-full pt-3">
-                        <CardHeader>
+                <Card className=' px-4'>
+                    <CollapsibleTrigger className="w-full ">
+                        <CardHeader className=' pt-6 border-b'>
                             <CardTitle className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
@@ -154,9 +132,9 @@ export function Confirmation() {
 
             {/* Receiver Information */}
             <Collapsible open={openSections.receiver} onOpenChange={() => toggleSection('receiver')}>
-                <Card>
-                    <CollapsibleTrigger className="w-full pt-3">
-                        <CardHeader>
+                <Card className=' px-4'>
+                    <CollapsibleTrigger className="w-full ">
+                        <CardHeader className=' pt-6 border-b'>
                             <CardTitle className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
@@ -209,9 +187,9 @@ export function Confirmation() {
 
             {/* Implementation Guide */}
             <Collapsible open={openSections.implementation} onOpenChange={() => toggleSection('implementation')}>
-                <Card>
-                    <CollapsibleTrigger className="w-full pt-3">
-                        <CardHeader>
+                <Card className=' px-4'>
+                    <CollapsibleTrigger className="w-full ">
+                        <CardHeader className=' pt-6 border-b'>
                             <CardTitle className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <Settings className="w-5 h-5" />

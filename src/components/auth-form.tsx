@@ -106,7 +106,7 @@ export default function AuthForm({ type, userEmail, token }: AuthForm) {
             // const shouldShowMfa = ;
             toast({
               variant: "success",
-              title: "login successfull"
+              title: "Login Successfull"
             })
             router.push("/data-audit");
             formData.get("email")?.toString()
