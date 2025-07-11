@@ -45,7 +45,7 @@ export function useManageCreateRelationship() {
 
         try {
             // Get relationship name
-            const nameData = localStorage.getItem('createRelationship_name');
+            const nameData = localStorage.getItem('Relationship_name');
             const name = nameData || '';
 
             // Get sender information
