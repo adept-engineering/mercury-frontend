@@ -95,15 +95,15 @@ export const MapDataAuditLogObjToArray = (obj: Record<string, any>): {
   }
   const interchangeDetails = {
     "Control Number": obj.interchange_control_number,
-    "Date Time": format(obj.interchange_date_time, "MM/dd/yyyy"),
     "Sender": obj.interchange_sender,
     "Receiver": obj.interchange_receiver,
+    "Date Time": format(obj.interchange_date_time, "MM/dd/yyyy"),
   }
   const groupDetails = {
     "Control Number": obj.group_control_number,
-    "Date Time": format(parse(obj.group_date_time, "yyyyMMdd", new Date()), "MMM dd yyyy"),
     "Sender": obj.group_sender,
     "Receiver": obj.group_receiver,
+    "Date Time": format(parse(obj.group_date_time, "yyyyMMdd", new Date()), "MMM dd yyyy"),
   }
   const transactionDetails = {
     "Transaction Name": obj.transaction_name,
@@ -137,8 +137,8 @@ export const MapDataAuditLogObjToArray = (obj: Record<string, any>): {
     };
   });
 
-  const InterchangeDetails = interchangeDetailsArray.filter((item) => item.name === "Control Number" || item.name === "Date Time" || item.name === "Sender" || item.name === "Receiver");
-  const GroupDetails = groupDetailsArray.filter((item) => item.name === "Control Number" || item.name === "Date Time" || item.name === "Sender" || item.name === "Receiver");
+  const InterchangeDetails = interchangeDetailsArray.filter((item) => item.name === "Control Number"|| item.name === "Sender" || item.name === "Receiver" || item.name === "Date Time"  );
+  const GroupDetails = groupDetailsArray.filter((item) => item.name === "Control Number" || item.name === "Sender" || item.name === "Receiver" || item.name === "Date Time" );
   const TransactionDetails = transactionDetailsArray.filter((item) => item.name === "Transaction Name" || item.name === "Standard Version" || item.name === "Version");
   const DocRefData = obj.docRefData.map((item: any) => {
     return {
