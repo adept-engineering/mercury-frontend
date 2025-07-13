@@ -53,11 +53,11 @@
   --popover-foreground: oklch(0.13 0.028 261.692);
   --primary: oklch(0.35 0.15 270);
   --primary-foreground: oklch(0.985 0.002 247.839);
-  --secondary: oklch(0.967 0.003 264.542);
-  --secondary-foreground: oklch(0.21 0.034 264.665);
+  --secondary:oklch(0.3184 0.052 264.3);
+  --secondary-foreground: oklch(0.3124 0.014 258.7);
   --muted: oklch(0.967 0.003 264.542);
   --muted-foreground: oklch(0.551 0.027 264.364);
-  --accent: oklch(0.967 0.003 264.542);
+  --accent: oklch(0.6941 0.1817 264.542 / 58.85%);
   --accent-foreground: oklch(0.21 0.034 264.665);
   --mercury-foreground: oklch(0.985 0.002 247.839);
   --destructive: oklch(0.577 0.245 27.325);
@@ -130,4 +130,14 @@
   * {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
+}
+
+.tabs_list {
+  @apply text-secondary rounded-full max-lg:rounded-none px-0 max-lg:h-7 space-x-6 max-lg:space-x-2 border-b-2 border-b-secondary/10 bg-transparent;
+}
+
+.tabs_trigger {
+  @apply rounded-full max-lg:rounded-none py-4.5 max-lg:py-[5px] px-4 max-lg:px-4 font-medium text-base max-lg:text-sm flex items-center gap-2 max-lg:gap-1.5 data-[state=active]:border-b-2 data-[state=active]:border-b-accent data-[state=active]:shadow-none;
+
+  /* data-[state=active]:bg-primary-foreground max-lg:data-[state=active]:bg-transparent data-[state=active]:text-primary */
 }
