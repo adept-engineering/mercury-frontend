@@ -15,6 +15,7 @@ import {
   TestTube,
   Cog,
   Cable,
+  Home,
 } from "lucide-react";
 
 import { DropdownMenuType, SidebarItemType } from "@/lib/types";
@@ -39,9 +40,9 @@ export const sidebarItems: SidebarItemType[] = [
     id: 1,
     menuItems: [
       {
-        title: "APIs",
-        url: "/apis",
-        icon: Code,
+        title: "Home",
+        url: "/home",
+        icon: Home,
       },
       {
         title: "Entities",
