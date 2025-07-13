@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { FileJson, FileCode, FileCode2, FileSpreadsheet, FileType, FileText } from "lucide-react";
 import { twMerge } from "tailwind-merge"
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -52,22 +52,22 @@ export const MapEntityObjToArray = (obj: Record<string, any>) => {
     Zipcode: obj.zipcode,
     Country: obj.country,
     Email: obj.email_address,
-    "Created By": obj.created_by, 
+    "Created By": obj.created_by,
     "Created Date": format(obj.created_date, "MM/dd/yyyy"),
     "Updated By": obj.updated_by,
     "Updated Date": format(obj.updated_date, "MM/dd/yyyy"),
     Status: obj.status,
-    "Organization Type": obj.organization_type,  
+    "Organization Type": obj.organization_type,
   }
   const array = Object.entries(entity).map(([key, value]) => {
-   
+
     return {
-     name: key,
-      value:value?value:"N/A",
+      name: key,
+      value: value ? value : "N/A",
     };
   })
 
-  const CompanyInfo = array.filter((item) => item.name === "Name" || item.name === "Organization Type" || item.name === "Status"|| item.name === "Email");
+  const CompanyInfo = array.filter((item) => item.name === "Name" || item.name === "Organization Type" || item.name === "Status" || item.name === "Email");
   const Address = array.filter((item) => item.name === "Address 1" || item.name === "Address 2" || item.name === "City" || item.name === "State" || item.name === "Zipcode" || item.name === "Country");
   const Timestamps = array.filter((item) => item.name === "Created Date" || item.name === "Updated Date" || item.name === "Updated By");
 
@@ -77,3 +77,77 @@ export const MapEntityObjToArray = (obj: Record<string, any>) => {
     Timestamps
   }
 };
+
+export const MapDataAuditLogObjToArray = (obj: Record<string, any>): {
+  InterchangeDetails: Array<{ name: string; value: any }>;
+  GroupDetails: Array<{ name: string; value: any }>;
+  TransactionDetails: Array<{ name: string; value: any }>;
+  DocRefData: Array<{ name: string; value: any }>;
+  CompliantData: Array<{ name: string; value: any }>;
+  NLPData: Array<{ name: string; value: any }>;
+  EDIData: Array<{ name: string; value: any }>;
+} => {
+  const dataAuditLog = {
+    "Doc Ref Data": obj.docRefData,
+    "Compliant Data": obj.compliantData,
+    "NLP Data": obj.nlpData,
+    "EDI Data": obj.ediData,
+  }
+  const interchangeDetails = {
+    "Control Number": obj.interchange_control_number,
+    "Date Time": format(obj.interchange_date_time, "MM/dd/yyyy"),
+    "Sender": obj.interchange_sender,
+    "Receiver": obj.interchange_receiver,
+  }
+  const groupDetails = {
+    "Control Number": obj.group_control_number,
+    "Date Time": format(parse(obj.group_date_time, "yyyyMMdd", new Date()), "MMM dd yyyy"),
+    "Sender": obj.group_sender,
+    "Receiver": obj.group_receiver,
+  }
+  const transactionDetails = {
+    "Transaction Name": obj.transaction_name,
+    "Standard Version": obj.standard_version,
+    "Version": obj.version,
+  }
+
+
+  const array = Object.entries(dataAuditLog).map(([key, value]) => {
+    return {
+      name: key,
+      value: value,
+    };
+  });
+  const interchangeDetailsArray = Object.entries(interchangeDetails).map(([key, value]) => {
+    return {
+      name: key,
+      value: value,
+    };
+  });
+  const groupDetailsArray = Object.entries(groupDetails).map(([key, value]) => {
+    return {
+      name: key,
+      value: value,
+    };
+  });
+  const transactionDetailsArray = Object.entries(transactionDetails).map(([key, value]) => {
+    return {
+      name: key,
+      value: value,
+    };
+  });
+
+  const InterchangeDetails = interchangeDetailsArray.filter((item) => item.name === "Control Number" || item.name === "Date Time" || item.name === "Sender" || item.name === "Receiver");
+  const GroupDetails = groupDetailsArray.filter((item) => item.name === "Control Number" || item.name === "Date Time" || item.name === "Sender" || item.name === "Receiver");
+  const TransactionDetails = transactionDetailsArray.filter((item) => item.name === "Transaction Name" || item.name === "Standard Version" || item.name === "Version");
+  const DocRefData = obj.docRefData.map((item: any) => {
+    return {
+      name: `${item.description} (${item.segment_id}${item.position.padStart(2, "0")})`,
+      value: item.value,
+    };
+  });
+  const CompliantData = array.filter((item) => item.name === "Compliant Data");
+  const NLPData = array.filter((item) => item.name === "NLP Data");
+  const EDIData = array.filter((item) => item.name === "EDI Data");
+  return { InterchangeDetails, GroupDetails, TransactionDetails, DocRefData, CompliantData, NLPData, EDIData };
+}

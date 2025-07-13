@@ -16,6 +16,8 @@ import {
   Cog,
   Cable,
   Home,
+  Search,
+  Ruler,
 } from "lucide-react";
 
 import { DropdownMenuType, SidebarItemType } from "@/lib/types";
@@ -45,6 +47,11 @@ export const sidebarItems: SidebarItemType[] = [
         icon: Home,
       },
       {
+        title: "Search",
+        url: "/search",
+        icon: Search,
+      },
+      {
         title: "Entities",
         url: "/entities",
         icon: Users,
@@ -55,24 +62,30 @@ export const sidebarItems: SidebarItemType[] = [
         icon: Cable,
       },
       {
-        title: "Data Audit",
+        title: "Data Layout",
         url: "/data-audit",
         icon: FileText,
+      },
+      {
+        title: "Transformation Rule",
+        url: "/test",
+        icon: TestTube,
+      },
+      {
+        title: "Compliance Rules",
+        url: "/compliance-rules",
+        icon: Ruler,
       },
       {
         title: "Anomaly Audit",
         url: "/anomaly",
         icon: Bug,
       },
+    
       {
-        title: "NLP",
+        title: "Data Repository",
         url: "/nlp",
         icon: Cog,
-      },
-      {
-        title: "Perform A Test",
-        url: "/test",
-        icon: TestTube,
       },
       {
         title: "Account",

@@ -297,34 +297,34 @@ export function CompliantDataCard({ compliantData }: CompliantDataProps) {
 
   const formatCompliantData = (data: string) => {
     // Split by double asterisks to separate sections
-    const sections = data.split("/n");
+    // const sections = data;
 
-    // Format each section
-    const formattedSections = sections.map((section) => {
-      // If it's an odd index, it's a bold section
-      // if (section.includes(":")) {
-      //   return `<strong className="pt-4">${section}</strong>`;
-      // }
-      // If it's an even index, it's a regular section
-      return section;
-    });
+    // // Format each section
+    // const formattedSections = sections.map((section) => {
+    //   // If it's an odd index, it's a bold section
+    //   // if (section.includes(":")) {
+    //   //   return `<strong className="pt-4">${section}</strong>`;
+    //   // }
+    //   // If it's an even index, it's a regular section
+    //   return section;
+    // });
 
     // Join all sections and split by newlines
-    const formattedText = formattedSections
-      .join("")
-      .split("\n")
-      .map((line) => {
-        const trimmedLine = line.trim().replace(/--/g, "").replace(/\*\*/g, "");
-        if (trimmedLine.includes(":")) {
-          const [beforeColon, afterColon] = trimmedLine.split(":");
-          return `<strong>${beforeColon}</strong>:${afterColon}`;
-        }
-        return trimmedLine;
-      })
-      .filter((line) => line.length > 0)
-      .join("<br/><br/>"); // Changed to double line break
+    // const formattedText = formattedSections
+    //   .join("")
+    //   .split("\n")
+    //   .map((line) => {
+    //     const trimmedLine = line.trim().replace(/--/g, "").replace(/\*\*/g, "");
+    //     if (trimmedLine.includes(":")) {
+    //       const [beforeColon, afterColon] = trimmedLine.split(":");
+    //       return `<strong>${beforeColon}</strong>:${afterColon}`;
+    //     }
+    //     return trimmedLine;
+    //   })
+    //   .filter((line) => line.length > 0)
+    //   .join("<br/><br/>"); // Changed to double line break
 
-    return formattedText;
+    return data;
   };
 
   const copyToClipboard = async () => {
