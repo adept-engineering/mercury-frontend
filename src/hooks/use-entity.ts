@@ -30,22 +30,7 @@ export function useCreateEntity() {
     const { session } = useCurrentSession();
 
     return useMutation({
-        mutationFn: async (entityData: CreateEntityData) => {
-            // Transform the form data to match the API expected format
-            const apiData: EntityData = {
-                name: entityData.name,
-                email_address: entityData.email_address,
-                address1: entityData.address1,
-                address2: entityData.address2,
-                city: entityData.city,
-                state: entityData.state,
-                country: entityData.country,
-                zipcode: entityData.zipcode,
-                status: "active",
-            };
-
-            return await createEntity(apiData, session?.user?.token ?? "");
-        },
+        mutationFn: async (entityData: EntityData) => createEntity(entityData, session?.user?.token ?? ""),
         onSuccess: () => {
             toast({
                 title: "Success",
@@ -76,14 +61,14 @@ export function useUpdateEntity() {
             // Transform the form data to match the API expected format
             const apiData: EntityData = {
                 name: entityData.name,
-                email_address: entityData.email_address,
-                address1: entityData.address1,
-                address2: entityData.address2,
-                city: entityData.city,
-                state: entityData.state,
-                country: entityData.country,
-                zipcode: entityData.zipcode,
-                status: "active",
+                email_address: entityData.email_address ?? "",
+                address1: entityData.address1 ?? "",
+                address2: entityData.address2 ?? "",
+                city: entityData.city ?? "",
+                state: entityData.state ?? "",
+                country: entityData.country ?? "",
+                zipcode: entityData.zipcode ?? "",
+                referenceIDs: entityData.referenceIDs ?? [],
             };
 
             return await updateEntity(apiData, entityId, session?.user?.token ?? "");

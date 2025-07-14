@@ -14,6 +14,7 @@ export default async function EntityPage({ params }: EntityPageProps) {
     const { id } = await params;
     const entity = await getEntity(id);
     const entityDetails = MapEntityObjToArray(entity);
+    console.log(entity)
 
     return (
         <EntityDetails

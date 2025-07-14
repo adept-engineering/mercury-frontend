@@ -59,6 +59,12 @@ export const MapEntityObjToArray = (obj: Record<string, any>) => {
     Status: obj.status,
     "Organization Type": obj.organization_type,
   }
+  const referenceIDs = obj.entityidtbl.map((item: any) => {
+    return {
+      name: item.reference_id_type,
+      value: item.reference_id,
+    };
+  });
   const array = Object.entries(entity).map(([key, value]) => {
 
     return {
@@ -74,7 +80,8 @@ export const MapEntityObjToArray = (obj: Record<string, any>) => {
   return {
     CompanyInfo,
     Address,
-    Timestamps
+    Timestamps,
+    referenceIDs
   }
 };
 

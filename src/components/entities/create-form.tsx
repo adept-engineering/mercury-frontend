@@ -25,22 +25,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { useGetAllFormats } from "@/hooks/use-nlp";
+import { useCreateEntity } from "@/hooks/use-entity";
+import { useRouter } from "next/navigation";
+
 
 const refIDS = ["EDI/X12", "EDI/EDIFACT", "XML", "JSON", "IDOC", "CSV", "API"];
+
+const organizationTypes = [
+  { value: "COMPANY", label: "Company" },
+  { value: "PARTNER", label: "Partner" }
+];
+
 const formSchema = z.object({
-  entityName: z.string().min(2, {
+  name: z.string().min(2, {
     message: "Entity name must be at least 2 characters.",
   }),
-  email: z.string().email({
+  email_address: z.string().email({
     message: "Please enter a valid email address.",
   }),
-  addressLine1: z.string().min(1, {
+  address1: z.string().min(1, {
     message: "Address line 1 is required.",
   }),
-  addressLine2: z.string().optional(),
-  phoneNumber: z.string().min(10, {
-    message: "Please enter a valid phone number.",
-  }),
+  address2: z.string().optional(),
   city: z.string().min(1, {
     message: "City is required.",
   }),
@@ -50,11 +57,18 @@ const formSchema = z.object({
   state: z.string().min(1, {
     message: "State is required.",
   }),
+  zipcode: z.string().min(1, {
+    message: "Zipcode is required.",
+  }),
+  organization_type: z.enum(["COMPANY", "PARTNER"], {
+    required_error: "Please select an organization type.",
+  }),
   referenceIDs: z.array(
     z.object({
       docType: z.string(),
-      id: z.string(),
+      interchangeNumber: z.string().optional(),
       groupID: z.string().optional(),
+      applicationID: z.string().optional(),
     })
   ),
 });
@@ -65,30 +79,40 @@ export function EntryForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      entityName: "",
-      email: "",
-      addressLine1: "",
-      addressLine2: "",
-      phoneNumber: "",
+      name: "",
+      email_address: "",
+      address1: "",
+      address2: "",
       city: "",
       country: "",
       state: "",
+      zipcode: "",
+      organization_type: "COMPANY",
       referenceIDs: [],
     },
   });
-
+  const { mutate: createEntity } = useCreateEntity();
+  const router = useRouter();
   function onSubmit(values: FormValues) {
     console.log(values);
+    createEntity(values);
+    router.push("/entities");
   }
 
   const insertNewRefrenceID = (refID: string) => {
     const currentRefs = form.getValues("referenceIDs") || [];
-    form.setValue(
-      "referenceIDs",
-      [...currentRefs, { docType: refID, id: "" }],
-      { shouldDirty: false, shouldTouch: false }
-    );
+    const newRef = {
+      docType: refID,
+      interchangeNumber: "",
+      groupID: "",
+      applicationID: "",
+    };
+    const newRefs = [...currentRefs, newRef];
+    form.setValue("referenceIDs", newRefs, { shouldValidate: true });
   };
+
+
+
 
   return (
     <Form {...form}>
@@ -109,12 +133,8 @@ export function EntryForm() {
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="entityName"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<FormValues, "entityName">;
-              }) => (
+              name="name"
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Entity Name</FormLabel>
                   <FormControl>
@@ -126,12 +146,8 @@ export function EntryForm() {
             />
             <FormField
               control={form.control}
-              name="email"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<FormValues, "email">;
-              }) => (
+              name="email_address"
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
@@ -146,12 +162,8 @@ export function EntryForm() {
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="addressLine1"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<FormValues, "addressLine1">;
-              }) => (
+              name="address1"
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Address Line 1</FormLabel>
                   <FormControl>
@@ -163,12 +175,8 @@ export function EntryForm() {
             />
             <FormField
               control={form.control}
-              name="addressLine2"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<FormValues, "addressLine2">;
-              }) => (
+              name="address2"
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Address Line 2</FormLabel>
                   <FormControl>
@@ -183,16 +191,12 @@ export function EntryForm() {
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="phoneNumber"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<FormValues, "phoneNumber">;
-              }) => (
+              name="city"
+              render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
+                  <FormLabel>City</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter phone number" {...field} />
+                    <Input placeholder="Enter city" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -200,16 +204,12 @@ export function EntryForm() {
             />
             <FormField
               control={form.control}
-              name="city"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<FormValues, "city">;
-              }) => (
+              name="zipcode"
+              render={({ field }) => (
                 <FormItem>
-                  <FormLabel>City</FormLabel>
+                  <FormLabel>Zipcode</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter city" {...field} />
+                    <Input placeholder="Enter zipcode" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -221,11 +221,7 @@ export function EntryForm() {
             <FormField
               control={form.control}
               name="country"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<FormValues, "country">;
-              }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Country</FormLabel>
                   <FormControl>
@@ -238,11 +234,7 @@ export function EntryForm() {
             <FormField
               control={form.control}
               name="state"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<FormValues, "state">;
-              }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>State</FormLabel>
                   <FormControl>
@@ -252,6 +244,38 @@ export function EntryForm() {
                 </FormItem>
               )}
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="organization_type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Organization Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                   
+                  >
+                    <FormControl  className="w-full">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select organization type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {organizationTypes.map((type) => (
+                        <SelectItem key={type.value} value={type.value}>
+                          {type.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div></div>
           </div>
 
           <section className="flex items-center justify-between my-6">
@@ -264,7 +288,7 @@ export function EntryForm() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                {refIDS.map((ref, index) => (
+                {refIDS?.map((ref: any, index: any) => (
                   <DropdownMenuItem
                     key={index}
                     onClick={() => insertNewRefrenceID(ref)}
@@ -279,11 +303,11 @@ export function EntryForm() {
           <section className="border rounded-md">
             <header className="bg-[#F7F7F7] grid grid-cols-2 p-4">
               <h2 className="font-medium">DOCUMENT FORMAT</h2>
-              <h2 className="font-medium">ID</h2>
+              <h2 className="font-medium">REFERENCE DETAILS</h2>
             </header>
 
             {form.watch("referenceIDs")?.map((reference, i) => (
-              <div key={i}>
+              <div key={`ref-${i}-${reference.docType}`}>
                 <div className="grid grid-cols-2 gap-4 p-4">
                   <FormField
                     control={form.control}
@@ -300,18 +324,19 @@ export function EntryForm() {
                         <FormControl>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={refIDS[0]}
                             value={field.value}
                           >
                             <SelectTrigger className="w-full !h-[50px]">
                               <SelectValue placeholder="Select type" />
                             </SelectTrigger>
                             <SelectContent className="text-left w-full ">
-                              {refIDS.map((r, i) => (
-                                <SelectItem key={i} value={r}>
+                              {refIDS?.map((r: any, idx: any) =>
+                              (
+                                <SelectItem key={idx} value={r}>
                                   {r}
                                 </SelectItem>
-                              ))}
+                              )
+                              )}
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -320,40 +345,83 @@ export function EntryForm() {
                     )}
                   />
 
-                  <div className="flex gap-2">
-                    <FormField
-                      control={form.control}
-                      name={`referenceIDs.${i}.id`}
-                      render={({
-                        field,
-                      }: {
-                        field: ControllerRenderProps<
-                          FormValues,
-                          `referenceIDs.${typeof i}.id`
-                        >;
-                      }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <Input placeholder="Enter value" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="p-2 bg-[#F1335A14] h-full w-[50px]"
-                      onClick={() => {
-                        const currentRefs = form.getValues("referenceIDs");
-                        form.setValue(
-                          "referenceIDs",
-                          currentRefs.filter((_, index) => index !== i)
-                        );
-                      }}
-                    >
-                      <Trash2 className="text-[#F1335A] h-6 w-6" />
-                    </Button>
+                  <div className="space-y-2">
+                    {reference.docType === "EDI/X12" || reference.docType === "EDI/EDIFACT" ? (
+                      <>
+                        <div className="flex gap-2">
+                          <FormField
+                            control={form.control}
+                            name={`referenceIDs.${i}.interchangeNumber`}
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormControl>
+                                  <Input placeholder="Interchange ID" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            className="p-2 bg-[#F1335A14] h-full w-[50px]"
+                            onClick={() => {
+                              const currentRefs = form.getValues("referenceIDs");
+                              form.setValue(
+                                "referenceIDs",
+                                currentRefs.filter((_, index) => index !== i)
+                              );
+                            }}
+                          >
+                            <Trash2 className="text-[#F1335A] h-6 w-6" />
+                          </Button>
+                        </div>
+                        <div className="flex gap-2">
+                          <FormField
+                            control={form.control}
+                            name={`referenceIDs.${i}.groupID`}
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormControl>
+                                  <Input placeholder="Group ID" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="w-[50px]"></div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex gap-2">
+                        <FormField
+                          control={form.control}
+                          name={`referenceIDs.${i}.applicationID`}
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormControl>
+                                <Input placeholder="Application ID" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          className="p-2 bg-[#F1335A14] h-full w-[50px]"
+                          onClick={() => {
+                            const currentRefs = form.getValues("referenceIDs");
+                            form.setValue(
+                              "referenceIDs",
+                              currentRefs.filter((_, index) => index !== i)
+                            );
+                          }}
+                        >
+                          <Trash2 className="text-[#F1335A] h-6 w-6" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
                 {i < form.watch("referenceIDs").length - 1 && (
