@@ -16,18 +16,32 @@ export default async function EditEntityPage({ params }: EditEntityPageProps) {
         if (!entityData) {
             notFound();
         }
+        const referenceIDs = entityData.entityidtbl.map((item: any) => {
+            if (item.reference_id_type === "EDI/X12" || item.reference_id_type === "EDI/EDIFACT") {
+                return {
+                    docType: item.reference_id_type,
+                    interchangeNumber: item.reference_id,
+                    // groupID: item.reference_id_extn,
+                };
+            } else {
+                return {
+                    docType: item.reference_id_type,
+                    applicationID: item.reference_id,
+                };
+            }
+        });
 
         const defaultValues = {
             entityName: entityData.name || "",
             email: entityData.email_address || "",
             addressLine1: entityData.address1 || "",
             addressLine2: entityData.address2 || "",
-            // phoneNumber: entityData.phone_number || "",
             city: entityData.city || "",
             country: entityData.country || "",
             state: entityData.state || "",
-            zipCode: entityData.zip_code || "",
-            referenceIDs: entityData.referenceIDs || [],
+            zipCode: entityData.zipcode || "",
+            organization_type: entityData.organization_type || "COMPANY",
+            referenceIDs,
         };
 
         return <EditEntityForm defaultValues={defaultValues} id={id} />;

@@ -13,10 +13,12 @@ interface CreateEntityData {
     state?: string;
     country?: string;
     zipcode?: string;
+    organization_type?: "COMPANY" | "PARTNER";
     referenceIDs?: Array<{
         docType: string;
-        id: string;
+        interchangeNumber?: string;
         groupID?: string;
+        applicationID?: string;
     }>;
 }
 
@@ -68,6 +70,7 @@ export function useUpdateEntity() {
                 state: entityData.state ?? "",
                 country: entityData.country ?? "",
                 zipcode: entityData.zipcode ?? "",
+                organization_type: entityData.organization_type ?? "COMPANY",
                 referenceIDs: entityData.referenceIDs ?? [],
             };
 

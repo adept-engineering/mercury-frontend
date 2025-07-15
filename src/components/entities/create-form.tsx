@@ -28,9 +28,10 @@ import {
 import { useGetAllFormats } from "@/hooks/use-nlp";
 import { useCreateEntity } from "@/hooks/use-entity";
 import { useRouter } from "next/navigation";
+import { refIDS } from "@/lib/constants";
 
 
-const refIDS = ["EDI/X12", "EDI/EDIFACT", "XML", "JSON", "IDOC", "CSV", "API"];
+
 
 const organizationTypes = [
   { value: "COMPANY", label: "Company" },

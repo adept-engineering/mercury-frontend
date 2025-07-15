@@ -111,7 +111,7 @@ export type EntityData ={
   country: string;
   zipcode: string;
   email_address: string;
-  organization_type: string;
+  organization_type: "COMPANY" | "PARTNER";
   referenceIDs: {
     docType: string;
     groupID?: string;

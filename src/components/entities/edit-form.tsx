@@ -31,8 +31,13 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useUpdateEntity } from "@/hooks/use-entity";
+import { refIDS } from "@/lib/constants";
 
-const refIDS = ["EDI/X12", "EDI/EDIFACT", "XML", "JSON", "IDOC", "CSV", "API"];
+
+const organizationTypes = [
+    { value: "COMPANY", label: "Company" },
+    { value: "PARTNER", label: "Partner" }
+];
 
 const formSchema = z.object({
     entityName: z.string().min(2, {
@@ -45,9 +50,6 @@ const formSchema = z.object({
         message: "Address line 1 is required.",
     }),
     addressLine2: z.string().optional(),
-    // phoneNumber: z.string().min(10, {
-    //     message: "Please enter a valid phone number.",
-    // }),
     zipCode: z.string().min(1, {
         message: "Zip code is required.",
     }),
@@ -60,11 +62,15 @@ const formSchema = z.object({
     state: z.string().min(1, {
         message: "State is required.",
     }),
+    organization_type: z.enum(["COMPANY", "PARTNER"], {
+        required_error: "Please select an organization type.",
+    }),
     referenceIDs: z.array(
         z.object({
             docType: z.string(),
-            id: z.string(),
+            interchangeNumber: z.string().optional(),
             groupID: z.string().optional(),
+            applicationID: z.string().optional(),
         })
     ),
 });
@@ -88,11 +94,11 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
             email: defaultValues?.email || "",
             addressLine1: defaultValues?.addressLine1 || "",
             addressLine2: defaultValues?.addressLine2 || "",
-            // phoneNumber: entityData.phone_number || "",
             city: defaultValues?.city || "",
             country: defaultValues?.country || "",
             state: defaultValues?.state || "",
             zipCode: defaultValues?.zipCode || "",
+            organization_type: defaultValues?.organization_type || "COMPANY",
             referenceIDs: defaultValues?.referenceIDs || [],
         },
     });
@@ -100,7 +106,6 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
     async function onSubmit(values: FormValues) {
         setIsSubmitting(true);
         try {
-            // TODO: Implement entity update API call
             console.log("Updating entity:", values);
             updateEntity({
                 entityId: id,
@@ -112,6 +117,7 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
                 country: values.country,
                 state: values.state,
                 zipcode: values.zipCode,
+                organization_type: values.organization_type,
                 referenceIDs: values.referenceIDs,
             });
 
@@ -135,11 +141,14 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
 
     const insertNewReferenceID = (refID: string) => {
         const currentRefs = form.getValues("referenceIDs") || [];
-        form.setValue(
-            "referenceIDs",
-            [...currentRefs, { docType: refID, id: "" }],
-            { shouldDirty: true, shouldTouch: true }
-        );
+        const newRef = {
+            docType: refID,
+            interchangeNumber: "",
+            groupID: "",
+            applicationID: "",
+        };
+        const newRefs = [...currentRefs, newRef];
+        form.setValue("referenceIDs", newRefs, { shouldValidate: true });
     };
 
     return (
@@ -244,6 +253,44 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
                                 )}
                             />
                         </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name="city"
+                                render={({
+                                    field,
+                                }: {
+                                    field: ControllerRenderProps<FormValues, "city">;
+                                }) => (
+                                    <FormItem>
+                                        <FormLabel>City</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter city" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="zipCode"
+                                render={({
+                                    field,
+                                }: {
+                                    field: ControllerRenderProps<FormValues, "zipCode">;
+                                }) => (
+                                    <FormItem>
+                                        <FormLabel>Zip Code</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter zip code" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
                         <div className="grid grid-cols-2 gap-4">
                             <FormField
                                 control={form.control}
@@ -284,45 +331,37 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
                         <div className="grid grid-cols-2 gap-4">
                             <FormField
                                 control={form.control}
-                                name="zipCode"
-                                render={({
-                                    field,
-                                }: {
-                                    field: ControllerRenderProps<FormValues, "zipCode">;
-                                }) => (
+                                name="organization_type"
+                                render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Zip Code</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter zip code" {...field} />
-                                        </FormControl>
+                                        <FormLabel>Organization Type</FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            value={field.value}
+                                        >
+                                            <FormControl className="w-full">
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select organization type" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {organizationTypes.map((type) => (
+                                                    <SelectItem key={type.value} value={type.value}>
+                                                        {type.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            <FormField
-                                control={form.control}
-                                name="city"
-                                render={({
-                                    field,
-                                }: {
-                                    field: ControllerRenderProps<FormValues, "city">;
-                                }) => (
-                                    <FormItem>
-                                        <FormLabel>City</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter city" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                            <div></div>
                         </div>
-
-
 
                         {/* Reference IDs Section */}
                         <section className="flex items-center justify-between my-6">
-                            <h2 className="text-xl font-medium">Reference IDs</h2>
+                            <h1 className="text-xl font-medium">Reference IDs</h1>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button className="bg-pink-500 hover:bg-pink-600 text-white px-6">
@@ -331,7 +370,7 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
-                                    {refIDS.map((ref, index) => (
+                                    {refIDS?.map((ref: any, index: any) => (
                                         <DropdownMenuItem
                                             key={index}
                                             onClick={() => insertNewReferenceID(ref)}
@@ -345,12 +384,12 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
 
                         <section className="border rounded-md">
                             <header className="bg-[#F7F7F7] grid grid-cols-2 p-4">
-                                <h3 className="font-medium">DOCUMENT FORMAT</h3>
-                                <h3 className="font-medium">ID</h3>
+                                <h2 className="font-medium">DOCUMENT FORMAT</h2>
+                                <h2 className="font-medium">REFERENCE DETAILS</h2>
                             </header>
 
                             {form.watch("referenceIDs")?.map((reference, i) => (
-                                <div key={i}>
+                                <div key={`ref-${i}-${reference.docType}`}>
                                     <div className="grid grid-cols-2 gap-4 p-4">
                                         <FormField
                                             control={form.control}
@@ -372,12 +411,14 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
                                                             <SelectTrigger className="w-full !h-[50px]">
                                                                 <SelectValue placeholder="Select type" />
                                                             </SelectTrigger>
-                                                            <SelectContent className="text-left w-full">
-                                                                {refIDS.map((r, idx) => (
+                                                            <SelectContent className="text-left w-full ">
+                                                                {refIDS?.map((r: any, idx: any) =>
+                                                                (
                                                                     <SelectItem key={idx} value={r}>
                                                                         {r}
                                                                     </SelectItem>
-                                                                ))}
+                                                                )
+                                                                )}
                                                             </SelectContent>
                                                         </Select>
                                                     </FormControl>
@@ -386,41 +427,83 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
                                             )}
                                         />
 
-                                        <div className="flex gap-2">
-                                            <FormField
-                                                control={form.control}
-                                                name={`referenceIDs.${i}.id`}
-                                                render={({
-                                                    field,
-                                                }: {
-                                                    field: ControllerRenderProps<
-                                                        FormValues,
-                                                        `referenceIDs.${typeof i}.id`
-                                                    >;
-                                                }) => (
-                                                    <FormItem className="w-full">
-                                                        <FormControl>
-                                                            <Input placeholder="Enter value" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                className="p-2 bg-[#F1335A14] h-full w-[50px]"
-                                                onClick={() => {
-                                                    const currentRefs = form.getValues("referenceIDs");
-                                                    form.setValue(
-                                                        "referenceIDs",
-                                                        currentRefs.filter((_, index) => index !== i),
-                                                        { shouldDirty: true }
-                                                    );
-                                                }}
-                                            >
-                                                <Trash2 className="text-[#F1335A] h-6 w-6" />
-                                            </Button>
+                                        <div className="space-y-2">
+                                            {reference.docType === "EDI/X12" || reference.docType === "EDI/EDIFACT" ? (
+                                                <>
+                                                    <div className="flex gap-2">
+                                                        <FormField
+                                                            control={form.control}
+                                                            name={`referenceIDs.${i}.interchangeNumber`}
+                                                            render={({ field }) => (
+                                                                <FormItem className="w-full">
+                                                                    <FormControl>
+                                                                        <Input placeholder="Interchange ID" {...field} />
+                                                                    </FormControl>
+                                                                    <FormMessage />
+                                                                </FormItem>
+                                                            )}
+                                                        />
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            className="p-2 bg-[#F1335A14] h-full w-[50px]"
+                                                            onClick={() => {
+                                                                const currentRefs = form.getValues("referenceIDs");
+                                                                form.setValue(
+                                                                    "referenceIDs",
+                                                                    currentRefs.filter((_, index) => index !== i)
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Trash2 className="text-[#F1335A] h-6 w-6" />
+                                                        </Button>
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <FormField
+                                                            control={form.control}
+                                                            name={`referenceIDs.${i}.groupID`}
+                                                            render={({ field }) => (
+                                                                <FormItem className="w-full">
+                                                                    <FormControl>
+                                                                        <Input placeholder="Group ID" {...field} />
+                                                                    </FormControl>
+                                                                    <FormMessage />
+                                                                </FormItem>
+                                                            )}
+                                                        />
+                                                        <div className="w-[50px]"></div>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div className="flex gap-2">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name={`referenceIDs.${i}.applicationID`}
+                                                        render={({ field }) => (
+                                                            <FormItem className="w-full">
+                                                                <FormControl>
+                                                                    <Input placeholder="Application ID" {...field} />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        className="p-2 bg-[#F1335A14] h-full w-[50px]"
+                                                        onClick={() => {
+                                                            const currentRefs = form.getValues("referenceIDs");
+                                                            form.setValue(
+                                                                "referenceIDs",
+                                                                currentRefs.filter((_, index) => index !== i)
+                                                            );
+                                                        }}
+                                                    >
+                                                        <Trash2 className="text-[#F1335A] h-6 w-6" />
+                                                    </Button>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                     {i < form.watch("referenceIDs").length - 1 && (
@@ -428,12 +511,6 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
                                     )}
                                 </div>
                             ))}
-
-                            {(!form.watch("referenceIDs") || form.watch("referenceIDs").length === 0) && (
-                                <div className="p-8 text-center text-gray-500">
-                                    No reference IDs added yet. Click Add Reference ID to get started.
-                                </div>
-                            )}
                         </section>
                     </section>
                 </form>
