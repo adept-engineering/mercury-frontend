@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useManageComplianceRules } from "@/hooks/use-manage-compliance-rules";
 import { useToast } from "@/hooks/use-toast";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ComplianceRule {
     id: string;
@@ -97,8 +98,7 @@ export function EditComplianceRuleDialogue({
                     </div>
                     <div>
                         <label className="block mb-1 text-sm font-medium">Rule</label>
-                        <Input
-                            type="text"
+                        <Textarea
                             value={rule}
                             onChange={e => setRule(e.target.value)}
                             placeholder="Enter rule description"

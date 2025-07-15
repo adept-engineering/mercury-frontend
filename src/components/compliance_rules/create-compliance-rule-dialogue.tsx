@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useManageComplianceRules } from "@/hooks/use-manage-compliance-rules";
 import { useToast } from "@/hooks/use-toast";
 import { Plus,Ruler } from "lucide-react";
@@ -61,12 +62,7 @@ export function CreateComplianceRuleDialogue() {
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle className="text-lg flex items-center gap-2 text-foreground"> 
-                        <div>
-
-                        <Ruler className="h-4 w-4" />
-                        </div>
-                        
+                    <DialogTitle className="text-lg text-foreground"> 
                          Create Compliance Rule
                     </DialogTitle>
                 </DialogHeader>
@@ -83,8 +79,8 @@ export function CreateComplianceRuleDialogue() {
                     </div>
                     <div>
                         <label className="block mb-1 text-sm font-medium">Rule</label>
-                        <Input
-                            type="text"
+                        <Textarea
+                           
                             value={rule}
                             onChange={e => setRule(e.target.value)}
                             placeholder="Enter rule description"
