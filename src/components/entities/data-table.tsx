@@ -57,23 +57,26 @@ export function DataTable<TData, TValue>({
     },
   });
   const { isSystemAdmin } = usePermissions();
-  
+
   return (
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div></div>
+
+        <h1 className="text-xl text-foreground font-semibold">Entities</h1>
+
+
         <div className="flex items-center gap-3">
           {isSystemAdmin && (
-          <Button
-            className="bg-pink-500 hover:bg-pink-600 text-white"
-            onClick={() => {
-              onSwitch("create");
-            }}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-           Create Entity
-          </Button>
+            <Button
+              className="bg-primary hover:bg-primary/90 text-white"
+              onClick={() => {
+                onSwitch("create");
+              }}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Create Entity
+            </Button>
           )}
         </div>
       </div>
@@ -92,9 +95,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}
@@ -165,7 +168,7 @@ export function DataTable<TData, TValue>({
             -
             {Math.min(
               (table.getState().pagination.pageIndex + 1) *
-                table.getState().pagination.pageSize,
+              table.getState().pagination.pageSize,
               table.getFilteredRowModel().rows.length
             )}{" "}
             of {table.getFilteredRowModel().rows.length}

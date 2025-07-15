@@ -24,19 +24,19 @@ export function EntityDetails({ entity, entityDetails }: EntityDetailsProps) {
     return (
         <div className="container mx-auto p-6">
             {/* Header */}
-            <div className="mb-6">
+            <div className="mb-6 flex flex-col items-start justify-between">
                 <Button
                     variant="ghost"
                     onClick={() => router.push('/entities')}
-                    className="mb-4 p-0 h-auto text-primary font-normal"
+                    className=" pl-0! h-auto text-primary font-normal"
                 >
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Go Back
                 </Button>
 
-                <h2  className="text-2xl font-semibold text-secondary-foreground">
+                {/* <h2  className="text-xl font-semibold text-foreground">
                     {entity?.name || "Entity Details"}
-                </h2>
+                </h2> */}
             </div>
 
             {/* Tabs */}

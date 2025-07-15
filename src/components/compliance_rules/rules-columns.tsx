@@ -1,5 +1,6 @@
+"use client"
 import { ComplianceRules } from "@/lib/types";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,17 +10,35 @@ import {
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { usePermissions } from "@/hooks/use-permissions";
+import { useRouter } from "next/navigation";
+import { useManageComplianceRules } from "@/hooks/use-manage-compliance-rules";
+import { toast } from "@/hooks/use-toast";
 
-const ActionsCell = () => {
+const ActionsCell = ({row}: {row: Row<ComplianceRules>}) => {
   const { canDelete, canEdit,  } = usePermissions();
-
+  const router = useRouter();
+  const { deleteComplianceRuleMutation } = useManageComplianceRules();
  
 
   // If user has no permissions for this row, don't show dropdown
   if (!canDelete) {
     return null;
   }
-
+  const handleDelete = () => {
+    try {
+      deleteComplianceRuleMutation(row.original.id.toString());
+      toast({
+        title: "Compliance rule deleted successfully",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Failed to delete compliance rule",
+        variant: "destructive",
+      });
+    }
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,13 +48,13 @@ const ActionsCell = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
       {canEdit && (
-          <DropdownMenuItem >
+          <DropdownMenuItem onClick={() => router.push(`/compliance-rules/${row.original.id}/edit`)}>
             <Pencil className="mr-2 h-4 w-4" />
             Edit
           </DropdownMenuItem>
         )}
         {canDelete && (
-          <DropdownMenuItem className="text-red-600">
+          <DropdownMenuItem className="text-red-600" onClick={handleDelete}>
             <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </DropdownMenuItem>

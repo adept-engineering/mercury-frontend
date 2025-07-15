@@ -18,10 +18,8 @@ import { ArrowLeft } from "lucide-react";
 
 export default function ComplianceRulesContainer({
   complianceData,
-  entityid_relationship_id,
 }: {
   complianceData: ComplianceRules[];
-  entityid_relationship_id: string;
 }) {
   const [view, setView] = useQueryState("view", {
     defaultValue: "data",
@@ -40,11 +38,7 @@ export default function ComplianceRulesContainer({
       {view === "data" ? (
         <>
           {/* Header */}
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-semibold">
-              Compliance Rules for {entityid_relationship_id}
-            </h1>
-          </div>
+          
 
           <DataTable
             columns={complianceRulesColumns} // We'll add the columns later
@@ -54,7 +48,7 @@ export default function ComplianceRulesContainer({
           />
         </>
       ) : (
-        <>
+        <div className="p-6">
           {/* Back Button */}
           <div className="flex items-center gap-4 mb-4">
             <Button
@@ -82,15 +76,6 @@ export default function ComplianceRulesContainer({
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink
-                    href="/relationships"
-                    className="text-primary"
-                  >
-                    Relationships
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbLink
                     href="#"
                     className="text-primary cursor-pointer"
                     onClick={handleBackToData}
@@ -101,17 +86,15 @@ export default function ComplianceRulesContainer({
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbPage className="text-muted-foreground">
-                    Create New
+                    Create
                   </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
 
-          <ComplianceRuleForm
-            entityid_relationship_id={entityid_relationship_id}
-          />
-        </>
+          <ComplianceRuleForm/>
+        </div>
       )}
     </div>
   );

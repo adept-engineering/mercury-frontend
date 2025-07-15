@@ -34,21 +34,13 @@ export function useCreateEntity() {
     return useMutation({
         mutationFn: async (entityData: EntityData) => createEntity(entityData, session?.user?.token ?? ""),
         onSuccess: () => {
-            toast({
-                title: "Success",
-                description: "Entity created successfully",
-                variant: "default",
-            });
+
             // Invalidate and refetch entities list
             queryClient.invalidateQueries({ queryKey: ["entities"] });
         },
         onError: (error: any) => {
             console.error("Error creating entity:", error);
-            toast({
-                title: "Error",
-                description: error.message || "Failed to create entity. Please try again.",
-                variant: "destructive",
-            });
+            throw error;
         },
     });
 }
@@ -59,22 +51,9 @@ export function useUpdateEntity() {
     const { session } = useCurrentSession();
 
     return useMutation({
-        mutationFn: async ({ entityId, ...entityData }: UpdateEntityData) => {
+        mutationFn: async ({ entityData, entityId }: { entityData: EntityData; entityId: string }) => {
             // Transform the form data to match the API expected format
-            const apiData: EntityData = {
-                name: entityData.name,
-                email_address: entityData.email_address ?? "",
-                address1: entityData.address1 ?? "",
-                address2: entityData.address2 ?? "",
-                city: entityData.city ?? "",
-                state: entityData.state ?? "",
-                country: entityData.country ?? "",
-                zipcode: entityData.zipcode ?? "",
-                organization_type: entityData.organization_type ?? "COMPANY",
-                referenceIDs: entityData.referenceIDs ?? [],
-            };
-
-            return await updateEntity(apiData, entityId, session?.user?.token ?? "");
+            return await updateEntity(entityData, entityId, session?.user?.token ?? "");
         },
         onSuccess: (data, variables) => {
             toast({

@@ -46,7 +46,7 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
     accessorKey: "name",
     header: "ENTITY Name",
     cell: ({ row }) => {
-      return <div className="text-sm pl-2">{row.getValue("name")}</div>;
+      return <div className="text-sm pl-2 text-foreground">{row.getValue("name")}</div>;
     },
   },
   {
@@ -58,7 +58,7 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
     header: "LAST UPDATED BY",
     cell: ({ row }) => {
       const updatedBy = format(new Date(row.getValue("updated_by") as string), "MMM d, yyyy");
-      return <div className="text-sm">{updatedBy}</div>;
+      return <div className="text-sm text-foreground">{updatedBy}</div>;
     },
   },
   {
@@ -67,7 +67,7 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
     cell: ({ row }) => {
       const dateString = row.getValue("created_date") as string;
       const date = format(new Date(dateString), "MMM d, yyyy");
-      return <div className="text-sm">{date}</div>;
+      return <div className="text-sm text-foreground">{date}</div>;
     },
   },
 

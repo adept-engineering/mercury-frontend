@@ -62,11 +62,13 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div></div>
+        <div>
+          <h1 className="text-xl text-foreground font-semibold">Compliance Rules</h1>
+        </div>
         <div className="flex items-center gap-3">
           {isSystemAdmin && (
           <Button
-            className="bg-pink-500 hover:bg-pink-600 text-white"
+            className="bg-primary hover:bg-primary/90 text-white"
             onClick={() => {
               onSwitch("create");
             }}

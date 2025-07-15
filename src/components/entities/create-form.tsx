@@ -28,51 +28,17 @@ import {
 import { useGetAllFormats } from "@/hooks/use-nlp";
 import { useCreateEntity } from "@/hooks/use-entity";
 import { useRouter } from "next/navigation";
-import { refIDS } from "@/lib/constants";
+import { refIDS, organizationTypes } from "@/lib/constants";
+import { EntityData } from "@/lib/types";
+import { toast } from "@/hooks/use-toast";
+import { EntitySchema as formSchema } from "@/lib/schema";
 
 
 
 
-const organizationTypes = [
-  { value: "COMPANY", label: "Company" },
-  { value: "PARTNER", label: "Partner" }
-];
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Entity name must be at least 2 characters.",
-  }),
-  email_address: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  address1: z.string().min(1, {
-    message: "Address line 1 is required.",
-  }),
-  address2: z.string().optional(),
-  city: z.string().min(1, {
-    message: "City is required.",
-  }),
-  country: z.string().min(1, {
-    message: "Country is required.",
-  }),
-  state: z.string().min(1, {
-    message: "State is required.",
-  }),
-  zipcode: z.string().min(1, {
-    message: "Zipcode is required.",
-  }),
-  organization_type: z.enum(["COMPANY", "PARTNER"], {
-    required_error: "Please select an organization type.",
-  }),
-  referenceIDs: z.array(
-    z.object({
-      docType: z.string(),
-      interchangeNumber: z.string().optional(),
-      groupID: z.string().optional(),
-      applicationID: z.string().optional(),
-    })
-  ),
-});
+
+
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -96,8 +62,42 @@ export function EntryForm() {
   const router = useRouter();
   function onSubmit(values: FormValues) {
     console.log(values);
-    createEntity(values);
-    router.push("/entities");
+    const apiData: EntityData = {
+      ...values,
+      referenceIDs: values.referenceIDs.map((ref) => ({
+        docType: ref.docType,
+        extn: [
+          ref.interchangeID && {
+            reference_name: "interchangeID",
+            reference_value: ref.interchangeID ?? "",
+          },
+          ref.groupID && {
+            reference_name: "groupID",
+            reference_value: ref.groupID ?? "",
+          },
+          ref.applicationID && {
+            reference_name: "applicationID",
+            reference_value: ref.applicationID ?? "",
+          },
+        ].filter((item): item is { reference_name: string; reference_value: string } => !!item),
+      })),
+    };
+    try {
+      createEntity(apiData);
+      toast({
+        title: "Success",
+        description: "Entity created successfully",
+        variant: "default",
+      });
+      router.push("/entities");
+    } catch (error) {
+      console.error("Error creating entity:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create entity. Please try again.",
+        variant: "destructive",
+      });
+    }
   }
 
   const insertNewRefrenceID = (refID: string) => {
@@ -119,16 +119,9 @@ export function EntryForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         {/* header section before the main form */}
-        <section className="flex items-center justify-between my-6">
-          <h1 className="text-2xl font-semibold"></h1>
-          <Button
-            className="bg-pink-500 hover:bg-pink-600 text-white"
-            type="submit"
-            disabled={!form.formState.isValid}
-          >
-            Confirm
-          </Button>
-        </section>
+        
+
+        
 
         <section className="space-y-8 rounded-md border p-8">
           <div className="grid grid-cols-2 gap-4">
@@ -139,7 +132,7 @@ export function EntryForm() {
                 <FormItem>
                   <FormLabel>Entity Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter entity name" {...field} />
+                    <Input placeholder="Enter Entity Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -152,7 +145,7 @@ export function EntryForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter email address" {...field} />
+                    <Input placeholder="Enter Email Address" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -168,7 +161,7 @@ export function EntryForm() {
                 <FormItem>
                   <FormLabel>Address Line 1</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter address line 1" {...field} />
+                    <Input placeholder="Enter Address Line 1" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -181,7 +174,7 @@ export function EntryForm() {
                 <FormItem>
                   <FormLabel>Address Line 2</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter address line 2" {...field} />
+                    <Input placeholder="Enter Address Line 2" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -197,7 +190,7 @@ export function EntryForm() {
                 <FormItem>
                   <FormLabel>City</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter city" {...field} />
+                    <Input placeholder="Enter City" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -210,7 +203,7 @@ export function EntryForm() {
                 <FormItem>
                   <FormLabel>Zipcode</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter zipcode" {...field} />
+                    <Input placeholder="Enter Zip code" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -226,7 +219,7 @@ export function EntryForm() {
                 <FormItem>
                   <FormLabel>Country</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter country" {...field} />
+                    <Input placeholder="Enter Country" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -239,7 +232,7 @@ export function EntryForm() {
                 <FormItem>
                   <FormLabel>State</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter state" {...field} />
+                    <Input placeholder="Enter State" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -257,9 +250,9 @@ export function EntryForm() {
                   <Select
                     onValueChange={field.onChange}
                     value={field.value}
-                   
+
                   >
-                    <FormControl  className="w-full">
+                    <FormControl className="w-full">
                       <SelectTrigger>
                         <SelectValue placeholder="Select organization type" />
                       </SelectTrigger>
@@ -276,14 +269,14 @@ export function EntryForm() {
                 </FormItem>
               )}
             />
-            <div></div>
+            
           </div>
 
           <section className="flex items-center justify-between my-6">
-            <h1 className="text-xl font-medium">Reference IDs</h1>
+            <h1 className="text-lg font-medium">Reference IDs</h1>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="bg-pink-500 hover:bg-pink-600 text-white px-6">
+                <Button className="bg-primary hover:bg-primary/90 text-white px-6">
                   Add Reference ID
                   <ChevronDown className="ml-1 h-4 w-4" />
                 </Button>
@@ -303,8 +296,8 @@ export function EntryForm() {
 
           <section className="border rounded-md">
             <header className="bg-[#F7F7F7] grid grid-cols-2 p-4">
-              <h2 className="font-medium">DOCUMENT FORMAT</h2>
-              <h2 className="font-medium">REFERENCE DETAILS</h2>
+              <h2 className="font-medium text-sm">DOCUMENT FORMAT</h2>
+              <h2 className="font-medium text-sm">REFERENCE DETAILS</h2>
             </header>
 
             {form.watch("referenceIDs")?.map((reference, i) => (
@@ -352,7 +345,7 @@ export function EntryForm() {
                         <div className="flex gap-2">
                           <FormField
                             control={form.control}
-                            name={`referenceIDs.${i}.interchangeNumber`}
+                            name={`referenceIDs.${i}.interchangeID`}
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormControl>
@@ -365,7 +358,7 @@ export function EntryForm() {
                           <Button
                             type="button"
                             variant="ghost"
-                            className="p-2 bg-[#F1335A14] h-full w-[50px]"
+                            className="p-2 bg-primary/10 h-full w-[50px]"
                             onClick={() => {
                               const currentRefs = form.getValues("referenceIDs");
                               form.setValue(
@@ -374,7 +367,7 @@ export function EntryForm() {
                               );
                             }}
                           >
-                            <Trash2 className="text-[#F1335A] h-6 w-6" />
+                            <Trash2 className="text-primary h-6 w-6" />
                           </Button>
                         </div>
                         <div className="flex gap-2">
@@ -410,7 +403,7 @@ export function EntryForm() {
                         <Button
                           type="button"
                           variant="ghost"
-                          className="p-2 bg-[#F1335A14] h-full w-[50px]"
+                          className="p-2 bg-primary/10 h-full w-[50px]"
                           onClick={() => {
                             const currentRefs = form.getValues("referenceIDs");
                             form.setValue(
@@ -419,7 +412,7 @@ export function EntryForm() {
                             );
                           }}
                         >
-                          <Trash2 className="text-[#F1335A] h-6 w-6" />
+                          <Trash2 className="text-primary h-6 w-6" />
                         </Button>
                       </div>
                     )}
@@ -431,6 +424,13 @@ export function EntryForm() {
               </div>
             ))}
           </section>
+          <Button
+            className="bg-primary hover:bg-primary/90 text-white"
+            type="submit"
+            disabled={!form.formState.isValid}
+          >
+            Confirm
+          </Button>
         </section>
       </form>
     </Form>

@@ -84,7 +84,6 @@ export type Relationships = {
 };
 export type ComplianceRules = {
   id: number;
-  entityid_relationship_id: string;
   rule: string;
   rule_title: string;
 };
@@ -114,8 +113,9 @@ export type EntityData ={
   organization_type: "COMPANY" | "PARTNER";
   referenceIDs: {
     docType: string;
-    groupID?: string;
-    interchangeNumber?: string;
-    applicationID?: string;
+    extn:{
+      reference_name: string;
+      reference_value: string;
+    }[]
   }[]
 };

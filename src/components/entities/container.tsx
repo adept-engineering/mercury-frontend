@@ -38,9 +38,7 @@ export default function EntitiesContainer({
       {view === "data" ? (
         <>
           {/* Header */}
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-semibold">Entities</h1>
-          </div>
+          
 
           <DataTable
             columns={entititiesColumns}
@@ -53,21 +51,22 @@ export default function EntitiesContainer({
         <>
           {/* Back Button */}
           <div className="flex items-center gap-4 mb-4">
+            
+          </div>
+
+          <div className="flex items-center justify-between mb-4">
+            <div>
             <Button
-              variant="ghost"
+              variant="link"
               size="sm"
-              className="gap-2"
+              className="gap-2 pl-0!"
               onClick={handleBackToData}
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Entities
             </Button>
-          </div>
-
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-2xl font-semibold">Create New Entity</h1>
-              <p className="text-muted-foreground font-sm">
+              <h1 className="text-xl font-semibold">Create New Entity</h1>
+              <p className="text-muted-foreground text-sm">
                 Use this form to register a new entity within our system.
               </p>
             </div>

@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
-import { Instrument_Sans, Geist_Mono } from "next/font/google";
+import { Instrument_Sans, Geist_Mono, DM_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import Provider from "./provider";
 import "./globals.css";
 import { auth } from "@/auth";
 
 
-const instrumentSans = Instrument_Sans({
-  variable: "--font-instrument-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// In app/layout.tsx
+const dm_sans = DM_Sans({
+  weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
@@ -33,7 +29,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${instrumentSans.variable} ${geistMono.variable} antialiased`}
+        className={`${dm_sans.className} antialiased`}
       >
         <Provider session={session}>
           {children}
