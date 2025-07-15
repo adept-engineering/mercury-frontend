@@ -18,6 +18,7 @@ import {
   Home,
   Search,
   Ruler,
+  GitGraphIcon,
 } from "lucide-react";
 
 import { DropdownMenuType, SidebarItemType } from "@/lib/types";
@@ -49,7 +50,24 @@ export const sidebarItems: SidebarItemType[] = [
       {
         title: "Search",
         url: "/search",
-        icon: Search,
+        icon: Headset,
+        menuSubItems: [
+          {
+            title: "Search",
+            url: "/search",
+            icon: Headset,
+          },
+          {
+            title: "Chatbot",
+            url: "/chatbot",
+            icon: Headset,
+          },
+          {
+            title: "Graph",
+            url: "/graph",
+            icon: GitGraphIcon,
+          },
+        ],
       },
       {
         title: "Entities",
@@ -81,7 +99,7 @@ export const sidebarItems: SidebarItemType[] = [
         url: "/anomaly",
         icon: Bug,
       },
-    
+
       {
         title: "Data Repository",
         url: "/nlp",
