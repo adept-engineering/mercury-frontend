@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useManageComplianceRules } from "@/hooks/use-manage-compliance-rules";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import { MAX_RULE_LENGTH } from "@/lib/constants";
 
 interface ComplianceRule {
     id: string;
@@ -31,6 +32,12 @@ export function EditComplianceRuleDialogue({
     const { updateComplianceRuleMutation } = useManageComplianceRules();
     const { toast } = useToast();
 
+    const handleRuleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const value = e.target.value;
+        if (value.length <= MAX_RULE_LENGTH) {
+            setRule(value);
+        }
+    };
     
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -92,18 +99,24 @@ export function EditComplianceRuleDialogue({
                             type="text"
                             value={ruleTitle}
                             onChange={e => setRuleTitle(e.target.value)}
-                            placeholder="Enter rule title"
+                            placeholder="Enter Rule Title"
                             required
                         />
                     </div>
                     <div>
                         <label className="block mb-1 text-sm font-medium">Rule</label>
                         <Textarea
+                            className="h-[150px]"
                             value={rule}
-                            onChange={e => setRule(e.target.value)}
-                            placeholder="Enter rule description"
+                            onChange={handleRuleChange}
+                            placeholder="Enter Rule Description"
                             required
                         />
+                        {rule !== "" && (
+                            <div className={`text-xs mt-1 ${rule.length >= MAX_RULE_LENGTH ? 'text-red-500' : 'text-gray-500'}`}>
+                                {rule.length} characters used
+                            </div>
+                        )}
                     </div>
                     <DialogFooter>
                         <Button

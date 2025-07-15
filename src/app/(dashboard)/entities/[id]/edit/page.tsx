@@ -30,7 +30,7 @@ export default async function EditEntityPage({ params }: EditEntityPageProps) {
             ...extnObj
            }
         });
-        console.log(referenceIDs);
+       
         const defaultValues: EntityData = {
             ...rest,
             referenceIDs

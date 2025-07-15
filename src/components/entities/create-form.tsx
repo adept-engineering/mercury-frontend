@@ -68,15 +68,15 @@ export function EntryForm() {
         docType: ref.docType,
         extn: [
           ref.interchangeID && {
-            reference_name: "interchangeID",
+            reference_name: "Interchange ID",
             reference_value: ref.interchangeID ?? "",
           },
           ref.groupID && {
-            reference_name: "groupID",
+            reference_name: "Group ID",
             reference_value: ref.groupID ?? "",
           },
           ref.applicationID && {
-            reference_name: "applicationID",
+            reference_name: "Application ID",
             reference_value: ref.applicationID ?? "",
           },
         ].filter((item): item is { reference_name: string; reference_value: string } => !!item),

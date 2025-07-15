@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useManageComplianceRules } from "@/hooks/use-manage-compliance-rules";
 import { useToast } from "@/hooks/use-toast";
-import { Plus,Ruler } from "lucide-react";
+import { Plus, Ruler } from "lucide-react";
+import { MAX_RULE_LENGTH } from "@/lib/constants";
 
 
 export function CreateComplianceRuleDialogue() {
@@ -16,6 +17,15 @@ export function CreateComplianceRuleDialogue() {
 
     const { createComplianceRuleMutation } = useManageComplianceRules();
     const { toast } = useToast();
+
+   
+
+    const handleRuleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const value = e.target.value;
+        if (value.length <= MAX_RULE_LENGTH) {
+            setRule(value);
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,13 +67,13 @@ export function CreateComplianceRuleDialogue() {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button className="bg-primary hover:bg-primary/90 text-white">
-                   <Plus className="h-4 w-4" /> Create Compliance Rule
+                    <Plus className="h-4 w-4" /> Create Compliance Rule
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle className="text-lg text-foreground"> 
-                         Create Compliance Rule
+                    <DialogTitle className="text-lg text-foreground">
+                        Create Compliance Rule
                     </DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -73,19 +83,24 @@ export function CreateComplianceRuleDialogue() {
                             type="text"
                             value={ruleTitle}
                             onChange={e => setRuleTitle(e.target.value)}
-                            placeholder="Enter rule title"
+                            placeholder="Enter Rule Title"
                             required
                         />
                     </div>
                     <div>
                         <label className="block mb-1 text-sm font-medium">Rule</label>
                         <Textarea
-                           
+                            className="h-[150px]"
                             value={rule}
-                            onChange={e => setRule(e.target.value)}
-                            placeholder="Enter rule description"
+                            onChange={handleRuleChange}
+                            placeholder="Enter Rule Description"
                             required
                         />
+                        {rule !== "" && (
+                            <div className={`text-xs mt-1 ${rule.length >= MAX_RULE_LENGTH ? 'text-red-500' : 'text-gray-500'}`}>
+                                {rule.length} characters used
+                            </div>
+                        )}
                     </div>
                     <DialogFooter>
                         <Button type="submit" className="bg-primary hover:bg-primary/90 text-white">

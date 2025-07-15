@@ -4,3 +4,5 @@ export const organizationTypes = [
     { value: "COMPANY", label: "Company" },
     { value: "PARTNER", label: "Partner" }
   ];
+
+  export const MAX_RULE_LENGTH = 255;
