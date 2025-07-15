@@ -1,11 +1,14 @@
+"use server"
 import {axiosLocal,axiosInstance} from "@/lib/axios";
 import {auth} from "./auth";
+import { revalidatePath } from "next/cache";
 
 export async function getComplianceRules(token: string) {
   try {
     const response = await axiosInstance(token).get(
       `/compliance-rules`
     );
+    
     return response.data;
   } catch (error) {
     console.error(error);
@@ -20,6 +23,7 @@ export async function createComplianceRule(data: {
 }, token: string) {
   try {
       const response = await axiosInstance(token).post("/compliance-rules/create", data);
+      revalidatePath("/compliance-rules");
     return response.data;
   } catch (error) {
     console.error(error);
@@ -33,6 +37,7 @@ export async function updateComplianceRule(data: {
 }, token: string,complianceRuleId: string) {
   try {
       const response = await axiosInstance(token).put(`/compliance-rules/${complianceRuleId}`, data);
+      revalidatePath("/compliance-rules");
     return response.data;
   } catch (error) {
     console.error(error);
@@ -53,6 +58,7 @@ export const getComplianceRuleById = async (token: string,complianceRuleId: stri
 export async function deleteComplianceRule(token: string,complianceRuleId: string) {
   try {
       const response = await axiosInstance(token).delete(`/compliance-rules/${complianceRuleId}`);
+      revalidatePath("/compliance-rules");
     return response.data;
   } catch (error) {
     console.error(error);

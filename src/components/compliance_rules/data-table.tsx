@@ -32,18 +32,19 @@ import {
   Plus,
 } from "lucide-react";
 import { usePermissions } from "@/hooks/use-permissions";
+import { CreateComplianceRuleDialogue } from "./create-compliance-rule-dialogue";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   tableType: "entities" | "relationships" | "complianceRules";
-  onSwitch: (state: "data" | "create") => void;
+ 
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  onSwitch,
+ 
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -67,15 +68,7 @@ export function DataTable<TData, TValue>({
         </div>
         <div className="flex items-center gap-3">
           {isSystemAdmin && (
-          <Button
-            className="bg-primary hover:bg-primary/90 text-white"
-            onClick={() => {
-              onSwitch("create");
-            }}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-           Create Compliance Rule
-          </Button>
+            <CreateComplianceRuleDialogue />
           )}
         </div>
       </div>

@@ -60,7 +60,6 @@ export const columns: ColumnDef<DataAuditLog>[] = [
             return <div className="text-sm">{row.getValue("client_id_from")}</div>
         },
     },
-   
     {
         accessorKey: "client_id_to",
         header: "CLIENT TO",

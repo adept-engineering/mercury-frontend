@@ -66,9 +66,6 @@ export default function EntitiesContainer({
               Back to Entities
             </Button>
               <h1 className="text-xl font-semibold">Create New Entity</h1>
-              <p className="text-muted-foreground text-sm">
-                Use this form to register a new entity within our system.
-              </p>
             </div>
 
             <Breadcrumb>

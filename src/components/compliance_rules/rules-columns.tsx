@@ -13,12 +13,14 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { useRouter } from "next/navigation";
 import { useManageComplianceRules } from "@/hooks/use-manage-compliance-rules";
 import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { EditComplianceRuleDialogue } from "./edit-compliance-rule-dialogue";
 
 const ActionsCell = ({row}: {row: Row<ComplianceRules>}) => {
   const { canDelete, canEdit,  } = usePermissions();
   const router = useRouter();
   const { deleteComplianceRuleMutation } = useManageComplianceRules();
- 
+  const [editOpen, setEditOpen] = useState(false);
 
   // If user has no permissions for this row, don't show dropdown
   if (!canDelete) {
@@ -40,6 +42,8 @@ const ActionsCell = ({row}: {row: Row<ComplianceRules>}) => {
     }
   }
   return (
+    <>
+    
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
@@ -48,7 +52,7 @@ const ActionsCell = ({row}: {row: Row<ComplianceRules>}) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
       {canEdit && (
-          <DropdownMenuItem onClick={() => router.push(`/compliance-rules/${row.original.id}/edit`)}>
+          <DropdownMenuItem onClick={() => setEditOpen(true)}>
             <Pencil className="mr-2 h-4 w-4" />
             Edit
           </DropdownMenuItem>
@@ -62,6 +66,12 @@ const ActionsCell = ({row}: {row: Row<ComplianceRules>}) => {
         
       </DropdownMenuContent>
     </DropdownMenu>
+    <EditComplianceRuleDialogue
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        complianceRule={row.original}
+      />
+    </>
   );
 };
 

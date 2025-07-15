@@ -27,9 +27,6 @@ export default function EditEntityContainer({defaultValues, id}: {defaultValues:
               Back to Entities
             </Button>
               <h1 className="text-xl font-semibold">Edit Entity</h1>
-              <p className="text-muted-foreground text-sm">
-                Use this form to register a new entity within our system.
-              </p>
             </div>
 
             <Breadcrumb>

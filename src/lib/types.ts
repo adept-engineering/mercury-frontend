@@ -83,7 +83,7 @@ export type Relationships = {
   std_version: string;
 };
 export type ComplianceRules = {
-  id: number;
+  id: string;
   rule: string;
   rule_title: string;
 };

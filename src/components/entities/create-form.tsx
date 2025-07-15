@@ -320,7 +320,7 @@ export function EntryForm() {
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <SelectTrigger className="w-full !h-[50px]">
+                            <SelectTrigger className="w-full !h-[40px]">
                               <SelectValue placeholder="Select type" />
                             </SelectTrigger>
                             <SelectContent className="text-left w-full ">
