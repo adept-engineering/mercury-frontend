@@ -85,8 +85,8 @@ export const sidebarItems: SidebarItemType[] = [
         icon: FileText,
       },
       {
-        title: "Transformation Rule",
-        url: "/test",
+        title: "Transformation Map",
+        url: "/transformation-map",
         icon: TestTube,
       },
       {

@@ -101,7 +101,7 @@ export interface User {
   entityId?: string; // For sub users, this will be the entity they belong to
 }
 
-export type EntityData ={
+export type EntityData = {
   name: string;
   address1: string;
   address2?: string;
@@ -113,9 +113,23 @@ export type EntityData ={
   organization_type: "COMPANY" | "PARTNER";
   referenceIDs: {
     docType: string;
-    extn:{
+    extn: {
       reference_name: string;
       reference_value: string;
     }[]
   }[]
+};
+
+export type TransformationRule = {
+  id: string;
+  rule: string;
+  rule_title: string;
+};
+
+export type TransformationMap = {
+  id: string;
+  map_title: string;
+  map_description: string;
+  rules: TransformationRule[];
+ 
 };
