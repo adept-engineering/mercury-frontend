@@ -3,11 +3,28 @@ import React, { useState, useEffect } from "react";
 import { BasicNvlWrapper } from "@neo4j-nvl/react"; // Changed import to match actual export
 import "./GraphVisualization.css";
 import { useGraph, useSenders } from "@/hooks/use-graph";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 // Define types for better type safety
 export interface GraphData {
   nodes: any[];
-  rels: any[];
+  relationships: any[];
+  summary: {
+    client_nodes: number;
+    connected_clients: number;
+    received_transactions: number;
+    sender: string;
+    sent_transactions: number;
+    total_nodes: number;
+    total_relationships: number;
+    transaction_nodes: number;
+  };
 }
 
 export interface GraphSummary {
@@ -28,7 +45,6 @@ const GraphVisualization = () => {
   //   });
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [summary, setSummary] = useState<GraphSummary | null>(null);
 
   const API_BASE_URL = "http://localhost:8000"; // Adjust to your API URL
 
@@ -38,9 +54,13 @@ const GraphVisualization = () => {
   const {
     data: graphData = {
       nodes: [],
-      rels: [],
+      relationships: [],
+      summary: null,
     },
+    isLoading: graphLoading,
+    isFetched: graphFetched,
   } = useGraph(selectedSender);
+  console.log("graphData", graphData);
 
   // Neo4j NVL configuration
   const neo4jConfig = {
@@ -137,55 +157,68 @@ const GraphVisualization = () => {
 
         <div className="sender-selector">
           <label htmlFor="sender-select">Select Sender:</label>
-          <select
-            id="sender-select"
+          <Select
             value={selectedSender}
-            onChange={(e) => setSelectedSender(e.target.value)}
+            onValueChange={setSelectedSender}
             disabled={loading}
           >
-            <option value="">Choose a sender...</option>
-            {senders.map((sender: any) => (
-              <option key={sender} value={sender}>
-                {sender}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Choose a sender..." />
+            </SelectTrigger>
+            <SelectContent>
+              {senders.map((sender: any) => (
+                <SelectItem key={sender} value={sender}>
+                  {sender}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {loading && <div className="loading">Loading graph data...</div>}
         {error && <div className="error">Error: {error}</div>}
 
-        {summary && (
+        {graphData.summary && (
           <div className="summary">
             <h3>Graph Summary</h3>
             <div className="summary-grid">
               <div className="summary-item">
                 <span className="label">Total Nodes:</span>
-                <span className="value">{summary.total_nodes}</span>
+                <span className="value">{graphData.summary.total_nodes}</span>
               </div>
               <div className="summary-item">
                 <span className="label">Total Relationships:</span>
-                <span className="value">{summary.total_relationships}</span>
+                <span className="value">
+                  {graphData.summary.total_relationships}
+                </span>
               </div>
               <div className="summary-item">
                 <span className="label">Client Nodes:</span>
-                <span className="value">{summary.client_nodes}</span>
+                <span className="value">{graphData.summary.client_nodes}</span>
               </div>
               <div className="summary-item">
                 <span className="label">Transaction Nodes:</span>
-                <span className="value">{summary.transaction_nodes}</span>
+                <span className="value">
+                  {graphData.summary.transaction_nodes}
+                </span>
               </div>
               <div className="summary-item">
                 <span className="label">Sent Transactions:</span>
-                <span className="value">{summary.sent_transactions}</span>
+                <span className="value">
+                  {graphData.summary.sent_transactions}
+                </span>
               </div>
               <div className="summary-item">
                 <span className="label">Received Transactions:</span>
-                <span className="value">{summary.received_transactions}</span>
+                <span className="value">
+                  {graphData.summary.received_transactions}
+                </span>
               </div>
               <div className="summary-item">
                 <span className="label">Connected Clients:</span>
-                <span className="value">{summary.connected_clients}</span>
+                <span className="value">
+                  {graphData.summary.connected_clients}
+                </span>
               </div>
             </div>
           </div>
@@ -241,10 +274,20 @@ const GraphVisualization = () => {
       </div>
 
       <div className="graph-view">
-        {graphData && graphData.nodes.length > 0 ? (
+        {graphLoading && !graphFetched && (
+          <div className="flex flex-wrap justify-center">
+            {[...Array(10)].map((_, index) => (
+              <div
+                key={index}
+                className="skeleton animate-pulse bg-muted rounded-full w-10 h-10 m-1"
+              />
+            ))}
+          </div>
+        )}
+        {graphData && graphFetched && graphData.nodes.length > 0 && (
           <BasicNvlWrapper
             nodes={graphData.nodes}
-            rels={graphData.rels || []}
+            rels={graphData.relationships}
             nvlOptions={{
               initialZoom: 1,
               disableTelemetry: true,
@@ -252,7 +295,9 @@ const GraphVisualization = () => {
             height={600}
             width={800}
           />
-        ) : (
+        )}
+
+        {graphFetched && (!graphData || graphData.nodes.length < 1) && (
           <div className="no-data">
             {selectedSender
               ? "No graph data available for selected sender"

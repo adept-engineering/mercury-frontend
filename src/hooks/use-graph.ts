@@ -16,7 +16,7 @@ export const useSenders = () => {
 
 export const getGraph = async (sender_id: string) => {
   const response = await axiosPython.get(`/graph/data/${sender_id}`);
-  return response.data.data;
+  return response.data;
 };
 
 export const useGraph = (sender_id: string) => {

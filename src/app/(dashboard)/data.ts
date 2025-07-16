@@ -19,6 +19,7 @@ import {
   Search,
   Ruler,
   GitGraphIcon,
+  FileBarChart2,
 } from "lucide-react";
 
 import { DropdownMenuType, SidebarItemType } from "@/lib/types";
@@ -53,9 +54,9 @@ export const sidebarItems: SidebarItemType[] = [
         icon: Headset,
         menuSubItems: [
           {
-            title: "Search",
-            url: "/search",
-            icon: Headset,
+            title: "Data Audit",
+            url: "/data-audit",
+            icon: FileBarChart2,
           },
           {
             title: "Chatbot",
@@ -81,7 +82,7 @@ export const sidebarItems: SidebarItemType[] = [
       },
       {
         title: "Data Layout",
-        url: "/data-audit",
+        url: "/data-layout",
         icon: FileText,
       },
       {

@@ -77,15 +77,17 @@ const LogoutButton = ({ menuItem }: { menuItem: any }) => {
 
 export function AppSidebar() {
   return (
-    <Sidebar variant="sidebar" >
+    <Sidebar variant="sidebar">
       <SidebarContent className="pl-7 pr-3 max-lg:pr-14 pt-[5.5rem] max-lg:pt-12 pb-8 custom-scroll font-medium flex flex-col h-full">
         {/* Sidebar start */}
         <div className="flex-1">
           <SidebarGroup>
             {sidebarItems.map((item) => {
               // Separate regular menu items from logout items
-            
-              const regularMenuItems = item.menuItems.filter((menuItem: any) => !menuItem.islogout);
+
+              const regularMenuItems = item.menuItems.filter(
+                (menuItem: any) => !menuItem.islogout
+              );
 
               return (
                 <SidebarGroupContent key={item.id}>
@@ -97,9 +99,8 @@ export function AppSidebar() {
 
                   <SidebarMenu className="space-y-1">
                     {/* Render regular menu items only */}
-                   
-                    {regularMenuItems.map((menuItem: any) => {
 
+                    {regularMenuItems.map((menuItem: any) => {
                       return (
                         <div key={menuItem.title}>
                           {menuItem.menuSubItems ? (
@@ -126,14 +127,20 @@ export function AppSidebar() {
                                   <SidebarGroupContent>
                                     <SidebarMenuSub className="mt-2 ml-8 space-y-1">
                                       {menuItem.menuSubItems.map(
-                                      
                                         (menuSubItem: any) => {
-
                                           return (
-                                            <SidebarMenuSubItem key={menuSubItem.title}>
+                                            <SidebarMenuSubItem
+                                              key={menuSubItem.title}
+                                            >
                                               <CollapsibleMenuActiveButton
                                                 url={menuSubItem.url}
                                                 title={menuSubItem.title}
+                                                icon={
+                                                  <menuSubItem.icon
+                                                    className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                                    strokeWidth={1.5}
+                                                  />
+                                                }
                                               />
                                             </SidebarMenuSubItem>
                                           );
@@ -148,7 +155,12 @@ export function AppSidebar() {
                             <SidebarMenuItem key={menuItem.title}>
                               <SidebarMenuActiveButton
                                 url={menuItem.url}
-                                icon={<menuItem.icon className="h-5 w-5" strokeWidth={1.5} />}
+                                icon={
+                                  <menuItem.icon
+                                    className="h-5 w-5"
+                                    strokeWidth={1.5}
+                                  />
+                                }
                                 title={menuItem.title}
                               />
                             </SidebarMenuItem>
@@ -164,19 +176,21 @@ export function AppSidebar() {
         </div>
 
         {/* Logout items at the bottom */}
-       
-        {sidebarItems.some(item => item.menuItems.some((menuItem: any) => menuItem.islogout)) && (
+
+        {sidebarItems.some((item) =>
+          item.menuItems.some((menuItem: any) => menuItem.islogout)
+        ) && (
           <div className="pt-4 border-t border-gray-200">
             <SidebarMenu>
-              {sidebarItems.flatMap(item =>
-              
-                item.menuItems.filter((menuItem: any) => menuItem.islogout)
-              
-              ).map((menuItem: any) => (
-                <SidebarMenuItem key={menuItem.title}>
-                  <LogoutButton menuItem={menuItem} />
-                </SidebarMenuItem>
-              ))}
+              {sidebarItems
+                .flatMap((item) =>
+                  item.menuItems.filter((menuItem: any) => menuItem.islogout)
+                )
+                .map((menuItem: any) => (
+                  <SidebarMenuItem key={menuItem.title}>
+                    <LogoutButton menuItem={menuItem} />
+                  </SidebarMenuItem>
+                ))}
             </SidebarMenu>
           </div>
         )}

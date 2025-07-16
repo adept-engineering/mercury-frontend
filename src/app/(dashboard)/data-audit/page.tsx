@@ -2,7 +2,7 @@ import DataAuditContainer from "@/components/data-audit/container";
 import { getDataAuditLogs } from "@/actions/data-audits";
 import { getEntityIds } from "@/actions/entity";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function DataAuditPage({
   searchParams,
@@ -19,7 +19,7 @@ export default async function DataAuditPage({
     toDate || new Date().toISOString()
   );
   const entityIds = await getEntityIds();
-
+  console.log(dataAuditLogs);
   return (
     <div className="flex flex-col gap-6 p-6">
       <DataAuditContainer data={dataAuditLogs} entityIds={entityIds} />
