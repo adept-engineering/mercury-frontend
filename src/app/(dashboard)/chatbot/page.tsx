@@ -84,7 +84,7 @@ const ChatBot = () => {
   };
 
   return (
-    <div className="flex h-full overflow-hidden">
+    <div className="flex overflow-hidden max-h-[90vh]">
       {/* Sidebar with chat history */}
       <div className="w-64 border-r p-4 flex flex-col">
         <p className="p-2 text-muted-foreground font-semibold text-sm ">
@@ -138,8 +138,8 @@ const ChatBot = () => {
 
       {/* Messages View */}
       {selectedChatId && (
-        <section className="relative w-full">
-          <div className="flex-grow p-6 overflow-y-auto max-h-[70%]">
+        <section className="relative w-full flex flex-col">
+          <div className="flex-grow p-6 overflow-y-auto h-[calc(100vh-200px)]">
             {messages?.map(({ question, answer, ...message }, index) => (
               <section key={message.id}>
                 <AIMessage from="user" key={`user-${index}`}>
@@ -153,7 +153,7 @@ const ChatBot = () => {
               </section>
             ))}
           </div>
-          <div className=" bg-background p-4 sticky bottom-0 ">
+          <div className="bg-background p-4 sticky bottom-0 mt-auto">
             <ChatInput
               text={input}
               setText={setInput}
