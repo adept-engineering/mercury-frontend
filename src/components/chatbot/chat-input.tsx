@@ -17,8 +17,17 @@ import { type FormEventHandler, useState } from "react";
 const models = [
   { id: "llama-2-70b", name: "Llama 2 70B", provider: "meta.com" },
 ];
-const ChatInput = () => {
-  const [text, setText] = useState<string>("");
+const ChatInput = ({
+  text,
+  setText,
+  onSubmit,
+  disabled,
+}: {
+  text: string;
+  setText: (value: string) => void;
+  onSubmit: () => void;
+  disabled: boolean;
+}) => {
   const [model, setModel] = useState<string>(models[0].id);
   const [status, setStatus] = useState<
     "submitted" | "streaming" | "ready" | "error"
@@ -28,13 +37,14 @@ const ChatInput = () => {
     if (!text) {
       return;
     }
-    setStatus("submitted");
-    setTimeout(() => {
-      setStatus("streaming");
-    }, 200);
-    setTimeout(() => {
-      setStatus("ready");
-    }, 2000);
+    onSubmit();
+    // setStatus("submitted");
+    // setTimeout(() => {
+    //   setStatus("streaming");
+    // }, 200);
+    // setTimeout(() => {
+    //   setStatus("ready");
+    // }, 2000);
   };
   return (
     <AIInput onSubmit={handleSubmit}>
@@ -63,7 +73,7 @@ const ChatInput = () => {
             </AIInputModelSelectContent>
           </AIInputModelSelect>
         </AIInputTools>
-        <AIInputSubmit disabled={!text} status={status} />
+        <AIInputSubmit disabled={!text || disabled} status={status} />
       </AIInputToolbar>
     </AIInput>
   );

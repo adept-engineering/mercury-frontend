@@ -5,106 +5,82 @@ import {
   AIMessageAvatar,
   AIMessageContent,
 } from "@/components/ui/kibo-ui/ai/message";
+import { AIResponse } from "@/components/ui/kibo-ui/ai/response";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import ChatInput from "@/components/chatbot/chat-input";
-import { useChatsSession } from "@/hooks/use-chats";
+import {
+  useChats,
+  useChatsSession,
+  useCreateChatSession,
+  useCreateLLMChat,
+} from "@/hooks/use-chats";
 import { useCurrentSession } from "@/hooks/use-current-session";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ChatBot = () => {
   const { session } = useCurrentSession();
-  const [chats, setChats] = useState([
-    { id: 1, title: "New Chat 1" },
-    { id: 2, title: "New Chat 2" },
-  ]);
+  const [showCreateInput, setCreateInput] = useState(false);
+  const [newChatTitle, setNewChatTitle] = useState("");
+  const [input, setInput] = useState("");
   const { data: chatSession } = useChatsSession(session?.user.token || "");
-  const [selectedChatId, setSelectedChatId] = useState(chats[0]?.id);
-  const [messages, setMessages] = useState<
-    {
-      from: "user" | "assistant";
-      content: string;
-      avatar: string;
-      name: string;
-    }[]
-  >([
-    {
-      from: "user",
-      content: "Hello, how are you?",
-      avatar: "https://github.com/haydenbleasel.png",
-      name: "Hayden Bleasel",
-    },
-    {
-      from: "assistant",
-      content: "I am fine, thank you!",
-      avatar: "https://github.com/openai.png",
-      name: "OpenAI",
-    },
-    {
-      from: "user",
-      content: "What is the weather in Tokyo?",
-      avatar: "https://github.com/haydenbleasel.png",
-      name: "Hayden Bleasel",
-    },
-    {
-      from: "assistant",
-      content: "The weather in Tokyo is sunny.",
-      avatar: "https://github.com/openai.png",
-      name: "OpenAI",
-    },
-    {
-      from: "user",
-      content: "Hello, how are you?",
-      avatar: "https://github.com/haydenbleasel.png",
-      name: "Hayden Bleasel",
-    },
-    {
-      from: "assistant",
-      content: "I am fine, thank you!",
-      avatar: "https://github.com/openai.png",
-      name: "OpenAI",
-    },
-    {
-      from: "user",
-      content: "What is the weather in Tokyo?",
-      avatar: "https://github.com/haydenbleasel.png",
-      name: "Hayden Bleasel",
-    },
-    {
-      from: "assistant",
-      content: "The weather in Tokyo is sunny.",
-      avatar: "https://github.com/openai.png",
-      name: "OpenAI",
-    },
-    {
-      from: "user",
-      content: "Hello, how are you?",
-      avatar: "https://github.com/haydenbleasel.png",
-      name: "Hayden Bleasel",
-    },
-    {
-      from: "assistant",
-      content: "I am fine, thank you!",
-      avatar: "https://github.com/openai.png",
-      name: "OpenAI",
-    },
-    {
-      from: "user",
-      content: "What is the weather in Tokyo?",
-      avatar: "https://github.com/haydenbleasel.png",
-      name: "Hayden Bleasel",
-    },
-    {
-      from: "assistant",
-      content: "The weather in Tokyo is sunny.",
-      avatar: "https://github.com/openai.png",
-      name: "OpenAI",
-    },
-  ]);
+  const [selectedChatId, setSelectedChatId] = useState(
+    chatSession ? chatSession[0]?.id : null
+  );
 
-  const addNewChat = () => {
-    const newChatId = chats.length + 1;
-    setChats([...chats, { id: newChatId, title: `New Chat ${newChatId}` }]);
-    setSelectedChatId(newChatId);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: messages } = useChats(
+    selectedChatId || "",
+    session?.user.token || ""
+  );
+
+  const { mutate: createSession } = useCreateChatSession(
+    session?.user.token || ""
+  );
+
+  const { mutate: sendToLLM, isPending } = useCreateLLMChat(
+    session?.user.token || ""
+  );
+
+  const handleSubmit = () => {
+    if (!selectedChatId) {
+      toast({
+        title: "Select a chat session",
+        variant: "destructive",
+      });
+    }
+    // Optimistically add the user's question to the messages
+    const optimisticMessage = {
+      id: `temp-${Date.now()}`,
+      question: input,
+      answer: "Thinking...",
+      created_at: new Date(),
+      session_id_id: selectedChatId,
+      disliked_by_user: false,
+      html_path: null,
+      table: "",
+    };
+
+    // Update the local state to show the user's message immediately
+    const updatedMessages = messages
+      ? [...messages, optimisticMessage]
+      : [optimisticMessage];
+    setInput("");
+
+    queryClient.setQueryData(["chats", selectedChatId], updatedMessages);
+    sendToLLM({
+      clientId: session?.user.id || "",
+      sessionId: selectedChatId || "",
+      question: input,
+    });
+  };
+
+  const handleShowInput = () => {
+    setCreateInput(!showCreateInput);
   };
 
   return (
@@ -115,22 +91,45 @@ const ChatBot = () => {
           Chat history
         </p>
         <div className="flex-grow overflow-y-auto">
-          {chats.map((chat) => (
+          {chatSession?.map((chatSession) => (
             <div
-              key={chat.id}
+              key={chatSession.id}
               className={`p-2 cursor-pointer text-sm ${
-                selectedChatId === chat.id ? "bg-gray-100" : ""
+                selectedChatId === chatSession?.id.toString()
+                  ? "bg-gray-100"
+                  : ""
               }`}
-              onClick={() => setSelectedChatId(chat.id)}
+              onClick={() => setSelectedChatId(chatSession.id)}
             >
-              {chat.title}
+              {chatSession.title}
             </div>
           ))}
-          {/* Add Chat Button */}
+          {showCreateInput && (
+            <div className="flex items-center space-x-2 p-2">
+              <Input
+                placeholder="Create new chat session"
+                className="flex-grow"
+                value={newChatTitle}
+                onChange={(e) => setNewChatTitle(e.target.value)}
+              />
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => {
+                  if (newChatTitle.trim()) {
+                    createSession(newChatTitle);
+                    setCreateInput(false);
+                  }
+                }}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
           <Button
             variant="outline"
             className="mt-4 w-full"
-            onClick={addNewChat}
+            onClick={handleShowInput}
           >
             <Plus className="mr-2 h-4 w-4" /> New Chat
           </Button>
@@ -138,19 +137,72 @@ const ChatBot = () => {
       </div>
 
       {/* Messages View */}
-      <section className="relative w-full">
-        <div className="flex-grow p-6 overflow-y-auto max-h-[70%]">
-          {messages.map(({ content, ...message }, index) => (
-            <AIMessage from={message.from} key={index}>
-              <AIMessageContent>{content}</AIMessageContent>
-              <AIMessageAvatar name={message.name} src={message.avatar} />
-            </AIMessage>
-          ))}
+      {selectedChatId && (
+        <section className="relative w-full">
+          <div className="flex-grow p-6 overflow-y-auto max-h-[70%]">
+            {messages?.map(({ question, answer, ...message }, index) => (
+              <section key={message.id}>
+                <AIMessage from="user" key={`user-${index}`}>
+                  <AIMessageContent>{question}</AIMessageContent>
+                  <AIMessageAvatar name="User" src="" />
+                </AIMessage>
+                <AIMessage from="assistant" key={`assistant-${index}`}>
+                  <AIResponse>{answer}</AIResponse>
+                  <AIMessageAvatar name="Assistant" src="/auth-Logo.svg" />
+                </AIMessage>
+              </section>
+            ))}
+          </div>
+          <div className=" bg-background p-4 sticky bottom-0 ">
+            <ChatInput
+              text={input}
+              setText={setInput}
+              onSubmit={handleSubmit}
+              disabled={isPending}
+            />
+          </div>
+        </section>
+      )}
+
+      {!selectedChatId && (
+        <div className="flex flex-col items-center justify-center h-full w-full p-6">
+          <div className="text-center space-y-4">
+            <div className="flex justify-center mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="100"
+                height="100"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1"
+                className="text-muted-foreground"
+              >
+                <path d="M3 11v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3" />
+                <path d="M12 19H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6.5" />
+                <path d="M16 19h2" />
+                <path d="M20 15c0 1.1-.9 2-2 2h-5.5" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-semibold text-foreground">
+              Start a New Conversation
+            </h2>
+            <p className="text-muted-foreground">
+              Select a chat from your history or create a new chat to interact
+              with our AI assistant.
+            </p>
+            <div className="flex justify-center space-x-4 mt-6">
+              <Button
+                variant="default"
+                onClick={handleShowInput}
+                className="px-6 py-3"
+              >
+                <Plus className="mr-2 h-4 w-4" /> Create New Chat
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className=" bg-background p-4">
-          <ChatInput />
-        </div>
-      </section>
+      )}
     </div>
   );
 };
