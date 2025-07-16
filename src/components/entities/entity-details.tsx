@@ -7,6 +7,7 @@ import { ArrowLeft, Building, Clock, MapPin ,File} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Card } from "../ui/card";
 import { TableInfoContentDesktop } from "../table-info-content";
+import { TableInfoReferences } from "../table-info-references";
 
 interface EntityDetailsProps {
     entity: any;
@@ -58,19 +59,20 @@ export function EntityDetails({ entity, entityDetails }: EntityDetailsProps) {
                         Address
                     </TabsTrigger>
                     <TabsTrigger
-                        value="timestamps"
-                    className="tabs_trigger data-[state=active]:bg-transparent data-[state=active]:text-primary"
-                    >
-                        <Clock className="h-4 w-4" />
-                        Audit Log Info
-                    </TabsTrigger>
-                    <TabsTrigger
                         value="reference-ids"
                         className="tabs_trigger data-[state=active]:bg-transparent data-[state=active]:text-primary"
                     >
                         <File className="h-4 w-4" />
                         Reference IDs
                     </TabsTrigger>
+                    <TabsTrigger
+                        value="timestamps"
+                    className="tabs_trigger data-[state=active]:bg-transparent data-[state=active]:text-primary"
+                    >
+                        <Clock className="h-4 w-4" />
+                        Audit Log Info
+                    </TabsTrigger>
+                   
                 </TabsList>
 
                 <TabsContent value="company-info" className="mt-7">
@@ -94,7 +96,7 @@ export function EntityDetails({ entity, entityDetails }: EntityDetailsProps) {
                     />
                     </TabsContent>
                     <TabsContent value="reference-ids" className="mt-7">
-                        <TableInfoContentDesktop
+                        <TableInfoReferences
                             details={entityDetails?.referenceIDs || []}
                             
                         />

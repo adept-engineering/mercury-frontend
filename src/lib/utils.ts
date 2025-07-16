@@ -59,15 +59,27 @@ export const MapEntityObjToArray = (obj: Record<string, any>) => {
     Status: obj.status,
     "Organization Type": obj.organization_type,
   }
-  const referenceIDs = obj.entityidtbl.flatMap((item: any) => {
-    return item.entityidtbl_extn.map((extn: any) => {
-        return {
-          name: `${extn.reference_name} (${item.reference_id_type})`,
-          value: extn.reference_value
-        }
-      });
-   
-});
+  const referenceIDs = obj.entityidtbl.map((item: any) => {
+    const extnObj = item.entityidtbl_extn.reduce((acc: any, extn: any) => {
+      if(extn.reference_name === "interchangeID"){
+        acc['Interchange ID']= extn.reference_value;
+      }else if(extn.reference_name === "groupID"){
+        acc['Group ID']= extn.reference_value;
+      }else if(extn.reference_name === "applicationID"){
+        acc['Application ID']= extn.reference_value;
+      }else{
+        acc[extn.reference_name] = extn.reference_value;
+      }
+        return acc;
+      }, {});
+   return {
+    docType: item.reference_id_type,
+    ...extnObj
+   }
+})
+console.log(referenceIDs);
+
+
 
   const array = Object.entries(entity).map(([key, value]) => {
 
