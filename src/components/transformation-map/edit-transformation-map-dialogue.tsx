@@ -15,18 +15,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
 import { usePermissions } from "@/hooks/use-permissions";
 import { toast } from "@/hooks/use-toast";
-import { TransformationRule } from "@/lib/types";
+import { TransformationMap } from "@/lib/types";
 
 interface EditTransformationMapDialogueProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    transformationRule: TransformationRule;
+    transformationMap: TransformationMap;
 }
 
 export function EditTransformationMapDialogue({
     open,
     onOpenChange,
-    transformationRule,
+    transformationMap,
 }: EditTransformationMapDialogueProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -37,13 +37,13 @@ export function EditTransformationMapDialogue({
     const { canEdit } = usePermissions();
 
     useEffect(() => {
-        if (transformationRule) {
+        if (transformationMap) {
             setFormData({
-                mapTitle: transformationRule.rule_title || "",
-                description: transformationRule.rule || "",
+                mapTitle: transformationMap.map_title || "",
+                description: transformationMap.map_description || "",
             });
         }
-    }, [transformationRule]);
+    }, [transformationMap]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -51,7 +51,7 @@ export function EditTransformationMapDialogue({
 
         try {
             // TODO: Implement update transformation map API call
-            console.log("Updating transformation map:", transformationRule.id, formData);
+            console.log("Updating transformation map:", transformationMap.id, formData);
 
             toast({
                 title: "Transformation map updated successfully",
@@ -97,7 +97,7 @@ export function EditTransformationMapDialogue({
                             <Input
                                 id="mapTitle"
                                 value={formData.mapTitle}
-                                onChange={(e) => handleInputChange("mapTitle", e.target.value)}
+                                onChange={(e) => handleInputChange("map_title", e.target.value)}
                                 placeholder="Enter map title"
                                 required
                             />
@@ -107,7 +107,7 @@ export function EditTransformationMapDialogue({
                             <Textarea
                                 id="description"
                                 value={formData.description}
-                                onChange={(e) => handleInputChange("description", e.target.value)}
+                                onChange={(e) => handleInputChange("map_description", e.target.value)}
                                 placeholder="Enter map description"
                                 rows={4}
                                 required

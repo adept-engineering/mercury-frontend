@@ -38,7 +38,7 @@ export function EditTransformationRuleDialogue({
     useEffect(() => {
         if (transformationRule) {
             setFormData({
-                ruleTitle: transformationRule.ruleTitle || "",
+                ruleTitle: transformationRule.rule_title || "",
                 rule: transformationRule.rule || "",
             });
         }
@@ -96,7 +96,7 @@ export function EditTransformationRuleDialogue({
                             <Input
                                 id="ruleTitle"
                                 value={formData.ruleTitle}
-                                onChange={(e) => handleInputChange("ruleTitle", e.target.value)}
+                                onChange={(e) => handleInputChange("rule_title", e.target.value)}
                                 placeholder="Enter rule title"
                                 required
                             />
