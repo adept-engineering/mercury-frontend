@@ -1,10 +1,17 @@
 import { TransformationMapContainer } from "@/components/transformation-map/container";
 import { dummyTransformationMaps } from "@/components/transformation-map/dummy-data";
+import { getTransformationMaps } from "@/actions/transformationMaps";
+import { auth } from "@/auth";
 
-export default function TransformationMapPage() {
+export default async function TransformationMapPage() {
+    const session = await auth();
+    const token = session?.user?.token??'';
+    const transformationMaps = await getTransformationMaps(token);
+    console.log(transformationMaps);
+
     return (
         <div className="container mx-auto py-6">
-            <TransformationMapContainer transformationMaps={dummyTransformationMaps} />
+            <TransformationMapContainer transformationMaps={transformationMaps} />
         </div>
     );
 }

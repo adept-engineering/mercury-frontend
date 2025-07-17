@@ -31,7 +31,7 @@ const sampleRules: TransformationRule[] = [
 export const dummyTransformationMaps: TransformationMap[] = [
   {
     id: "1",
-    map_title: "EDI 837 to JSON Transformation",
+    map_title: "EDI to JSON Transformation",
     map_description: "Complete transformation map for converting EDI 837 healthcare claims to JSON format",
     rules: sampleRules.slice(0, 3),
   },

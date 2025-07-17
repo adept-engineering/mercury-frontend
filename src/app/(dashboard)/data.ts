@@ -43,11 +43,11 @@ export const sidebarItems: SidebarItemType[] = [
   {
     id: 1,
     menuItems: [
-      {
-        title: "Home",
-        url: "/home",
-        icon: Home,
-      },
+      // {
+      //   title: "Home",
+      //   url: "/home",
+      //   icon: Home,
+      // },
       {
         title: "Search",
         url: "/search",
@@ -80,11 +80,11 @@ export const sidebarItems: SidebarItemType[] = [
         url: "/relationships",
         icon: Cable,
       },
-      {
-        title: "Data Layout",
-        url: "/data-layout",
-        icon: FileText,
-      },
+      // {
+      //   title: "Data Layout",
+      //   url: "/data-layout",
+      //   icon: FileText,
+      // },
       {
         title: "Transformation Map",
         url: "/transformation-map",
@@ -95,17 +95,17 @@ export const sidebarItems: SidebarItemType[] = [
         url: "/compliance-rules",
         icon: Ruler,
       },
-      {
-        title: "Anomaly Audit",
-        url: "/anomaly",
-        icon: Bug,
-      },
+      // {
+      //   title: "Anomaly Audit",
+      //   url: "/anomaly",
+      //   icon: Bug,
+      // },
 
-      {
-        title: "Data Repository",
-        url: "/nlp",
-        icon: Cog,
-      },
+      // {
+      //   title: "Data Repository",
+      //   url: "/nlp",
+      //   icon: Cog,
+      // },
       {
         title: "Account",
         url: "/account",

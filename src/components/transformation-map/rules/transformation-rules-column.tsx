@@ -1,5 +1,5 @@
 "use client"
-import { TransformationMap } from "@/lib/types";
+import { TransformationRule } from "@/lib/types";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import {
     DropdownMenu,
@@ -7,17 +7,16 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2, Eye, List } from "lucide-react";
-import { Button } from "../ui/button";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { usePermissions } from "@/hooks/use-permissions";
-import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { EditTransformationMapDialogue } from "./edit-transformation-map-dialogue";
+import { EditTransformationRuleDialogue } from "./edit-transformation-rule-dialogue";
 
-const ActionsCell = ({ row }: { row: Row<TransformationMap> }) => {
+
+const ActionsCell = ({ row }: { row: Row<TransformationRule> }) => {
     const { canDelete, canEdit } = usePermissions();
-    const router = useRouter();
     const [editOpen, setEditOpen] = useState(false);
 
     // If user has no permissions for this row, don't show dropdown
@@ -27,15 +26,15 @@ const ActionsCell = ({ row }: { row: Row<TransformationMap> }) => {
 
     const handleDelete = () => {
         try {
-            // TODO: Implement delete transformation map mutation
+            // TODO: Implement delete transformation rule mutation
             toast({
-                title: "Transformation map deleted successfully",
+                title: "Transformation rule deleted successfully",
                 variant: "default",
             });
         } catch (error) {
             console.error(error);
             toast({
-                title: "Failed to delete transformation map",
+                title: "Failed to delete transformation rule",
                 variant: "destructive",
             });
         }
@@ -50,20 +49,12 @@ const ActionsCell = ({ row }: { row: Row<TransformationMap> }) => {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    {/* <DropdownMenuItem onClick={() => router.push(`/transformation-map/${row.original.id}`)}>
-                        <Eye className="mr-2 h-4 w-4" />
-                        View Details
-                    </DropdownMenuItem> */}
-                    <DropdownMenuItem onClick={() => router.push(`/transformation-map/${row.original.id}/rules?map_title=${row.original.map_title}`)}>
-                        <List className="mr-2 h-4 w-4" />
-                        View Rules
-                    </DropdownMenuItem>
-                    {/* {canEdit && (
+                    {canEdit && (
                         <DropdownMenuItem onClick={() => setEditOpen(true)}>
                             <Pencil className="mr-2 h-4 w-4" />
                             Edit
                         </DropdownMenuItem>
-                    )} */}
+                    )}
                     {canDelete && (
                         <DropdownMenuItem className="text-red-600" onClick={handleDelete}>
                             <Trash2 className="mr-2 h-4 w-4" />
@@ -72,48 +63,36 @@ const ActionsCell = ({ row }: { row: Row<TransformationMap> }) => {
                     )}
                 </DropdownMenuContent>
             </DropdownMenu>
-            <EditTransformationMapDialogue
+            {/* TODO: Add EditTransformationRuleDialogue component */}
+            <EditTransformationRuleDialogue
                 open={editOpen}
                 onOpenChange={setEditOpen}
-                transformationMap={row.original}
+                transformationRule={row.original}
             />
         </>
     );
 };
 
-export const transformationMapColumns: ColumnDef<TransformationMap>[] = [
+export const transformationRuleColumns: ColumnDef<TransformationRule>[] = [
     {
-        accessorKey: "map_title",
-        header: "MAP TITLE",
+        accessorKey: "rule_title",
+        header: "RULE TITLE",
         cell: ({ row }) => {
-            return <div className="text-sm font-medium">{row.getValue("map_title")}</div>;
+            return <div className="text-sm font-medium">{row.getValue("rule_title")}</div>;
         },
     },
     {
-        accessorKey: "map_description",
-        header: "DESCRIPTION",
+        accessorKey: "rule",
+        header: "TRANSFORMATION RULE",
         cell: ({ row }) => {
-            const description = row.getValue("map_description") as string;
+            const rule = row.getValue("rule") as string;
             return (
-                <div className="text-sm text-muted-foreground max-w-md truncate">
-                    {description}
+                <div className="text-sm text-muted-foreground max-w-md truncate" title={rule}>
+                    {rule}
                 </div>
             );
         },
     },
-    {
-        accessorKey: "rules",
-        header: "RULES COUNT",
-        cell: ({ row }) => {
-            const rules = row.getValue("rules") as any[];
-            return (
-                <div className="text-sm text-muted-foreground">
-                    {rules?.length || 0} rules
-                </div>
-            );
-        },
-    },
-
     {
         id: "actions",
         cell: ActionsCell,

@@ -16,6 +16,7 @@ import { toast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { TransformationDetailsTab } from "@/components/transformation-map/createFlow/transformation-details-tab";
 import { AddRuleSetTab } from "@/components/transformation-map/createFlow/add-rule-set-tab";
+import { useManageTransformationMaps } from "@/hooks/use-manage-transformation-maps";
 
 interface CreateTransformationMapData {
     mapTitle: string;
@@ -47,15 +48,21 @@ export default function CreateTransformationMapPage() {
     const [mapTitle, setMapTitle] = useState("");
     const [rules, setRules] = useState<TransformationRule[]>([]);
     const [mapDescription, setMapDescription] = useState("");
+    const {createTransformationMap,isCreatingTransformationMap} = useManageTransformationMaps();
     
     const handleSubmit = async () => {
         try {
             // TODO: Implement create transformation map API call
-            console.log("Creating transformation map:", {
-                mapTitle,
-                mapDescription,
-                rules,
-            });
+            const data = {
+                map_title:mapTitle,
+                map_description:mapDescription,
+                rules:rules.map(rule=>({
+                    rule:rule.rule,
+                    rule_title:rule.rule_title
+                }))
+            }
+            createTransformationMap(data);
+            console.log("Creating transformation map:", data);
 
             toast({
                 title: "Transformation map created successfully",

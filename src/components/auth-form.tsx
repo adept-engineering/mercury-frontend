@@ -108,7 +108,7 @@ export default function AuthForm({ type, userEmail, token }: AuthForm) {
               variant: "success",
               title: "Login Successfull"
             })
-            router.push("/data-audit");
+            router.push("/entities");
             formData.get("email")?.toString()
             formData.get("password")?.toString()
             break;
