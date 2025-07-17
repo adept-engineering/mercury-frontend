@@ -63,22 +63,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div></div>
-        <div className="flex items-center gap-3">
-          {isSystemAdmin && (
-          <Button
-            className="bg-pink-500 hover:bg-pink-600 text-white"
-            onClick={() => {
-              router.push("/relationships/create");
-            }}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-           Create Relationship
-          </Button>
-          )}
-        </div>
-      </div>
+    
 
       <div className="rounded-md border">
         <Table>
