@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Combobox, MultiSelectCombobox } from "@/components/ui/combobox";
 import { useState } from "react";
+import { Funnel } from "lucide-react";
 
 export default function DataAuditContainer({
   data,
@@ -133,13 +134,15 @@ export default function DataAuditContainer({
         <div className="flex items-center gap-4">
           <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline">Filter</Button>
+              <Button variant="outline">
+                <Funnel /> Filter
+              </Button>
             </SheetTrigger>
             <SheetContent side="right">
               <SheetHeader>
                 <SheetTitle>Filters</SheetTitle>
               </SheetHeader>
-              <div className="space-y-4 py-4">
+              <div className="space-y-4 p-4">
                 {/* Existing Filters */}
                 <EntityFilter entityIds={entityIds} />
                 <DateRangeFilter
@@ -147,20 +150,6 @@ export default function DataAuditContainer({
                   fromDate={fromDate}
                   toDate={toDate}
                 />
-                {/* New Filters */}
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Created At Range
-                  </label>
-                  <DateRangeFilter
-                    onDateRangeChange={(from, to) =>
-                      setCreatedAtRange({ from, to })
-                    }
-                    fromDate={createdAtRange.from}
-                    toDate={createdAtRange.to}
-                  />
-                </div>
-                {/* Remove filters for fields not present in DataAuditLog */}
                 <div>
                   <label className="block text-sm font-medium mb-1">
                     Control Number

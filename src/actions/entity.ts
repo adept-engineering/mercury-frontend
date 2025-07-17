@@ -1,5 +1,5 @@
-import {axiosInstance, axiosLocal} from "@/lib/axios";
-import {auth} from "./auth";
+import { axiosInstance, axiosLocal } from "@/lib/axios";
+import { auth } from "./auth";
 import { EntityData } from "@/lib/types";
 
 export async function getEntityIds() {
@@ -15,7 +15,10 @@ export async function getEntityIds() {
 export async function getEntities() {
   try {
     const session = await auth();
-    const response = await axiosInstance(session?.user?.token ?? "").get("/entities");
+    if (!session?.user || !session?.user?.token) return;
+    const response = await axiosInstance(session?.user?.token ?? "").get(
+      "/entities"
+    );
 
     return response.data;
   } catch (error) {
@@ -37,7 +40,10 @@ export async function getEntity(id: string) {
 
 export async function createEntity(entityData: EntityData, token: string) {
   try {
-    const response = await axiosInstance(token).post("/entities/create", entityData);
+    const response = await axiosInstance(token).post(
+      "/entities/create",
+      entityData
+    );
     return response.data;
   } catch (error) {
     console.error(error);
@@ -45,9 +51,16 @@ export async function createEntity(entityData: EntityData, token: string) {
   }
 }
 
-export async function updateEntity(entityData: EntityData, id: string, token: string) {
+export async function updateEntity(
+  entityData: EntityData,
+  id: string,
+  token: string
+) {
   try {
-    const response = await axiosInstance(token).put(`/entities/update/${id}`, entityData);
+    const response = await axiosInstance(token).put(
+      `/entities/update/${id}`,
+      entityData
+    );
     return response.data;
   } catch (error) {
     console.error(error);

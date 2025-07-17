@@ -23,5 +23,6 @@ export const useGraph = (sender_id: string) => {
   return useQuery<GraphData>({
     queryKey: ["graph", sender_id],
     queryFn: () => getGraph(sender_id),
+    enabled: !!sender_id,
   });
 };

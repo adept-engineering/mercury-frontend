@@ -2,7 +2,7 @@
 import { Confirmation } from "@/components/relationships/createFlow/confirmation";
 import { ReceiverInformation } from "@/components/relationships/createFlow/reciever-information";
 import { RelationshipRules } from "@/components/relationships/createFlow/relationship-rules";
-import { RelationshipName } from "@/components/relationships/createFlow/RelationshipName";
+import { RelationshipDetails } from "@/components/relationships/createFlow/RelationshipName";
 import { SenderInformation } from "@/components/relationships/createFlow/sender-information";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -15,32 +15,28 @@ import { ChevronLeft, ChevronRight, MoveLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useQueryState, parseAsInteger } from "nuqs";
 
-
 const steps = [
   {
     title: "Step 1",
-    description: "Relationship Name",
+    description: "Relationship Details",
   },
   {
     title: "Step 2",
-    description: "Sender Information",
+    description: "Transformation Rules",
   },
   {
     title: "Step 3",
-    description: "Receiver Information",
+    description: "Compliance Rules",
   },
   {
     title: "Step 4",
-    description: "Relationship Rules",
-  },
-  {
-    title: "Step 5",
     description: "Confirmation",
   },
 ];
 
 export default function CreateRelationshipFlow() {
-  const [currentTab, setCurrentTab] = useQueryState("currentTab",
+  const [currentTab, setCurrentTab] = useQueryState(
+    "currentTab",
     parseAsInteger.withDefault(0)
   );
   const lastPage = steps.length - 1;
@@ -68,10 +64,9 @@ export default function CreateRelationshipFlow() {
           <StepperVertical steps={steps} currentStep={currentTab} />
 
           <section className="md:col-span-3 px-12 w-full 2xl:max-w-3xl max-md:px-3 flex flex-col min-h-[70vh]">
-
             <StepperContent step={0}>
               <div className="md:py-6 animate-fade-up h-full">
-                <RelationshipName />
+                <RelationshipDetails />
               </div>
             </StepperContent>
 
@@ -98,7 +93,6 @@ export default function CreateRelationshipFlow() {
                 <Confirmation />
               </div>
             </StepperContent>
-
 
             <footer className="flex justify-between pb-8 items-center ">
               <Button
@@ -130,7 +124,7 @@ export default function CreateRelationshipFlow() {
               {currentTab === lastPage && (
                 <Button
                   className="px-4 py-2 bg-primary text-primary-foreground rounded"
-                  onClick={() => { }}
+                  onClick={() => {}}
                   disabled={false}
                 >
                   Create Relationship
@@ -140,7 +134,6 @@ export default function CreateRelationshipFlow() {
           </section>
         </Stepper>
       </div>
-
     </div>
   );
 }

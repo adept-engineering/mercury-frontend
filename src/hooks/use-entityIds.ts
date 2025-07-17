@@ -10,7 +10,7 @@ export function useEntityIds() {
   });
 }
 
-export function useEntities(entityID: string) {
+export function useEntity(entityID: string) {
   return useQuery({
     queryKey: ["entity", entityID],
     queryFn: async () => {

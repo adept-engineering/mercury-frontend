@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { BasicNvlWrapper } from "@neo4j-nvl/react"; // Changed import to match actual export
+import { InteractiveNvlWrapper } from "@neo4j-nvl/react";
 import "./GraphVisualization.css";
 import { useGraph, useSenders } from "@/hooks/use-graph";
 import {
@@ -39,14 +39,8 @@ export interface GraphSummary {
 
 const GraphVisualization = () => {
   const [selectedSender, setSelectedSender] = useState<string>("");
-  //   const [graphData, setGraphData] = useState<GraphData>({
-  //     nodes: [],
-  //     rels: [],
-  //   });
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  const API_BASE_URL = "http://localhost:8000"; // Adjust to your API URL
 
   // Fetch all available senders
   const { data: senders = [] } = useSenders();
@@ -285,11 +279,11 @@ const GraphVisualization = () => {
           </div>
         )}
         {graphData && graphFetched && graphData.nodes.length > 0 && (
-          <BasicNvlWrapper
+          <InteractiveNvlWrapper
             nodes={graphData.nodes}
             rels={graphData.relationships}
             nvlOptions={{
-              initialZoom: 1,
+              initialZoom: 3,
               disableTelemetry: true,
             }}
             height={600}
