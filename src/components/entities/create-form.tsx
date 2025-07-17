@@ -67,17 +67,17 @@ export function EntryForm() {
       referenceIDs: values.referenceIDs.map((ref) => ({
         docType: ref.docType,
         extn: [
-          ref.interchangeID && {
-            reference_name: "interchangeID",
-            reference_value: ref.interchangeID ?? "",
+          ref.InterchangeID && {
+            reference_name: "InterchangeID",
+            reference_value: ref.InterchangeID ?? "",
           },
-          ref.groupID && {
-            reference_name: "groupID",
-            reference_value: ref.groupID ?? "",
+          ref.GroupID && {
+            reference_name: "GroupID",
+            reference_value: ref.GroupID ?? "",
           },
-          ref.applicationID && {
-            reference_name: "applicationID",
-            reference_value: ref.applicationID ?? "",
+          ref.ApplicationID && {
+            reference_name: "ApplicationID",
+            reference_value: ref.ApplicationID ?? "",
           },
         ].filter((item): item is { reference_name: string; reference_value: string } => !!item),
       })),
@@ -345,7 +345,7 @@ export function EntryForm() {
                         <div className="flex gap-2">
                           <FormField
                             control={form.control}
-                            name={`referenceIDs.${i}.interchangeID`}
+                            name={`referenceIDs.${i}.InterchangeID`}
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormControl>
@@ -373,7 +373,7 @@ export function EntryForm() {
                         <div className="flex gap-2">
                           <FormField
                             control={form.control}
-                            name={`referenceIDs.${i}.groupID`}
+                            name={`referenceIDs.${i}.GroupID`}
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormControl>
@@ -390,7 +390,7 @@ export function EntryForm() {
                       <div className="flex gap-2">
                         <FormField
                           control={form.control}
-                          name={`referenceIDs.${i}.applicationID`}
+                          name={`referenceIDs.${i}.ApplicationID`}
                           render={({ field }) => (
                             <FormItem className="w-full">
                               <FormControl>

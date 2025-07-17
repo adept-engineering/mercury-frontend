@@ -29,9 +29,9 @@ export const EntitySchema = z.object({
     referenceIDs: z.array(
       z.object({
         docType: z.string(),
-        interchangeID: z.string().optional(),
-        groupID: z.string().optional(),
-        applicationID: z.string().optional(),
+        InterchangeID: z.string().optional(),
+        GroupID: z.string().optional(),
+        ApplicationID: z.string().optional(),
       })
     ),
   });

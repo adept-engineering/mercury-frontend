@@ -91,7 +91,7 @@ console.log(referenceIDs);
 
   const CompanyInfo = array.filter((item) => item.name === "Name" || item.name === "Organization Type" || item.name === "Status" || item.name === "Email");
   const Address = array.filter((item) => item.name === "Address 1" || item.name === "Address 2" || item.name === "City" || item.name === "State" || item.name === "Zipcode" || item.name === "Country");
-  const Timestamps = array.filter((item) => item.name === "Created Date" || item.name === "Updated Date" || item.name === "Updated By");
+  const Timestamps = array.filter((item) => item.name === "Created Date" || item.name === "Updated Date" );
 
   return {
     CompanyInfo,
