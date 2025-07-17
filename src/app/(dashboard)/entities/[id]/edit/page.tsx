@@ -1,8 +1,6 @@
 import { getEntity } from "@/actions/entity";
-import { EditEntityForm } from "@/components/entities/edit-form";
 import { EntityData } from "@/lib/types";
 import { notFound } from "next/navigation";
-import { BackButton } from "@/components/ui/back-button";
 import EditEntityContainer from "./edit-entity-container";
 
 interface EditEntityPageProps {
@@ -30,7 +28,7 @@ export default async function EditEntityPage({ params }: EditEntityPageProps) {
             ...extnObj
            }
         });
-        console.log(referenceIDs);
+        console.log(referenceIDs,tenant_id);
        
         const defaultValues: EntityData = {
             ...rest,

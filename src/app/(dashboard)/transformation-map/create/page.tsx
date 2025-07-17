@@ -18,11 +18,7 @@ import { TransformationDetailsTab } from "@/components/transformation-map/create
 import { AddRuleSetTab } from "@/components/transformation-map/createFlow/add-rule-set-tab";
 import { useManageTransformationMaps } from "@/hooks/use-manage-transformation-maps";
 
-interface CreateTransformationMapData {
-    mapTitle: string;
-    description: string;
-    rules: TransformationRule[];
-}
+
 
 const steps = [
     {
@@ -48,7 +44,7 @@ export default function CreateTransformationMapPage() {
     const [mapTitle, setMapTitle] = useState("");
     const [rules, setRules] = useState<TransformationRule[]>([]);
     const [mapDescription, setMapDescription] = useState("");
-    const {createTransformationMap,isCreatingTransformationMap} = useManageTransformationMaps();
+    const {createTransformationMap} = useManageTransformationMaps();
     
     const handleSubmit = async () => {
         try {
@@ -154,7 +150,7 @@ export default function CreateTransformationMapPage() {
                                         <div className="space-y-2">
                                             <Label className="text-sm font-medium">Rules ({rules.length})</Label>
                                             <div className="space-y-2">
-                                                {rules.map((rule, index) => (
+                                                {rules.map((rule) => (
                                                     <div key={rule.id} className="border rounded p-3">
                                                         <p className="font-medium text-sm">{rule.rule_title}</p>
                                                         <p className="text-sm text-muted-foreground mt-1">{rule.rule}</p>

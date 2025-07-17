@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Sans, Geist_Mono, DM_Sans } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import Provider from "./provider";
 import "./globals.css";

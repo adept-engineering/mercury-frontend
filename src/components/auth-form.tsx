@@ -20,7 +20,7 @@ interface AuthForm {
 
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 export default function AuthForm({ type, userEmail, token }: AuthForm) {
   const { toast } = useToast();
   const router = useRouter();
@@ -112,7 +112,6 @@ export default function AuthForm({ type, userEmail, token }: AuthForm) {
             formData.get("email")?.toString()
             formData.get("password")?.toString()
             break;
-            // eslint-disable-next-line
           } catch (error: any) {
             setButtonDisabled(false);
             toast({

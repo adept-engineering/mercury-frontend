@@ -1,5 +1,4 @@
 import { TransformationMapContainer } from "@/components/transformation-map/container";
-import { dummyTransformationMaps } from "@/components/transformation-map/dummy-data";
 import { getTransformationMaps } from "@/actions/transformationMaps";
 import { auth } from "@/auth";
 

@@ -101,7 +101,7 @@ export function EDIDataCard({ ediData }: EDIDataCardProps) {
       toast({
         title: "Copied to clipboard",
       });
-      // eslint-disable-next-line
+
     } catch (err: any) {
       toast({
         title: "Failed to copy",
@@ -161,7 +161,7 @@ export function NLPDataCard({ nlpData }: NLPDataCardProps) {
       toast({
         title: "Copied to clipboard",
       });
-      // eslint-disable-next-line
+
     } catch (err: any) {
       toast({
         title: "Failed to copy",
@@ -333,7 +333,7 @@ export function CompliantDataCard({ compliantData }: CompliantDataProps) {
       toast({
         title: "Copied to clipboard",
       });
-      // eslint-disable-next-line
+
     } catch (err: any) {
       toast({
         title: "Failed to copy",

@@ -1,6 +1,6 @@
 "use server"
-import {axiosLocal,axiosInstance} from "@/lib/axios";
-import {auth} from "./auth";
+import {axiosInstance} from "@/lib/axios";
+
 import { revalidatePath } from "next/cache";
 
 export async function getComplianceRules(token: string) {

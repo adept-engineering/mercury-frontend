@@ -14,11 +14,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../../../select";
+} from "@/components/ui/select";
 
 import { cn } from "@/lib/utils";
-import { Button } from "../../../../../button";
-import { Textarea } from "../../../../../textarea";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 type UseAutoResizeTextareaProps = {
   minHeight: number;
