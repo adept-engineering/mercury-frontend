@@ -15,18 +15,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
 import { usePermissions } from "@/hooks/use-permissions";
 import { toast } from "@/hooks/use-toast";
-import { TransformationMap } from "@/lib/types";
+import { TransformationRule } from "@/lib/types";
 
 interface EditTransformationMapDialogueProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    transformationMap: TransformationMap;
+    transformationRule: TransformationRule;
 }
 
 export function EditTransformationMapDialogue({
     open,
     onOpenChange,
-    transformationMap,
+    transformationRule,
 }: EditTransformationMapDialogueProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -37,13 +37,13 @@ export function EditTransformationMapDialogue({
     const { canEdit } = usePermissions();
 
     useEffect(() => {
-        if (transformationMap) {
+        if (transformationRule) {
             setFormData({
-                mapTitle: transformationMap.mapTitle || "",
-                description: transformationMap.description || "",
+                mapTitle: transformationRule.rule_title || "",
+                description: transformationRule.rule || "",
             });
         }
-    }, [transformationMap]);
+    }, [transformationRule]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -51,7 +51,7 @@ export function EditTransformationMapDialogue({
 
         try {
             // TODO: Implement update transformation map API call
-            console.log("Updating transformation map:", transformationMap.id, formData);
+            console.log("Updating transformation map:", transformationRule.id, formData);
 
             toast({
                 title: "Transformation map updated successfully",
