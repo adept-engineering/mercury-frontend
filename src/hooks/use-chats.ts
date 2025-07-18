@@ -115,7 +115,7 @@ export const createLLMChat = async (
 ) => {
   const response = await axiosPython.post(`/chat`, {
     query: question,
-    client_id: clientId,
+    client_id: "Company A",
     stream: false,
   });
   return response.data;

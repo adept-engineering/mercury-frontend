@@ -14,31 +14,39 @@ import { Button } from "@/components/ui/button";
 import { useEntities } from "@/hooks/use-entity";
 import { useSession } from "next-auth/react";
 import { useCurrentSession } from "@/hooks/use-current-session";
+import { EdiTree } from "../edi-formats/edi-tree";
 import { getEntityReferences } from "@/lib/utils";
 
 export function RelationshipDetails() {
   const { session } = useCurrentSession();
   const { data: entities } = useEntities(session?.user.token || "");
   const [selectedSenderEntity, setSelectedSenderEntity] = useState<string>("");
-  const [selectedReceiverEntity, setSelectedReceiverEntity] = useState<string>("");
-  const [selectedSenderReference, setSelectedSenderReference] = useState<string>("");
+  const [selectedReceiverEntity, setSelectedReceiverEntity] =
+    useState<string>("");
+  const [selectedSenderReference, setSelectedSenderReference] =
+    useState<string>("");
   const [senderReferences, setSenderReferences] = useState<any>([]);
   const [receiverReferences, setReceiverReferences] = useState<any>([]);
 
-
   useEffect(() => {
-    console.log(selectedSenderEntity, "selectedSenderEntity")
+    console.log(selectedSenderEntity, "selectedSenderEntity");
     if (selectedSenderEntity && entities) {
-      const senderReference = getEntityReferences(selectedSenderEntity, entities);
-      console.log(senderReference, "senderReference")
-      setSenderReferences(senderReference)
+      const senderReference = getEntityReferences(
+        selectedSenderEntity,
+        entities
+      );
+      console.log(senderReference, "senderReference");
+      setSenderReferences(senderReference);
     }
     if (selectedReceiverEntity && entities) {
-      const receiverReference = getEntityReferences(selectedReceiverEntity, entities);
-      console.log(receiverReference, "receiverReference")
-      setReceiverReferences(receiverReference)
+      const receiverReference = getEntityReferences(
+        selectedReceiverEntity,
+        entities
+      );
+      console.log(receiverReference, "receiverReference");
+      setReceiverReferences(receiverReference);
     }
-  }, [selectedSenderEntity, selectedReceiverEntity, entities])
+  }, [selectedSenderEntity, selectedReceiverEntity, entities]);
   const filterEntities = (entityId: string) => {
     return entities;
   };
@@ -61,7 +69,10 @@ export function RelationshipDetails() {
           <Label htmlFor="sender-entity" className="text-sm font-medium">
             Sender Entity
           </Label>
-          <Select value={selectedSenderEntity} onValueChange={setSelectedSenderEntity}>
+          <Select
+            value={selectedSenderEntity}
+            onValueChange={setSelectedSenderEntity}
+          >
             <SelectTrigger className="w-full" id="sender-entity">
               <SelectValue placeholder="Select sender entity" />
             </SelectTrigger>
@@ -79,7 +90,10 @@ export function RelationshipDetails() {
           <Label htmlFor="receiver-entity" className="text-sm font-medium">
             Receiver Entity
           </Label>
-          <Select value={selectedReceiverEntity} onValueChange={setSelectedReceiverEntity}>
+          <Select
+            value={selectedReceiverEntity}
+            onValueChange={setSelectedReceiverEntity}
+          >
             <SelectTrigger className="w-full" id="receiver-entity">
               <SelectValue placeholder="Select receiver entity" />
             </SelectTrigger>
@@ -98,7 +112,10 @@ export function RelationshipDetails() {
         <Label htmlFor="sender-reference" className="text-sm font-medium">
           Sender Reference
         </Label>
-        <Select value={selectedSenderReference} onValueChange={setSelectedSenderReference}>
+        <Select
+          value={selectedSenderReference}
+          onValueChange={setSelectedSenderReference}
+        >
           <SelectTrigger className="w-full" id="sender-reference">
             <SelectValue placeholder="Select Sender format type" />
           </SelectTrigger>
@@ -121,8 +138,8 @@ export function RelationshipDetails() {
           Receiver Reference
         </Label>
         <Select>
-          <SelectTrigger className="w-full" id="sender-entity">
-            <SelectValue placeholder="Select Sender format type" />
+          <SelectTrigger className="w-full" id="sender-reference">
+            <SelectValue placeholder="Select Reciever Reference" />
           </SelectTrigger>
           <SelectContent>
             {selectedReceiverEntity &&

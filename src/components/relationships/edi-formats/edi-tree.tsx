@@ -9,47 +9,30 @@ export const EdiTree = () => {
     useQueryState("transactionSet");
   const [selectedSegment, setSelectedSegment] = useQueryState("segment");
   const { data: formats } = useGetAllFormats();
-  const { data: versions, isLoading: isLoadingVersions } =
-    useGetVersionByFormat(selectedFormat || "");
+  const { data: versions } = useGetVersionByFormat(selectedFormat || "");
 
-  const data: TreeDataItem[] = [
-    {
-      id: "1",
-      name: "Item 1",
-      children: [
-        {
-          id: "2",
-          name: "Item 1.1",
-          children: [
-            {
-              id: "3",
-              name: "Item 1.1.1",
-            },
-            {
-              id: "4",
-              name: "Item 1.1.2",
-            },
-          ],
-        },
-        {
-          id: "5",
-          name: "Item 1.2 (disabled)",
-          disabled: true,
-        },
-      ],
-    },
-    {
-      id: "6",
-      name: "Item 2 (draggable)",
-      draggable: true,
-    },
-  ];
+  const data: TreeDataItem[] =
+    formats?.map((format) => ({
+      id: format.Agency,
+      name: format.Description,
+      children:
+        versions?.map((version: { Version: string }) => ({
+          id: `${format.Agency}-${version.Version}`,
+          name: version.Version,
+        })) || [],
+    })) || [];
 
   return (
     <TreeView
       data={data}
-      onClick={(e) => {
-        console.log(e.target);
+      onSelectChange={(item) => {
+        if (item?.id.includes("-")) {
+          const [format, version] = item.id.split("-");
+          setSelectedFormat(format);
+          setSelectedVersion(version);
+        } else {
+          setSelectedFormat(item?.id!);
+        }
       }}
     />
   );
