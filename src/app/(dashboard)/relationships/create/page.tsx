@@ -22,11 +22,11 @@ const steps = [
   },
   {
     title: "Step 2",
-    description: "Transformation Rules",
+    description: "Transformation Map",
   },
   {
     title: "Step 3",
-    description: "Compliance Rules",
+    description: "Compliance Check",
   },
   {
     title: "Step 4",

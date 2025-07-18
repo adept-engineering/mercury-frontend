@@ -14,11 +14,31 @@ import { Button } from "@/components/ui/button";
 import { useEntities } from "@/hooks/use-entity";
 import { useSession } from "next-auth/react";
 import { useCurrentSession } from "@/hooks/use-current-session";
+import { getEntityReferences } from "@/lib/utils";
 
 export function RelationshipDetails() {
   const { session } = useCurrentSession();
   const { data: entities } = useEntities(session?.user.token || "");
+  const [selectedSenderEntity, setSelectedSenderEntity] = useState<string>("");
+  const [selectedReceiverEntity, setSelectedReceiverEntity] = useState<string>("");
+  const [selectedSenderReference, setSelectedSenderReference] = useState<string>("");
+  const [senderReferences, setSenderReferences] = useState<any>([]);
+  const [receiverReferences, setReceiverReferences] = useState<any>([]);
 
+
+  useEffect(() => {
+    console.log(selectedSenderEntity, "selectedSenderEntity")
+    if (selectedSenderEntity && entities) {
+      const senderReference = getEntityReferences(selectedSenderEntity, entities);
+      console.log(senderReference, "senderReference")
+      setSenderReferences(senderReference)
+    }
+    if (selectedReceiverEntity && entities) {
+      const receiverReference = getEntityReferences(selectedReceiverEntity, entities);
+      console.log(receiverReference, "receiverReference")
+      setReceiverReferences(receiverReference)
+    }
+  }, [selectedSenderEntity, selectedReceiverEntity, entities])
   const filterEntities = (entityId: string) => {
     return entities;
   };
@@ -41,7 +61,7 @@ export function RelationshipDetails() {
           <Label htmlFor="sender-entity" className="text-sm font-medium">
             Sender Entity
           </Label>
-          <Select>
+          <Select value={selectedSenderEntity} onValueChange={setSelectedSenderEntity}>
             <SelectTrigger className="w-full" id="sender-entity">
               <SelectValue placeholder="Select sender entity" />
             </SelectTrigger>
@@ -56,12 +76,12 @@ export function RelationshipDetails() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="sender-entity" className="text-sm font-medium">
+          <Label htmlFor="receiver-entity" className="text-sm font-medium">
             Receiver Entity
           </Label>
-          <Select>
-            <SelectTrigger className="w-full" id="sender-entity">
-              <SelectValue placeholder="Select reciever entity" />
+          <Select value={selectedReceiverEntity} onValueChange={setSelectedReceiverEntity}>
+            <SelectTrigger className="w-full" id="receiver-entity">
+              <SelectValue placeholder="Select receiver entity" />
             </SelectTrigger>
             <SelectContent>
               {entities?.map((entity) => (
@@ -75,21 +95,21 @@ export function RelationshipDetails() {
       </section>
 
       <div className="space-y-2">
-        <Label htmlFor="sender-entity" className="text-sm font-medium">
+        <Label htmlFor="sender-reference" className="text-sm font-medium">
           Sender Reference
         </Label>
-        <Select>
-          <SelectTrigger className="w-full" id="sender-entity">
+        <Select value={selectedSenderReference} onValueChange={setSelectedSenderReference}>
+          <SelectTrigger className="w-full" id="sender-reference">
             <SelectValue placeholder="Select Sender format type" />
           </SelectTrigger>
           <SelectContent>
-            {entities &&
-              entities[0].entityidtbl.map((entity) => (
+            {selectedSenderEntity &&
+              senderReferences.map((references: any) => (
                 <SelectItem
-                  key={entity.reference_id_type}
-                  value={entity.reference_id_type}
+                  key={references.reference_id}
+                  value={references.reference_id}
                 >
-                  {entity.reference_id_type}
+                  {references.reference_id}
                 </SelectItem>
               ))}
           </SelectContent>
@@ -97,21 +117,21 @@ export function RelationshipDetails() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="sender-entity" className="text-sm font-medium">
-          Select Edi/Edifact Format
+        <Label htmlFor="receiver-reference" className="text-sm font-medium">
+          Receiver Reference
         </Label>
         <Select>
           <SelectTrigger className="w-full" id="sender-entity">
             <SelectValue placeholder="Select Sender format type" />
           </SelectTrigger>
           <SelectContent>
-            {entities &&
-              entities[0].entityidtbl.map((entity) => (
+            {selectedReceiverEntity &&
+              receiverReferences.map((references: any) => (
                 <SelectItem
-                  key={entity.reference_id_type}
-                  value={entity.reference_id_type}
+                  key={references.reference_id}
+                  value={references.reference_id}
                 >
-                  {entity.reference_id_type}
+                  {references.reference_id}
                 </SelectItem>
               ))}
           </SelectContent>

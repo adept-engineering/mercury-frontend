@@ -8,10 +8,10 @@ export function useManageComplianceRules() {
 
     const { session } = useCurrentSession();
 
-    // const { data: complianceRules, isLoading: isLoadingComplianceRules, error: errorComplianceRules } = useQuery({
-    //     queryKey: ["complianceRules"],
-    //     queryFn: () => getComplianceRules(session?.user?.token ?? ""),
-    // })
+    const { data: complianceRules, isLoading: isLoadingComplianceRules, error: errorComplianceRules } = useQuery({
+        queryKey: ["complianceRules"],
+        queryFn: () => getComplianceRules(session?.user?.token ?? ""),
+    })
 
     const { mutate: createComplianceRuleMutation } = useMutation({
         mutationFn: (data: { rule: string, rule_title: string }) => createComplianceRule(data, session?.user?.token ?? ""),
@@ -44,7 +44,7 @@ export function useManageComplianceRules() {
         },
     })
     //  complianceRules, isLoadingComplianceRules, errorComplianceRules,
-    return {  createComplianceRuleMutation, updateComplianceRuleMutation, deleteComplianceRuleMutation }
+    return {  createComplianceRuleMutation, updateComplianceRuleMutation, deleteComplianceRuleMutation,complianceRules, isLoadingComplianceRules, errorComplianceRules }
 
 }
 

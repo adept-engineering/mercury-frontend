@@ -174,3 +174,34 @@ export const MapDataAuditLogObjToArray = (obj: Record<string, any>): {
   const EDIData = array.filter((item) => item.name === "EDI Data");
   return { InterchangeDetails, GroupDetails, TransactionDetails, DocRefData, CompliantData, NLPData, EDIData };
 }
+
+
+
+export const getEntityReferences =  (entityId: string, entities: any):any => {
+  console.log(entityId, "entityId")
+  console.log(entities, "entities")
+  return entities?.find((entity: any) => entity.id === entityId)?.entityidtbl.map((item: any) => {
+    const extnMap = item.entityidtbl_extn.reduce((acc: any, extn: any) => {
+      acc[extn.reference_name] = extn.reference_value;
+      return acc;
+    }, {});
+  
+    let reference_id = "";
+  
+    if (item.reference_id_type === "EDI/EDIFACT" || item.reference_id_type === "EDI/X12") {
+      const interchangeID = extnMap["InterchangeID"];
+      const groupID = extnMap["GroupID"];
+  
+        reference_id = `${interchangeID}/${groupID}`;
+   
+    } else {
+      reference_id = extnMap["ApplicationID"] ;
+    }
+  
+    return {
+      docType: item.reference_id_type,
+      reference_id,
+    };
+  });
+  
+}
