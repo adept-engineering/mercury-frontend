@@ -61,23 +61,23 @@ export const MapEntityObjToArray = (obj: Record<string, any>) => {
   }
   const referenceIDs = obj.entityidtbl.map((item: any) => {
     const extnObj = item.entityidtbl_extn.reduce((acc: any, extn: any) => {
-      if(extn.reference_name === "interchangeID"){
-        acc['Interchange ID']= extn.reference_value;
-      }else if(extn.reference_name === "groupID"){
-        acc['Group ID']= extn.reference_value;
-      }else if(extn.reference_name === "applicationID"){
-        acc['Application ID']= extn.reference_value;
-      }else{
+      if (extn.reference_name === "interchangeID") {
+        acc['Interchange ID'] = extn.reference_value;
+      } else if (extn.reference_name === "groupID") {
+        acc['Group ID'] = extn.reference_value;
+      } else if (extn.reference_name === "applicationID") {
+        acc['Application ID'] = extn.reference_value;
+      } else {
         acc[extn.reference_name] = extn.reference_value;
       }
-        return acc;
-      }, {});
-   return {
-    docType: item.reference_id_type,
-    ...extnObj
-   }
-})
-console.log(referenceIDs);
+      return acc;
+    }, {});
+    return {
+      docType: item.reference_id_type,
+      ...extnObj
+    }
+  })
+  console.log(referenceIDs);
 
 
 
@@ -91,7 +91,7 @@ console.log(referenceIDs);
 
   const CompanyInfo = array.filter((item) => item.name === "Name" || item.name === "Organization Type" || item.name === "Status" || item.name === "Email");
   const Address = array.filter((item) => item.name === "Address 1" || item.name === "Address 2" || item.name === "City" || item.name === "State" || item.name === "Zipcode" || item.name === "Country");
-  const Timestamps = array.filter((item) => item.name === "Created Date" || item.name === "Updated Date" );
+  const Timestamps = array.filter((item) => item.name === "Created Date" || item.name === "Updated Date");
 
   return {
     CompanyInfo,
@@ -160,8 +160,8 @@ export const MapDataAuditLogObjToArray = (obj: Record<string, any>): {
     };
   });
 
-  const InterchangeDetails = interchangeDetailsArray.filter((item) => item.name === "Control Number"|| item.name === "Sender" || item.name === "Receiver" || item.name === "Date Time"  );
-  const GroupDetails = groupDetailsArray.filter((item) => item.name === "Control Number" || item.name === "Sender" || item.name === "Receiver" || item.name === "Date Time" );
+  const InterchangeDetails = interchangeDetailsArray.filter((item) => item.name === "Control Number" || item.name === "Sender" || item.name === "Receiver" || item.name === "Date Time");
+  const GroupDetails = groupDetailsArray.filter((item) => item.name === "Control Number" || item.name === "Sender" || item.name === "Receiver" || item.name === "Date Time");
   const TransactionDetails = transactionDetailsArray.filter((item) => item.name === "Transaction Name" || item.name === "Standard Version" || item.name === "Version");
   const DocRefData = obj.docRefData.map((item: any) => {
     return {
@@ -177,7 +177,7 @@ export const MapDataAuditLogObjToArray = (obj: Record<string, any>): {
 
 
 
-export const getEntityReferences =  (entityId: string, entities: any):any => {
+export const getEntityReferences = (entityId: string, entities: any): any => {
   console.log(entityId, "entityId")
   console.log(entities, "entities")
   return entities?.find((entity: any) => entity.id === entityId)?.entityidtbl.map((item: any) => {
@@ -185,23 +185,45 @@ export const getEntityReferences =  (entityId: string, entities: any):any => {
       acc[extn.reference_name] = extn.reference_value;
       return acc;
     }, {});
-  
+
     let reference_id = "";
-  
+
     if (item.reference_id_type === "EDI/EDIFACT" || item.reference_id_type === "EDI/X12") {
       const interchangeID = extnMap["InterchangeID"];
       const groupID = extnMap["GroupID"];
-  
-        reference_id = `${interchangeID}/${groupID}`;
-   
+
+      reference_id = `${interchangeID}/${groupID}`;
+
     } else {
-      reference_id = extnMap["ApplicationID"] ;
+      reference_id = extnMap["ApplicationID"];
     }
-  
+
     return {
       docType: item.reference_id_type,
       reference_id,
     };
   });
-  
+
 }
+
+export const parseTemplateToArray = (template: string): { index: string; description: string }[] => {
+  const regex = /([^:]+?):\s*%%\.(\d+)\.%%/g;
+  const result: { index: string; description: string }[] = [];
+
+  let match;
+  while ((match = regex.exec(template)) !== null) {
+    // Remove leading ';' and spaces from the description
+    let description = match[1].trim().replace(/^;\s*/, '');
+    const index = match[2].padStart(2, '0');
+    result.push({ index, description });
+  }
+
+  return result;
+}
+
+export const convertArrayToTemplate = (data: { index: string; description: string }[]): string => {
+  return data
+    .map(item => `${item.description}: %%.${parseInt(item.index, 10)}.%%`)
+    .join(';  ') + ';';
+}
+

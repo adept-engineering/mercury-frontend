@@ -11,6 +11,8 @@ import {
 } from '@/hooks/use-nlp';
 import { useSetElementBySegment } from '@/hooks/use-nlp';
 import { toast } from '@/hooks/use-toast';
+import { convertArrayToTemplate, parseTemplateToArray } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 
 export function NLPConfigClient() {
     const [selectedFormat, setSelectedFormat] = useQueryState('format');
@@ -18,10 +20,10 @@ export function NLPConfigClient() {
     const [selectedTransactionSet, setSelectedTransactionSet] = useQueryState('transactionSet');
     const [selectedSegment, setSelectedSegment] = useQueryState('segment');
     const { data: formats } = useGetAllFormats();
-    const { data: versions,isLoading: isLoadingVersions } = useGetVersionByFormat(selectedFormat || '');
-    const { data: transactionSets,isLoading: isLoadingTransactionSets } = useGetTransactionSetByVersion(selectedVersion || '', selectedFormat || '');
-    const { data: segments,isLoading: isLoadingSegments } = useGetSegmentByTransactionSet(selectedTransactionSet || '', selectedVersion || '', selectedFormat || '');
-    const { data: elements,isLoading: isLoadingElements } = useGetElementBySegment(selectedSegment || '', selectedVersion || '', selectedFormat || '');
+    const { data: versions, isLoading: isLoadingVersions } = useGetVersionByFormat(selectedFormat || '');
+    const { data: transactionSets, isLoading: isLoadingTransactionSets } = useGetTransactionSetByVersion(selectedVersion || '', selectedFormat || '');
+    const { data: segments, isLoading: isLoadingSegments } = useGetSegmentByTransactionSet(selectedTransactionSet || '', selectedVersion || '', selectedFormat || '');
+    const { data: elements, isLoading: isLoadingElements } = useGetElementBySegment(selectedSegment || '', selectedVersion || '', selectedFormat || '');
     const { mutate: setElementBySegment } = useSetElementBySegment(selectedSegment || '', selectedVersion || '', selectedFormat || '');
 
     const handleFormatSelect = (format: string) => {
@@ -63,21 +65,28 @@ export function NLPConfigClient() {
         return formatData?.Description;
     }
     const description = getFormatDescription(selectedFormat || '');
- console.log(elements, "elements");
+    const parsedTemplate =   parseTemplateToArray(elements !== undefined ? elements[0].description : "");
+    // console.log(parsedTemplate, "parsedTemplate", elements, "elements");
+    
 
     return (
         <>
-            <NLPBreadcrumbList
-                selectedFormat={description}
-                selectedVersion={selectedVersion}
-                selectedTransactionSet={selectedTransactionSet}
-                selectedSegment={selectedSegment}
-                handleFormatChange={handleFormatSelect}
-                handleVersionChange={handleVersionSelect}
-                handleTransactionSetChange={handleTransactionSetSelect}
-                handleSegmentChange={handleSegmentSelect}
-            />
-          {!selectedSegment && <div className="flex gap-4">
+            <div className="flex justify-between items-center">
+                <h1 className="text-2xl font-bold">NLP Configuration</h1>
+
+
+                <NLPBreadcrumbList
+                    selectedFormat={description || ''}
+                    selectedVersion={selectedVersion}
+                    selectedTransactionSet={selectedTransactionSet}
+                    selectedSegment={selectedSegment}
+                    handleFormatChange={handleFormatSelect}
+                    handleVersionChange={handleVersionSelect}
+                    handleTransactionSetChange={handleTransactionSetSelect}
+                    handleSegmentChange={handleSegmentSelect}
+                />
+            </div>
+            {!selectedSegment && <div className="flex gap-4">
                 {!selectedTransactionSet && <FormatSelector
                     formats={formats || []}
                     selectedFormat={selectedFormat || ''}
@@ -108,11 +117,16 @@ export function NLPConfigClient() {
             </div>
             }
             <div className="flex ">
-            {selectedSegment && <ElementSelector
-                data={elements || []}
-                onSave={handleSave}
-                isLoading={isLoadingElements}
-            />}
+                {
+                isLoadingElements ? (
+                    <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                    </div>
+                ): (selectedSegment && <ElementSelector
+                    data={parsedTemplate}
+                    onSave={handleSave}
+                    Segment={selectedSegment}
+                />)}
             </div>
         </>
     );
