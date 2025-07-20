@@ -20,6 +20,7 @@ import {
   Ruler,
   GitGraphIcon,
   FileBarChart2,
+  FileText,
 } from "lucide-react";
 
 import { DropdownMenuType, SidebarItemType } from "@/lib/types";
@@ -80,11 +81,11 @@ export const sidebarItems: SidebarItemType[] = [
         url: "/relationships",
         icon: Cable,
       },
-      // {
-      //   title: "Data Layout",
-      //   url: "/data-layout",
-      //   icon: FileText,
-      // },
+      {
+        title: "Data Layout",
+        url: "/data-layout",
+        icon: FileText,
+      },
       {
         title: "Transformation Map",
         url: "/transformation-map",
