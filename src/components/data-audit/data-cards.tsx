@@ -93,7 +93,7 @@ interface EDIDataCardProps {
 }
 
 export function EDIDataCard({ ediData }: EDIDataCardProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const copyToClipboard = async () => {
     try {
@@ -153,7 +153,7 @@ interface NLPDataCardProps {
 }
 
 export function NLPDataCard({ nlpData }: NLPDataCardProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const copyToClipboard = async () => {
     try {

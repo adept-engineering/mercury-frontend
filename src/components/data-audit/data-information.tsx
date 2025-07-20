@@ -17,7 +17,7 @@ interface DataInformationProps {
 }
 
 export function DataInformation({ ediData, nlpData }: DataInformationProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>

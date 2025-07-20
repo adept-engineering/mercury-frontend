@@ -42,9 +42,28 @@ const frameworks = [
     },
 ]
 
-export function Combobox() {
-    const [open, setOpen] = React.useState(false)
-    const [value, setValue] = React.useState("")
+
+
+interface ReusableComboboxProps {
+    options: { value: string; label: string }[];
+    value?: string;
+    onValueChange?: (value: string) => void;
+    placeholder?: string;
+    searchPlaceholder?: string;
+    emptyText?: string;
+    className?: string;
+}
+
+export function ReusableCombobox({
+    options,
+    value,
+    onValueChange,
+    placeholder = "Select option...",
+    searchPlaceholder = "Search...",
+    emptyText = "No option found.",
+    className,
+}: ReusableComboboxProps) {
+    const [open, setOpen] = React.useState(false);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -53,36 +72,36 @@ export function Combobox() {
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-[200px] justify-between"
+                    className={cn("w-full justify-between", className)}
                 >
                     {value
-                        ? frameworks.find((framework) => framework.value === value)?.label
-                        : "Select framework..."}
-                    <ChevronsUpDown className="opacity-50" />
+                        ? options.find((option) => option.value === value)?.label
+                        : placeholder}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
+            <PopoverContent className="w-full p-0">
                 <Command>
-                    <CommandInput placeholder="Search framework..." className="h-9" />
+                    <CommandInput placeholder={searchPlaceholder} className="h-9" />
                     <CommandList>
-                        <CommandEmpty>No framework found.</CommandEmpty>
+                        <CommandEmpty>{emptyText}</CommandEmpty>
                         <CommandGroup>
-                            {frameworks.map((framework) => (
+                            {options.map((option) => (
                                 <CommandItem
-                                    key={framework.value}
-                                    value={framework.value}
+                                    key={option.value}
+                                    value={option.value}
                                     onSelect={(currentValue) => {
-                                        setValue(currentValue === value ? "" : currentValue)
-                                        setOpen(false)
+                                        onValueChange?.(currentValue === value ? "" : currentValue);
+                                        setOpen(false);
                                     }}
                                 >
-                                    {framework.label}
                                     <Check
                                         className={cn(
-                                            "ml-auto",
-                                            value === framework.value ? "opacity-100" : "opacity-0"
+                                            "mr-2 h-4 w-4",
+                                            value === option.value ? "opacity-100" : "opacity-0"
                                         )}
                                     />
+                                    {option.label}
                                 </CommandItem>
                             ))}
                         </CommandGroup>
@@ -90,7 +109,7 @@ export function Combobox() {
                 </Command>
             </PopoverContent>
         </Popover>
-    )
+    );
 }
 type Option = { label: string; value: string };
 interface MultiSelectComboboxProps {

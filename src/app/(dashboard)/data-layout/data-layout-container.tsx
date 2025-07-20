@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { DataLayoutTable } from '@/components/data-layout/data-table';
+import { useRouter } from 'next/navigation';
 
 interface DataLayout {
   id: string;
@@ -16,9 +17,9 @@ interface DataLayoutContainerProps {
 }
 
 export function DataLayoutContainer({ dataLayouts }: DataLayoutContainerProps) {
+  const router = useRouter();
   const handleCreateNew = () => {
-    // TODO: Handle create new data layout
-    console.log('Create new data layout');
+    router.push('/data-layout/create');
   };
 
   return (

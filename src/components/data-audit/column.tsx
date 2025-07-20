@@ -39,11 +39,11 @@ export function TypeBadge({ type }: { type: string }) {
 export const columns: ColumnDef<DataAuditLog>[] = [
     {
         accessorKey: "created_at",
-        header: "DATE",
+        header: "DATE & TIME",
         cell: ({ row }) => {
             const dateString = row.getValue("created_at") as string
             const date = new Date(dateString)
-            return <div className="text-sm">{date.toLocaleDateString('en-GB')}</div>
+            return <div className="text-sm">{date.toLocaleDateString('en-GB')} {date.toLocaleTimeString('en-GB')}</div>
         },
     },
     {

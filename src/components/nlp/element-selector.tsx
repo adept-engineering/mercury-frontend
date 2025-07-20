@@ -20,6 +20,7 @@ interface SelectorProps {
 }
 
 export function ElementSelector({ data, onSave,Segment }: SelectorProps) {
+    
     const [editedData, setEditedData] = useState(data);
     const [hasChanges, setHasChanges] = useState(false);
 

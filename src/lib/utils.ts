@@ -117,21 +117,20 @@ export const MapDataAuditLogObjToArray = (obj: Record<string, any>): {
     "EDI Data": obj.ediData,
   }
   const interchangeDetails = {
-    "Control Number": obj.interchange_control_number,
     "Sender": obj.interchange_sender,
     "Receiver": obj.interchange_receiver,
-    "Date Time": format(obj.interchange_date_time, "MM/dd/yyyy"),
+    "Control Number": obj.interchange_control_number,
+    "Date Time": obj.interchange_date_time,
   }
   const groupDetails = {
-    "Control Number": obj.group_control_number,
     "Sender": obj.group_sender,
     "Receiver": obj.group_receiver,
+    "Control Number": obj.group_control_number,
     "Date Time": format(parse(obj.group_date_time, "yyyyMMdd", new Date()), "MMM dd yyyy"),
   }
   const transactionDetails = {
     "Transaction Name": obj.transaction_name,
     "Standard Version": obj.standard_version,
-    "Version": obj.version,
   }
 
 
