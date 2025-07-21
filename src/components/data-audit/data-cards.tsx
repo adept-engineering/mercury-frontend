@@ -128,9 +128,8 @@ export function EDIDataCard({ ediData }: EDIDataCardProps) {
             <CollapsibleTrigger asChild>
               <Button variant="ghost" size="icon" className="h-8 w-8">
                 <ChevronDown
-                  className={`h-4 w-4 transition-transform ${
-                    isOpen ? "rotate-180" : ""
-                  }`}
+                  className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""
+                    }`}
                 />
               </Button>
             </CollapsibleTrigger>
@@ -188,9 +187,8 @@ export function NLPDataCard({ nlpData }: NLPDataCardProps) {
             <CollapsibleTrigger asChild>
               <Button variant="ghost" size="icon" className="h-8 w-8">
                 <ChevronDown
-                  className={`h-4 w-4 transition-transform ${
-                    isOpen ? "rotate-180" : ""
-                  }`}
+                  className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""
+                    }`}
                 />
               </Button>
             </CollapsibleTrigger>
@@ -360,9 +358,8 @@ export function CompliantDataCard({ compliantData }: CompliantDataProps) {
             <CollapsibleTrigger asChild>
               <Button variant="ghost" size="icon" className="h-8 w-8">
                 <ChevronDown
-                  className={`h-4 w-4 transition-transform ${
-                    isOpen ? "rotate-180" : ""
-                  }`}
+                  className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""
+                    }`}
                 />
               </Button>
             </CollapsibleTrigger>
@@ -376,6 +373,183 @@ export function CompliantDataCard({ compliantData }: CompliantDataProps) {
                 __html: formatCompliantData(compliantData),
               }}
             />
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
+interface OutputDataCardProps {
+  outputData: string;
+}
+
+export function OutputDataCard({ outputData }: OutputDataCardProps) {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(outputData);
+      toast({
+        title: "Copied to clipboard",
+      });
+
+    } catch (err: any) {
+      toast({
+        title: "Failed to copy",
+      });
+    }
+  };
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="min-w-96">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            Output Data
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={copyToClipboard}
+              className="h-8 w-8"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""
+                    }`}
+                />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+        </CardHeader>
+        <CollapsibleContent>
+          <CardContent>
+            <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
+              <pre className="whitespace-pre-wrap break-words">{outputData ? outputData : "No data"}</pre>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
+interface ComplianceReportCardProps {
+  complianceReport: string;
+}
+
+export function ComplianceReportCard({ complianceReport }: ComplianceReportCardProps) {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(complianceReport);
+      toast({
+        title: "Copied to clipboard",
+      });
+
+    } catch (err: any) {
+      toast({
+        title: "Failed to copy",
+      });
+    }
+  };
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="min-w-96">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            Compliance Report
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={copyToClipboard}
+              className="h-8 w-8"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""
+                    }`}
+                />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+        </CardHeader>
+        <CollapsibleContent>
+          <CardContent>
+            <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
+              <pre className="whitespace-pre-wrap break-words">{complianceReport ? complianceReport : "No data"}</pre>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
+interface TransformationReportCardProps {
+  transformationReport: string;
+}
+
+export function TransformationReportCard({ transformationReport }: TransformationReportCardProps) {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(transformationReport);
+      toast({
+        title: "Copied to clipboard",
+      });
+
+    } catch (err: any) {
+      toast({
+        title: "Failed to copy",
+      });
+    }
+  };
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="min-w-96">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            Transformation Report
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={copyToClipboard}
+              className="h-8 w-8"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""
+                    }`}
+                />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+        </CardHeader>
+        <CollapsibleContent>
+          <CardContent>
+            <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
+              <pre className="whitespace-pre-wrap break-words">{transformationReport ? transformationReport : "No data"}</pre>
+            </div>
           </CardContent>
         </CollapsibleContent>
       </Card>

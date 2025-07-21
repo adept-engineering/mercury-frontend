@@ -33,3 +33,12 @@ export async function getEdiInputDocumentById(ediDataId: string, nlpDataId: stri
     throw error;
   }
 }
+export async function getEdiOutputDocumentById(ediDataId: string) {
+  try {
+    const response = await axiosLocal.get(`/edi-info/doc/output-documents?ediDataId=${ediDataId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
