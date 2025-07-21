@@ -49,7 +49,7 @@ export function DataTypeSelectionTab({
                 <div className="p-6 bg-gray-50 rounded-lg border">
                     <div className="text-center text-muted-foreground">
                         <p className="text-sm">
-                            The {dataType} data type doesn't require version or transaction configuration.
+                            The {dataType} data type doesn&apos;t require version or transaction configuration.
                         </p>
                         <p className="text-xs mt-2">
                             You can proceed to the next step to review your configuration.

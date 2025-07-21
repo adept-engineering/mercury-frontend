@@ -31,7 +31,7 @@ export const EdiTree = () => {
           setSelectedFormat(format);
           setSelectedVersion(version);
         } else {
-          setSelectedFormat(item?.id!);
+          setSelectedFormat(item?.id ?? "");
         }
       }}
     />

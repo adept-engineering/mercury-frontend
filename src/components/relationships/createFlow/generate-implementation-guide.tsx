@@ -128,7 +128,7 @@ export function GenerateImplementationGuide({ onChangeChoice }: GenerateImplemen
 
             {/* Breadcrumbs */}
             <NLPBreadcrumbList
-                selectedFormat={description}
+                selectedFormat={description ?? ""}
                 selectedVersion={formData.selectedVersion}
                 selectedTransactionSet={formData.selectedTransactionSet}
                 selectedSegment={null}

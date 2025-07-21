@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import { DataTable } from "./data-table";
 import { transformationMapColumns } from "./transformation-columns";
 import { TransformationMap } from "@/lib/types";
-import { CreateTransformationMapDialogue } from "./create-transformation-rule-dialogue";
-import { dummyTransformationMaps } from "./dummy-data";
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";

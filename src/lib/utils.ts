@@ -212,7 +212,7 @@ export const parseTemplateToArray = (template: string): { index: string; descrip
   let match;
   while ((match = regex.exec(template)) !== null) {
     // Remove leading ';' and spaces from the description
-    let description = match[1].trim().replace(/^;\s*/, '');
+    const description = match[1].trim().replace(/^;\s*/, '');
     const index = match[2].padStart(2, '0');
     result.push({ index, description });
   }
