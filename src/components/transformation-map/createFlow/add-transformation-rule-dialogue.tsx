@@ -30,9 +30,9 @@ export const AddTransformationRuleDialogue = ({
         </DialogTrigger>
         <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
-                <DialogTitle>Add Transformation Rule</DialogTitle>
+                <DialogTitle>Add Compliance Rule</DialogTitle>
                 <DialogDescription>
-                    Add a new transformation rule to your map
+                    Add a new compliance rule to your map
                 </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
@@ -47,7 +47,7 @@ export const AddTransformationRuleDialogue = ({
                     />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="rule">Transformation Rule</Label>
+                    <Label htmlFor="rule">Compliance Rule</Label>
                     <Textarea
                         id="rule"
                         value={newRule.rule}

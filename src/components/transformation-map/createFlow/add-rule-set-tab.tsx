@@ -1,6 +1,6 @@
 "use client";
 import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from "@/components/ui/table";
-import { TransformationRule } from "@/lib/types";
+import { TransformationRule, ComplianceRules } from "@/lib/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Trash2, Edit, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,13 +8,17 @@ import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { AddTransformationRuleDialogue } from "./add-transformation-rule-dialogue";
 import { EditRuleDialogue } from "./edit-rule-dialogue";
+import { CreateComplianceRuleDialogue } from "@/components/compliance_rules/create-compliance-rule-dialogue";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export const AddRuleSetTab = ({
     rules,
     setRules,
+    mapType,
 }: {
     rules: TransformationRule[];
     setRules: React.Dispatch<React.SetStateAction<TransformationRule[]>>;
+    mapType: string;
 }) => {
     const [selectedRules, setSelectedRules] = useState<string[]>([]);
     const [editingRule, setEditingRule] = useState<TransformationRule | null>(null);
@@ -24,6 +28,7 @@ export const AddRuleSetTab = ({
         rule_title: "",
         rule: "",
     });
+
     const handleSelectAll = (checked: boolean) => {
         if (checked) {
             setSelectedRules(rules.map(rule => rule.id));
@@ -31,6 +36,8 @@ export const AddRuleSetTab = ({
             setSelectedRules([]);
         }
     };
+
+
 
     const handleRuleSelection = (ruleId: string, checked: boolean) => {
         if (checked) {
@@ -85,20 +92,37 @@ export const AddRuleSetTab = ({
         setSelectedRules([]);
     };
 
+
+
     return (
         <div className="space-y-6">
             <div>
                 <h2 className="text-lg font-semibold mb-2">Rule Set</h2>
                 <p className="text-muted-foreground mb-6">
-                    Add transformation rules to your map
+                    {mapType === "COMPLIANCE" 
+                        ? "Add compliance rules to your map" 
+                        : "Transformation rule functionality is coming soon"
+                    }
                 </p>
             </div>
 
-            {rules.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                    <p>No rules added yet. Click the button below to add your first rule.</p>
-                </div>
-            ) : (
+            {/* Content based on map type */}
+            {mapType === "COMPLIANCE" ? (
+                /* Added Rules Section for Compliance */
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-base font-medium">Added Rules</h3>
+                        <Button onClick={() => setAddRuleDialogOpen(true)}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Rule
+                        </Button>
+                    </div>
+
+                    {rules.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                        <p>No rules added yet. Click the button above to add your first rule.</p>
+                    </div>
+                ) : (
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
@@ -165,23 +189,39 @@ export const AddRuleSetTab = ({
                         </Table>
                     </div>
                 </div>
+                    )}
+                </div>
+            ) : (
+                /* Coming Soon for Transformation */
+                <div className="text-center py-16 text-muted-foreground">
+                    <h3 className="text-lg font-medium mb-2">Transformation Rules</h3>
+                    <p className="text-base">Coming Soon</p>
+                    <p className="text-sm mt-2">Transformation rule functionality is currently under development.</p>
+                </div>
             )}
 
-            <AddTransformationRuleDialogue
-                addRuleDialogOpen={addRuleDialogOpen}
-                setAddRuleDialogOpen={setAddRuleDialogOpen}
-                newRule={newRule}
-                setNewRule={setNewRule}
-                addRule={addRule}
-            />
+            {/* Dialogs - only show for compliance type */}
+            {mapType === "COMPLIANCE" && (
+                <>
+                    <AddTransformationRuleDialogue
+                        addRuleDialogOpen={addRuleDialogOpen}
+                        setAddRuleDialogOpen={setAddRuleDialogOpen}
+                        newRule={newRule}
+                        setNewRule={setNewRule}
+                        addRule={addRule}
+                    />
 
-            <EditRuleDialogue
-                editRuleDialogOpen={editRuleDialogOpen}
-                setEditRuleDialogOpen={setEditRuleDialogOpen}
-                editingRule={editingRule}
-                setEditingRule={setEditingRule}
-                updateRule={updateRule}
-            />
+                    <EditRuleDialogue
+                        editRuleDialogOpen={editRuleDialogOpen}
+                        setEditRuleDialogOpen={setEditRuleDialogOpen}
+                        editingRule={editingRule}
+                        setEditingRule={setEditingRule}
+                        updateRule={updateRule}
+                    />
+                </>
+            )}
+
+           
         </div>
-    )
-}
+    );
+};

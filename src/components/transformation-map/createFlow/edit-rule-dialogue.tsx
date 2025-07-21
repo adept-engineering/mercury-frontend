@@ -22,9 +22,9 @@ export const EditRuleDialogue = ({
         <Dialog open={editRuleDialogOpen} onOpenChange={setEditRuleDialogOpen}>
             <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-              <DialogTitle>Edit Transformation Rule</DialogTitle>
+              <DialogTitle>Edit Compliance Rule</DialogTitle>
               <DialogDescription>
-                  Update the transformation rule
+                  Update the compliance rule
               </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -39,7 +39,7 @@ export const EditRuleDialogue = ({
                   />
               </div>
               <div className="space-y-2">
-                  <Label htmlFor="editRule">Transformation Rule</Label>
+                  <Label htmlFor="editRule">Compliance Rule</Label>
                   <Textarea
                       id="editRule"
                       value={editingRule?.rule || ""}

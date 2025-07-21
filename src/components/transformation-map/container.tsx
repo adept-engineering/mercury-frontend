@@ -50,13 +50,13 @@ const {isSystemAdmin} = usePermissions();
              {/* Header */}
              <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-xl text-foreground font-semibold">Transformation Maps</h1>
+                    <h1 className="text-xl text-foreground font-semibold">Maps</h1>
                 </div>
                 <div className="flex items-center gap-3">
                     {isSystemAdmin ? (
                         <Button onClick={() => router.push("/transformation-map/create")}>
                             <Plus className="mr-2 h-4 w-4" />
-                            Create Transformation Map
+                            Create Map
                         </Button>
                     ) : null}
                 </div>

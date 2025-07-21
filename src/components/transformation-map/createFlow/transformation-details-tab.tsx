@@ -2,17 +2,22 @@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const TransformationDetailsTab = ({
     mapTitle,
     setMapTitle,
     mapDescription,
     setMapDescription,
+    mapType,
+    setMapType,
 }: {
     mapTitle: string;
     setMapTitle: React.Dispatch<React.SetStateAction<string>>;
     mapDescription: string;
     setMapDescription: React.Dispatch<React.SetStateAction<string>>;
+    mapType: string;
+    setMapType: React.Dispatch<React.SetStateAction<string>>;
 }) => {
     return(
        
@@ -44,6 +49,21 @@ export const TransformationDetailsTab = ({
                         rows={4}
                         required
                     />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="mapType">Map Type</Label>
+                    <Select
+                        value={mapType}
+                        onValueChange={(value) => setMapType(value)}
+                    >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select map type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="TRANSFORMATION">Transformation</SelectItem>
+                            <SelectItem value="COMPLIANCE">Compliance</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
         </div>

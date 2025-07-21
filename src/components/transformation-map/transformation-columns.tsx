@@ -84,7 +84,7 @@ const ActionsCell = ({ row }: { row: Row<TransformationMap> }) => {
 export const transformationMapColumns: ColumnDef<TransformationMap>[] = [
     {
         accessorKey: "map_title",
-        header: "MAP TITLE",
+        header: "MAP NAME",
         cell: ({ row }) => {
             return <div className="text-sm font-medium">{row.getValue("map_title")}</div>;
         },
@@ -102,17 +102,24 @@ export const transformationMapColumns: ColumnDef<TransformationMap>[] = [
         },
     },
     {
-        accessorKey: "rules",
-        header: "RULES COUNT",
+        accessorKey: "map_type",
+        header: "MAP TYPE",
         cell: ({ row }) => {
-            const rules = row.getValue("rules") as any[];
-            return (
-                <div className="text-sm text-muted-foreground">
-                    {rules?.length || 0} rules
-                </div>
-            );
+            return <div className="text-sm font-medium">{row.getValue("map_type")}</div>;
         },
     },
+    // {
+    //     accessorKey: "rules",
+    //     header: "RULES COUNT",
+    //     cell: ({ row }) => {
+    //         const rules = row.getValue("rules") as any[];
+    //         return (
+    //             <div className="text-sm text-muted-foreground">
+    //                 {rules?.length || 0} rules
+    //             </div>
+    //         );
+    //     },
+    // },
 
     {
         id: "actions",

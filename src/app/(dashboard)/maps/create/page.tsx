@@ -44,6 +44,7 @@ export default function CreateTransformationMapPage() {
     const [mapTitle, setMapTitle] = useState("");
     const [rules, setRules] = useState<TransformationRule[]>([]);
     const [mapDescription, setMapDescription] = useState("");
+    const [mapType, setMapType] = useState("TRANSFORMATION");
     const {createTransformationMap} = useManageTransformationMaps();
     
     const handleSubmit = async () => {
@@ -52,6 +53,7 @@ export default function CreateTransformationMapPage() {
             const data = {
                 map_title:mapTitle,
                 map_description:mapDescription,
+                map_type:mapType,
                 rules:rules.map(rule=>({
                     rule:rule.rule,
                     rule_title:rule.rule_title
@@ -103,7 +105,7 @@ export default function CreateTransformationMapPage() {
                 Back
             </Button>
             <h1 className="text-center text-2xl font-bold mb-6">
-                Create Transformation Map
+                Create Map
             </h1>
 
             <div className="w-full grid md:grid-cols-4 mx-auto pl-12">
@@ -119,13 +121,15 @@ export default function CreateTransformationMapPage() {
                                     setMapTitle={setMapTitle}
                                     mapDescription={mapDescription}
                                     setMapDescription={setMapDescription}
+                                    mapType={mapType}
+                                    setMapType={setMapType}
                                 />
                             </div>
                         </StepperContent>
 
                         <StepperContent step={1}>
                             <div className="md:py-6 animate-fade-up w-full">
-                              <AddRuleSetTab rules={rules} setRules={setRules} />
+                              <AddRuleSetTab rules={rules} setRules={setRules} mapType={mapType} />
                             </div>
                         </StepperContent>
 
@@ -135,7 +139,7 @@ export default function CreateTransformationMapPage() {
                                     <div>
                                         <h2 className="text-lg font-semibold mb-2">Confirmation</h2>
                                         <p className="text-muted-foreground mb-6">
-                                            Review your transformation map before creating
+                                            Review your map before creating
                                         </p>
                                     </div>
                                     <div className="space-y-4">
@@ -146,6 +150,10 @@ export default function CreateTransformationMapPage() {
                                         <div className="space-y-2">
                                             <Label className="text-sm font-medium">Description</Label>
                                             <p className="text-sm text-muted-foreground">{mapDescription}</p>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-medium">Map Type</Label>
+                                            <p className="text-sm text-muted-foreground">{mapType}</p>
                                         </div>
                                         <div className="space-y-2">
                                             <Label className="text-sm font-medium">Rules ({rules.length})</Label>
@@ -197,7 +205,7 @@ export default function CreateTransformationMapPage() {
                                     onClick={handleSubmit}
                                     disabled={!canProceedToNext()}
                                 >
-                                    Create Transformation Map
+                                    Create Map
                                 </Button>
                             )}
                         </footer>

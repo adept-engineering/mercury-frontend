@@ -87,15 +87,15 @@ export const sidebarItems: SidebarItemType[] = [
         icon: FileText,
       },
       {
-        title: "Transformation Map",
-        url: "/transformation-map",
+        title: "Maps",
+        url: "/maps",
         icon: TestTube,
       },
-      {
-        title: "Compliance Rules",
-        url: "/compliance-rules",
-        icon: Ruler,
-      },
+      // {
+      //   title: "Compliance Rules",
+      //   url: "/compliance-rules",
+      //   icon: Ruler,
+      // },
       // {
       //   title: "Anomaly Audit",
       //   url: "/anomaly",
