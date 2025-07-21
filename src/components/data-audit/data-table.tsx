@@ -49,9 +49,9 @@ export function DataTable<TData, TValue>({
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
+                                {headerGroup.headers.map((header, index) => {
                                     return (
-                                        <TableHead key={header.id} className="text-xs font-medium text-muted-foreground uppercase">
+                                        <TableHead key={`${header.id}-${index}`} className="text-xs font-medium text-muted-foreground uppercase">
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
@@ -72,8 +72,8 @@ export function DataTable<TData, TValue>({
                                     data-state={row.getIsSelected() && "selected"}
                                     className="hover:bg-muted/50"
                                 >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id} className="py-3">
+                                    {row.getVisibleCells().map((cell, index) => (
+                                        <TableCell key={`${cell.id}-${index}`} className="py-3">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}

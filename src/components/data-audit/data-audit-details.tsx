@@ -15,7 +15,8 @@ import {
 import { DataInformation } from "./data-information";
 import { CompliantData } from "./compliace-data";
 import { MapDataAuditLogObjToArray } from "@/lib/utils";
-import { TableInfoContentDesktop } from "../table-info-content";
+
+import { TableInfoContentDesktop, TableInfoContentMobile } from "../table-info-column-content";
 
 interface DataAuditDetailsProps {
     dataAuditLog: any;
@@ -125,14 +126,14 @@ export function DataAuditDetails({ dataAuditLog }: DataAuditDetailsProps) {
                             className="tabs_trigger data-[state=active]:bg-transparent data-[state=active]:text-primary"
                         >
                             <Database className="h-4 w-4" />
-                            Data Information
+                            Input document
                         </TabsTrigger>
                         <TabsTrigger
                             value="compliance-data"
                             className="tabs_trigger data-[state=active]:bg-transparent data-[state=active]:text-primary"
                         >
                             <Shield className="h-4 w-4" />
-                            Compliance Data
+                            Output document
                         </TabsTrigger>
                     </TabsList>
 

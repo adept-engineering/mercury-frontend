@@ -110,7 +110,7 @@ export function EDIDataCard({ ediData }: EDIDataCardProps) {
   };
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="min-w-96">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -139,7 +139,7 @@ export function EDIDataCard({ ediData }: EDIDataCardProps) {
         <CollapsibleContent>
           <CardContent>
             <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
-              {ediData}
+              {ediData ? ediData : "No data"}
             </div>
           </CardContent>
         </CollapsibleContent>
@@ -170,8 +170,8 @@ export function NLPDataCard({ nlpData }: NLPDataCardProps) {
   };
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <Card>
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="min-w-96">
+      <Card className="w-full">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
             NLP Data
@@ -199,7 +199,7 @@ export function NLPDataCard({ nlpData }: NLPDataCardProps) {
         <CollapsibleContent>
           <CardContent>
             <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
-              <pre className="whitespace-pre-wrap break-words">{nlpData}</pre>
+              <pre className="whitespace-pre-wrap break-words">{nlpData ? nlpData : "No data"}</pre>
             </div>
           </CardContent>
         </CollapsibleContent>

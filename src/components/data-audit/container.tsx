@@ -13,7 +13,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Combobox, MultiSelectCombobox } from "@/components/ui/combobox";
+import {  MultiSelectCombobox } from "@/components/ui/combobox";
 import { useState } from "react";
 import { Funnel } from "lucide-react";
 

@@ -23,3 +23,13 @@ export async function getDataAuditLogDetails(id: string) {
     throw error;
   }
 }
+
+export async function getEdiInputDocumentById(ediDataId: string, nlpDataId: string) {
+  try {
+    const response = await axiosLocal.get(`/edi-info/doc/input-documents?ediDataId=${ediDataId}&nlpDataId=${nlpDataId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

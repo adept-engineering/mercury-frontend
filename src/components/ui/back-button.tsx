@@ -8,9 +8,9 @@ export function BackButton() {
 
     return (
         <Button
-            variant="ghost"
+            variant="link"
             size="sm"
-            className="gap-2"
+            className="gap-2 p-0!"
             onClick={() => router.back()}
         >
             <ArrowLeft className="h-4 w-4" />
