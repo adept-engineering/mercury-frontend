@@ -17,10 +17,10 @@ export default async function EditEntityPage({ params }: EditEntityPageProps) {
         if (!entityData) {
             notFound();
         }
-        const {entityidtbl,tenant_id, ...rest} = entityData;
-        const referenceIDs = entityidtbl.map((item: any) => {
-            const extnObj = item.entityidtbl_extn.reduce((acc: any, extn: any) => {
-                acc[extn.reference_name] = extn.reference_value;
+        const {references,tenant_id, ...rest} = entityData;
+        const referenceIDs = references.map((item: any) => {
+            const extnObj = item.extn.reduce((acc: any, extn: any) => {
+                acc[extn.name] = extn.value;
                 return acc;
               }, {});
            return {
