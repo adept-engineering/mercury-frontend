@@ -26,7 +26,7 @@ export const createTransformMap = async (token: string, data:{map_title:string, 
 export const getTransformationMapRules = async (token: string, transformationMapId: string) => {
     try{
         const response = await axiosInstance(token).get(`/transformation-maps/rules/${transformationMapId}`)
-        return response.data.transformationRules
+        return response.data.formattedTransformationRules
     }catch(error){
         console.error("Error getting transformation map rules:", error)
         throw error

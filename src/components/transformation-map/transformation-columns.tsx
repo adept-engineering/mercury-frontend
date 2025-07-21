@@ -54,7 +54,7 @@ const ActionsCell = ({ row }: { row: Row<TransformationMap> }) => {
                         <Eye className="mr-2 h-4 w-4" />
                         View Details
                     </DropdownMenuItem> */}
-                    <DropdownMenuItem onClick={() => router.push(`/transformation-map/${row.original.id}/rules?map_title=${row.original.map_title}`)}>
+                    <DropdownMenuItem onClick={() => router.push(`/maps/${row.original.id}/rules?map_title=${row.original.map_title}`)}>
                         <List className="mr-2 h-4 w-4" />
                         View Rules
                     </DropdownMenuItem>

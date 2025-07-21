@@ -54,7 +54,7 @@ const {isSystemAdmin} = usePermissions();
                 </div>
                 <div className="flex items-center gap-3">
                     {isSystemAdmin ? (
-                        <Button onClick={() => router.push("/transformation-map/create")}>
+                        <Button onClick={() => router.push("/maps/create")}>
                             <Plus className="mr-2 h-4 w-4" />
                             Create Map
                         </Button>
