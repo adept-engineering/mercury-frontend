@@ -131,5 +131,5 @@ export type TransformationMap = {
   map_title: string;
   map_description: string;
   rules: TransformationRule[];
- 
+  map_type: string;
 };

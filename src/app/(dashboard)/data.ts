@@ -81,11 +81,11 @@ export const sidebarItems: SidebarItemType[] = [
         url: "/relationships",
         icon: Cable,
       },
-      {
-        title: "Data Layout",
-        url: "/data-layout",
-        icon: FileText,
-      },
+      // {
+      //   title: "Data Layout",
+      //   url: "/data-layout",
+      //   icon: FileText,
+      // },
       {
         title: "Maps",
         url: "/maps",

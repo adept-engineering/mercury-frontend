@@ -46,7 +46,7 @@ export function CreateUserDialogue({ onCreate }: { onCreate: (email: string, ent
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="bg-pink-500 hover:bg-pink-600 text-white">
+                <Button className="bg-primary hover:bg-primary/90 text-white">
                     Create User
                 </Button>
             </DialogTrigger>
