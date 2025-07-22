@@ -62,6 +62,10 @@ export type Entities = {
   entityName: string;
   lastUpdatedBy: string;
   dateTime: string;
+  updated_date: string;
+  updated_by: string;
+  created_date: string;
+  created_by: string;
 };
 
 export type EntityTbl = {
@@ -81,6 +85,10 @@ export type Relationships = {
   sender_id: string;
   receiver_id: string;
   std_version: string;
+  updated_by: string;
+  updated_date: string;
+  created_by: string;
+  created_date: string;
 };
 export type ComplianceRules = {
   id: string;
@@ -132,4 +140,8 @@ export type TransformationMap = {
   map_description: string;
   rules: TransformationRule[];
   map_type: string;
+  updated_by: string;
+  updated_date: string;
+  created_by: string;
+  created_date: string;
 };

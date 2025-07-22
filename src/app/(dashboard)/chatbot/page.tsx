@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/kibo-ui/ai/message";
 import { AIResponse } from "@/components/ui/kibo-ui/ai/response";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { ChartLine, CopyIcon, Plus, RefreshCcw, Share, ThumbsDown, ThumbsUp } from "lucide-react";
 import ChatInput from "@/components/chatbot/chat-input";
 import {
   useChats,
@@ -17,8 +17,55 @@ import {
 } from "@/hooks/use-chats";
 import { useCurrentSession } from "@/hooks/use-current-session";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
+import { toast, useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { Tooltip, TooltipContent, TooltipTrigger  } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import ReactMarkdown from "react-markdown";
+
+type Message = {
+  id: string;
+  session_id_id?: string | null;
+  question?: string | null;
+  answer?: string | null;
+  reference?: string | null;
+  created_at: Date;
+  disliked_by_user: boolean;
+  html_path?: string | null;
+  table?: string;
+}
+const ShareModal = ({message}: {message: Message | null}) => {
+  if (!message) return null;
+  return (
+    <Dialog>
+      <DialogTrigger>
+      <TooltipTrigger>
+        <Button variant="ghost" size="icon">
+          <Share className="h-4 w-4" />
+        </Button>
+        <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Share</TooltipContent>
+      </TooltipTrigger>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{message.question || "Share this response"}</DialogTitle>
+        </DialogHeader>
+        <DialogDescription className="bg-muted rounded-lg p-4 text-sm h-[300px] overflow-y-auto">
+          <ReactMarkdown>{message.answer || ""}</ReactMarkdown>
+        </DialogDescription>
+        <DialogFooter>
+          <Button variant="outline" className="w-full" onClick={() => {
+            navigator.clipboard.writeText(message.answer || "");
+            toast({
+              title: "Copied to clipboard",
+              variant: "success",
+            });
+          }}>Copy</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};  
 
 const ChatBot = () => {
   const { session } = useCurrentSession();
@@ -29,7 +76,8 @@ const ChatBot = () => {
   const [selectedChatId, setSelectedChatId] = useState(
     chatSession ? chatSession[0]?.id : null
   );
-
+  const [likedMessages, setLikedMessages] = useState<Record<string, boolean>>({});
+  const [dislikedMessages, setDislikedMessages] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -45,6 +93,48 @@ const ChatBot = () => {
   const { mutate: sendToLLM, isPending } = useCreateLLMChat(
     session?.user.token || ""
   );
+
+  const handleLike = (messageId: string) => {
+    // if liked, remove it. if disliked, remove it from dislikedMessages and add it to likedMessages.
+    if (likedMessages?.[messageId]) {
+      setLikedMessages((prev) => ({
+        ...prev,
+        [messageId]: false,
+      }));
+      return;
+    }
+    if (dislikedMessages?.[messageId]) {
+      setDislikedMessages((prev) => ({
+        ...prev,
+        [messageId]: false,
+      }));
+    }
+    setLikedMessages((prev) => ({
+      ...prev,
+      [messageId]: true,
+    }));
+  };
+
+  const handleDislike = (messageId: string) => {
+    // if disliked, remove it. if liked, remove it from likedMessages and add it to dislikedMessages.
+    if (dislikedMessages?.[messageId]) {
+      setDislikedMessages((prev) => ({
+        ...prev,
+        [messageId]: false,
+      }));
+      return;
+    }
+    if (likedMessages?.[messageId]) {
+      setLikedMessages((prev) => ({
+        ...prev,
+        [messageId]: false,
+      }));
+    }
+    setDislikedMessages((prev) => ({
+      ...prev,
+      [messageId]: true,
+    }));
+  };
 
   const handleSubmit = () => {
     if (!selectedChatId) {
@@ -76,6 +166,15 @@ const ChatBot = () => {
       clientId: session?.user.id || "",
       sessionId: selectedChatId || "",
       question: input,
+    });
+  };
+
+  const handleCopy = (messageId: string) => {
+    // copy the message to the clipboard
+    navigator.clipboard.writeText(messages?.find((message) => message.id === messageId)?.answer || "");
+    toast({
+      title: "Copied to clipboard",
+      variant: "success",
     });
   };
 
@@ -150,6 +249,71 @@ const ChatBot = () => {
                   <AIResponse>{answer}</AIResponse>
                   <AIMessageAvatar name="Assistant" src="/auth-Logo.svg" />
                 </AIMessage>
+                {/* Actions row */}
+                <div className="flex items-center gap-1">
+                  <Tooltip>
+                  <TooltipTrigger>
+                    <Button variant="ghost" size="icon" onClick={() => handleCopy(message.id)}>
+                      <CopyIcon className="h-4 w-4" />
+                    </Button>
+                    <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Copy</TooltipContent>
+                  </TooltipTrigger>
+                  </Tooltip>
+                  <Tooltip>
+                  <TooltipTrigger>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleLike(message.id)}
+                      >
+                        {likedMessages?.[message.id] ? (
+                          <ThumbsUp className="h-4 w-4 fill-primary text-primary" />
+                        ) : (
+                          <ThumbsUp className="h-4 w-4" />
+                        )}
+                      </Button>
+                    <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Like</TooltipContent>
+                  </TooltipTrigger>
+                  </Tooltip>
+                  <Tooltip>
+                  <TooltipTrigger>
+                    <Button variant="ghost" size="icon"
+                    onClick={() => {
+                          // Toggle disliked state for this message
+                          handleDislike(message.id);
+                          // if in likedMessages, remove it
+                          // handleLike(message.id);
+                        }}
+                    >
+                      {dislikedMessages?.[message.id] ? (
+                          <ThumbsDown className="h-4 w-4 fill-primary text-primary" />
+                        ) : (
+                          <ThumbsDown className="h-4 w-4" />
+                        )}
+                    </Button>
+                    <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Dislike</TooltipContent>
+                  </TooltipTrigger>
+                  </Tooltip>
+                  <Tooltip>
+                  <ShareModal message={{ ...message, question: question || "", answer: answer || "" }} />
+                  </Tooltip>
+                  <Tooltip>
+                  {/* <TooltipTrigger>
+                    <Button variant="ghost" size="icon">
+                      <RefreshCcw className="h-4 w-4" />
+                    </Button>
+                    <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Regenerate</TooltipContent>
+                  </TooltipTrigger> */}
+                  </Tooltip>
+                  <Tooltip>
+                  <TooltipTrigger>
+                    <Button variant="ghost" size="icon">
+                      <ChartLine className="h-4 w-4" />
+                    </Button>
+                    <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Graph this transaction</TooltipContent>
+                  </TooltipTrigger>
+                  </Tooltip>
+                </div>
               </section>
             ))}
           </div>

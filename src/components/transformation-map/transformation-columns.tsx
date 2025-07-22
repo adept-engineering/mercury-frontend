@@ -108,6 +108,39 @@ export const transformationMapColumns: ColumnDef<TransformationMap>[] = [
             return <div className="text-sm font-medium">{row.getValue("map_type")}</div>;
         },
     },
+    {
+        accessorKey: "created_by",
+        header: "CREATED BY",
+        cell: ({ row }) => {
+            const createdBy = row.getValue("created_by") as string;
+            return <div className="text-sm text-muted-foreground">{createdBy.toUpperCase()}</div>;
+        },
+    },
+    
+    {
+        accessorKey: "created_date",
+        header: "CREATED AT",
+        cell: ({ row }) => {
+            const createdAt = row.getValue("created_date") as string;
+            return <div className="text-sm text-muted-foreground">{createdAt}</div>;
+        },
+    },
+    {
+        accessorKey: "updated_by",
+        header: "UPDATED BY",
+        cell: ({ row }) => {
+            const createdBy = row.getValue("updated_by") as string;
+            return <div className="text-sm text-muted-foreground">{createdBy.toUpperCase()}</div>;
+        },
+    },
+    {
+        accessorKey: "updated_date",
+        header: "UPDATED AT",
+        cell: ({ row }) => {
+            const createdAt = row.getValue("updated_date") as string;
+            return <div className="text-sm text-muted-foreground">{createdAt}</div>;
+        },
+    },
     // {
     //     accessorKey: "rules",
     //     header: "RULES COUNT",

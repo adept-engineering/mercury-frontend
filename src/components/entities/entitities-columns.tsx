@@ -54,23 +54,39 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
     header: "ORGANIZATION TYPE",
   },
   {
-    accessorKey: "updated_date",
-    header: "LAST UPDATED",
+    accessorKey: "created_by",
+    header: "CREATED BY",
     cell: ({ row }) => {
-      const updatedBy = format(new Date(row.getValue("updated_date") as string), "MMM d, yyyy");
-      return <div className="text-sm text-foreground">{updatedBy}</div>;
+      const createdBy = row.getValue("created_by") as string;
+      return <div className="text-sm text-foreground">{createdBy.toUpperCase()}</div>;
     },
   },
   {
     accessorKey: "created_date",
-    header: "DATE & TIME",
+    header: "CREATED AT",
     cell: ({ row }) => {
       const dateString = row.getValue("created_date") as string;
-      const date = format(new Date(dateString), "MMM d, yyyy");
+      const date = format(new Date(dateString), "MM/dd/yyyy (HH:mm)");
       return <div className="text-sm text-foreground">{date}</div>;
     },
   },
-
+  {
+    accessorKey: "updated_by",
+    header: "LAST UPDATED BY",
+    cell: ({ row }) => {
+      const updatedBy = row.getValue("updated_by") as string;
+      return <div className="text-sm text-foreground">{updatedBy.toUpperCase()}</div>;
+    },
+  },
+  {
+    accessorKey: "updated_date",
+    header: "LAST UPDATED AT",
+    cell: ({ row }) => {
+      // 24 hour format
+      const updatedAt = format(new Date(row.getValue("updated_date") as string), "MM/dd/yyyy (HH:mm)");
+      return <div className="text-sm text-foreground">{updatedAt}</div>;
+    },
+  },
   {
     id: "actions",
     cell: ({ row }) => {
