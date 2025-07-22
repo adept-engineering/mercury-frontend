@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, Copy } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import ReactMarkdown, { type Options } from "react-markdown";
 
 interface TransactionInfoProps {
   transactionName: string;
@@ -293,45 +294,12 @@ interface CompliantDataProps {
 export function CompliantDataCard({ compliantData }: CompliantDataProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const formatCompliantData = (data: string) => {
-    // Split by double asterisks to separate sections
-    // const sections = data;
-
-    // // Format each section
-    // const formattedSections = sections.map((section) => {
-    //   // If it's an odd index, it's a bold section
-    //   // if (section.includes(":")) {
-    //   //   return `<strong className="pt-4">${section}</strong>`;
-    //   // }
-    //   // If it's an even index, it's a regular section
-    //   return section;
-    // });
-
-    // Join all sections and split by newlines
-    // const formattedText = formattedSections
-    //   .join("")
-    //   .split("\n")
-    //   .map((line) => {
-    //     const trimmedLine = line.trim().replace(/--/g, "").replace(/\*\*/g, "");
-    //     if (trimmedLine.includes(":")) {
-    //       const [beforeColon, afterColon] = trimmedLine.split(":");
-    //       return `<strong>${beforeColon}</strong>:${afterColon}`;
-    //     }
-    //     return trimmedLine;
-    //   })
-    //   .filter((line) => line.length > 0)
-    //   .join("<br/><br/>"); // Changed to double line break
-
-    return data;
-  };
-
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(compliantData);
       toast({
         title: "Copied to clipboard",
       });
-
     } catch (err: any) {
       toast({
         title: "Failed to copy",
@@ -367,12 +335,9 @@ export function CompliantDataCard({ compliantData }: CompliantDataProps) {
         </CardHeader>
         <CollapsibleContent>
           <CardContent>
-            <div
-              className="bg-muted rounded-lg p-4 text-sm overflow-x-auto"
-              dangerouslySetInnerHTML={{
-                __html: formatCompliantData(compliantData),
-              }}
-            />
+            <div className="bg-muted rounded-lg p-4 text-sm overflow-x-auto">
+              <ReactMarkdown>{compliantData ? compliantData : "No data"}</ReactMarkdown>
+            </div>
           </CardContent>
         </CollapsibleContent>
       </Card>

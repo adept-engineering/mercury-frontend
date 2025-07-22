@@ -25,7 +25,7 @@ interface DataAuditDetailsProps {
 export function DataAuditDetails({ dataAuditLog }: DataAuditDetailsProps) {
     const router = useRouter();
     const dataAuditLogDetails = MapDataAuditLogObjToArray(dataAuditLog);
-    console.log(dataAuditLogDetails);
+    const complianceJson = dataAuditLog.complianceData ? JSON.parse(dataAuditLog.complianceData) : null;
 
     return (
         <div className="container mx-auto p-6">
@@ -145,8 +145,8 @@ export function DataAuditDetails({ dataAuditLog }: DataAuditDetailsProps) {
                     </TabsContent>
 
                     <TabsContent value="compliance-data" className="mt-7">
-                        <CompliantData compliantData={dataAuditLog.complianceData} />
-                    </TabsContent>
+                            <CompliantData compliantData={complianceJson ? complianceJson.compliance_report : null} />
+                        </TabsContent>
                 </Tabs>
 
             </Card>

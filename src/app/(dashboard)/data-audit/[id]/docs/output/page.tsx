@@ -16,7 +16,7 @@ export default async function OutputDocumentPage({
         <BackButton />
         <h1 className="text-2xl font-semibold">Output Document</h1>
       </div>
-      <div className="flex items-center  gap-4">
+      <div className="flex items-start gap-4">
         <ComplianceReportCard complianceReport={ediOutputDocument.compliance_rpt} />
         <TransformationReportCard transformationReport={ediOutputDocument.transformation_rpt} />
         <OutputDataCard outputData={ediOutputDocument.out_nlp} />

@@ -119,7 +119,7 @@ export const columns: ColumnDef<DataAuditLog>[] = [
                             Input documents
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => {
-                            router.push(`/data-audit/${row.original.id}/output-documents`)
+                            router.push(`/data-audit/${row.original.id}/docs/output`)
                         }}>
                             <FileOutput className="mr-2 h-4 w-4" />
                             Output documents

@@ -16,7 +16,7 @@ export default async function InputDocumentPage({
                 <BackButton />
                 <h1 className="text-2xl font-semibold">Input Document</h1>
             </div>
-            <div className="flex items-center  gap-4">
+            <div className="flex items-start  gap-4">
                 <EDIDataCard ediData={ediInputDocument.ediInputDocument} />
                 <NLPDataCard nlpData={ediInputDocument.nlpInputDocument} />
             </div>
