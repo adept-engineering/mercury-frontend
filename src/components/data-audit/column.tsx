@@ -80,8 +80,9 @@ export const columns: ColumnDef<DataAuditLog>[] = [
         header: "DATE",
         cell: ({ row }) => {
             const dateString = row.getValue("created_at") as string
+            // date should be in format MM/DD/YYYY
             const date = new Date(dateString)
-            return <div className="text-sm">{date.toLocaleDateString('en-GB')}</div>
+            return <div className="text-sm">{date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}</div>
         },
     },
     {
