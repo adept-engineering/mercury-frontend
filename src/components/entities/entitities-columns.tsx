@@ -54,10 +54,10 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
     header: "ORGANIZATION TYPE",
   },
   {
-    accessorKey: "updated_by",
-    header: "LAST UPDATED BY",
+    accessorKey: "updated_date",
+    header: "LAST UPDATED",
     cell: ({ row }) => {
-      const updatedBy = format(new Date(row.getValue("updated_by") as string), "MMM d, yyyy");
+      const updatedBy = format(new Date(row.getValue("updated_date") as string), "MMM d, yyyy");
       return <div className="text-sm text-foreground">{updatedBy}</div>;
     },
   },
