@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AIMessage,
   AIMessageAvatar,
@@ -22,6 +22,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Tooltip, TooltipContent, TooltipTrigger  } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import ReactMarkdown from "react-markdown";
+import GraphModalVisualization from "@/components/graph-visualization/GraphModalVisualization";
+import { useTransactionGraph } from "@/hooks/use-graph";
 
 type Message = {
   id: string;
@@ -33,6 +35,7 @@ type Message = {
   disliked_by_user: boolean;
   html_path?: string | null;
   table?: string;
+  metadata?: string[]; // <-- Add this line
 }
 const ShareModal = ({message}: {message: Message | null}) => {
   if (!message) return null;
@@ -80,6 +83,11 @@ const ChatBot = () => {
   const [dislikedMessages, setDislikedMessages] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [graphModalInfoId, setGraphModalInfoId] = useState<string | null>(null);
+  // Remove old graphData, graphLoading, graphError state and useEffect
+
+  // Use TanStack Query for graph data
+  const { data: graphData, isLoading: graphLoading, error: graphError } = useTransactionGraph(graphModalInfoId || "");
 
   const { data: messages } = useChats(
     selectedChatId || "",
@@ -239,83 +247,88 @@ const ChatBot = () => {
       {selectedChatId && (
         <section className="relative w-full flex flex-col">
           <div className="flex-grow p-6 overflow-y-auto h-[calc(100vh-200px)]">
-            {messages?.map(({ question, answer, ...message }, index) => (
-              <section key={message.id}>
-                <AIMessage from="user" key={`user-${index}`}>
-                  <AIMessageContent>{question}</AIMessageContent>
-                  <AIMessageAvatar name="User" src="" />
-                </AIMessage>
-                <AIMessage from="assistant" key={`assistant-${index}`}>
-                  <AIResponse>{answer}</AIResponse>
-                  <AIMessageAvatar name="Assistant" src="/auth-Logo.svg" />
-                </AIMessage>
-                {/* Actions row */}
-                <div className="flex items-center gap-1">
-                  <Tooltip>
-                  <TooltipTrigger>
-                    <Button variant="ghost" size="icon" onClick={() => handleCopy(message.id)}>
-                      <CopyIcon className="h-4 w-4" />
-                    </Button>
-                    <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Copy</TooltipContent>
-                  </TooltipTrigger>
-                  </Tooltip>
-                  <Tooltip>
-                  <TooltipTrigger>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleLike(message.id)}
-                      >
-                        {likedMessages?.[message.id] ? (
-                          <ThumbsUp className="h-4 w-4 fill-primary text-primary" />
-                        ) : (
-                          <ThumbsUp className="h-4 w-4" />
-                        )}
+            {messages?.map((msg, index) => {
+              const { question, answer, metadata, ...message } = msg as Message & { metadata?: string[] };
+              console.log({metadata})
+              return (
+                <section key={message.id}>
+                  <AIMessage from="user" key={`user-${index}`}> 
+                    <AIMessageContent>{question}</AIMessageContent>
+                    <AIMessageAvatar name="User" src="" />
+                  </AIMessage>
+                  <AIMessage from="assistant" key={`assistant-${index}`}> 
+                    <AIResponse>{answer}</AIResponse>
+                    <AIMessageAvatar name="Assistant" src="/auth-Logo.svg" />
+                  </AIMessage>
+                  {/* Actions row */}
+                  <div className="flex items-center gap-1">
+                    <Tooltip>
+                    <TooltipTrigger>
+                      <Button variant="ghost" size="icon" onClick={() => handleCopy(message.id)}>
+                        <CopyIcon className="h-4 w-4" />
                       </Button>
-                    <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Like</TooltipContent>
-                  </TooltipTrigger>
-                  </Tooltip>
-                  <Tooltip>
-                  <TooltipTrigger>
-                    <Button variant="ghost" size="icon"
-                    onClick={() => {
-                          // Toggle disliked state for this message
-                          handleDislike(message.id);
-                          // if in likedMessages, remove it
-                          // handleLike(message.id);
-                        }}
-                    >
-                      {dislikedMessages?.[message.id] ? (
-                          <ThumbsDown className="h-4 w-4 fill-primary text-primary" />
-                        ) : (
-                          <ThumbsDown className="h-4 w-4" />
-                        )}
-                    </Button>
-                    <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Dislike</TooltipContent>
-                  </TooltipTrigger>
-                  </Tooltip>
-                  <Tooltip>
-                  <ShareModal message={{ ...message, question: question || "", answer: answer || "" }} />
-                  </Tooltip>
-                  <Tooltip>
-                  {/* <TooltipTrigger>
-                    <Button variant="ghost" size="icon">
-                      <RefreshCcw className="h-4 w-4" />
-                    </Button>
-                    <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Regenerate</TooltipContent>
-                  </TooltipTrigger> */}
-                  </Tooltip>
-                  <Tooltip>
-                  <TooltipTrigger>
-                    <Button variant="ghost" size="icon">
-                      <ChartLine className="h-4 w-4" />
-                    </Button>
-                    <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Graph this transaction</TooltipContent>
-                  </TooltipTrigger>
-                  </Tooltip>
-                </div>
-              </section>
-            ))}
+                      <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Copy</TooltipContent>
+                    </TooltipTrigger>
+                    </Tooltip>
+                    <Tooltip>
+                    {/* <TooltipTrigger>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleLike(message.id)}
+                        >
+                          {likedMessages?.[message.id] ? (
+                            <ThumbsUp className="h-4 w-4 fill-primary text-primary" />
+                          ) : (
+                            <ThumbsUp className="h-4 w-4" />
+                          )}
+                        </Button>
+                      <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Like</TooltipContent>
+                    </TooltipTrigger>
+                    </Tooltip>
+                    <Tooltip>
+                    <TooltipTrigger>
+                      <Button variant="ghost" size="icon"
+                      onClick={() => {
+                            // Toggle disliked state for this message
+                            handleDislike(message.id);
+                            // if in likedMessages, remove it
+                            // handleLike(message.id);
+                          }}
+                      >
+                        {dislikedMessages?.[message.id] ? (
+                            <ThumbsDown className="h-4 w-4 fill-primary text-primary" />
+                          ) : (
+                            <ThumbsDown className="h-4 w-4" />
+                          )}
+                      </Button>
+                      <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Dislike</TooltipContent>
+                    </TooltipTrigger> */}
+                    </Tooltip>
+                    <Tooltip>
+                    <ShareModal message={{ ...message, question: question || "", answer: answer || "" }} />
+                    </Tooltip>
+                    <Tooltip>
+                    {/* <TooltipTrigger>
+                      <Button variant="ghost" size="icon">
+                        <RefreshCcw className="h-4 w-4" />
+                      </Button>
+                      <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Regenerate</TooltipContent>
+                    </TooltipTrigger> */}
+                    </Tooltip>
+                    {/* Graph button for testing with a sample info_id */}
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button variant="ghost" size="icon" onClick={() => setGraphModalInfoId('8c12b574-4f63-46eb-837a-4edf74620a6f')}>
+                          <ChartLine className="h-4 w-4" />
+                        </Button>
+                        <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Graph this transaction</TooltipContent>
+                      </TooltipTrigger>
+                    </Tooltip>
+                  </div>
+                </section>
+              );
+            })}
           </div>
           <div className="bg-background p-4 sticky bottom-0 mt-auto">
             <ChatInput
@@ -325,6 +338,26 @@ const ChatBot = () => {
               disabled={isPending}
             />
           </div>
+          {/* Graph Modal */}
+          {graphModalInfoId && (
+            <Dialog open={!!graphModalInfoId} onOpenChange={() => setGraphModalInfoId(null)}>
+              <DialogContent className="!w-screen !max-w-screen h-screen flex flex-col p-0">
+                <DialogHeader className="p-6 border-b">
+                  <DialogTitle>Transaction Graph</DialogTitle>
+                </DialogHeader>
+                <div className="flex-1 flex items-center justify-center bg-background">
+                  {graphLoading && <div>Loading...</div>}
+                  {graphError && <div className="text-red-500">{graphError instanceof Error ? graphError.message : String(graphError)}</div>}
+                  {graphData && (
+                    <div className="w-full h-full">
+                      <GraphModalVisualization data={graphData} />
+                    </div>
+                  )}
+                  {!graphLoading && !graphError && !graphData && <div>No data.</div>}
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
         </section>
       )}
 

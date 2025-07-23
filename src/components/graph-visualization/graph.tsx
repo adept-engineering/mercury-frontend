@@ -42,6 +42,10 @@ const GraphVisualization = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Tooltip state
+  const [hoveredElement, setHoveredElement] = useState<any>(null);
+  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
+
   // Fetch all available senders
   const { data: senders = [] } = useSenders();
 
@@ -142,6 +146,73 @@ const GraphVisualization = () => {
   const handleRelationshipClick = (relationship: any) => {
     console.log("Clicked relationship:", relationship);
     // You can add more detailed information display here
+  };
+
+  // Map nodes to add color and size based on type and legend
+  const styledNodes = graphData.nodes.map((node: any) => {
+    let color = "#cccccc";
+    let size = 8;
+
+    if (node.labels.includes("Client")) {
+      if (node.properties.is_selected_sender) {
+        color = "#ff6b6b"; // Selected Sender
+        size = 12;
+      } else {
+        color = "#4ecdc4"; // Other Clients
+        size = 8;
+      }
+    } else if (node.labels.includes("Transaction810")) {
+      color = "#45b7d1";
+      size = 6;
+    } else if (node.labels.includes("Transaction850")) {
+      color = "#96ceb4";
+      size = 6;
+    } else if (node.labels.includes("Transaction820")) {
+      color = "#feca57";
+      size = 6;
+    } else if (node.labels.includes("Transaction997")) {
+      color = "#ff9ff3";
+      size = 6;
+    }
+
+    return {
+      ...node,
+      color,
+      size,
+    };
+  });
+
+  // Style relationships as well
+  const styledRels = graphData.relationships.map((rel: any) => {
+    let color = "#cccccc";
+    const width = 2;
+
+    if (rel.type === "SENT_TRANSACTION") {
+      color = "#ff6b6b";
+    } else if (rel.type === "RECEIVED_BY") {
+      color = "#4ecdc4";
+    } else if (rel.type === "RESPONDS_TO") {
+      color = "#feca57";
+    }
+
+    return {
+      ...rel,
+      color,
+      width,
+    };
+  });
+
+  // Mouse event callbacks for InteractiveNvlWrapper
+  const mouseEventCallbacks = {
+    onHover: (element: any, hitTargets: any, evt: MouseEvent) => {
+      if (element) {
+        setHoveredElement({ type: element.labels ? "node" : "rel", data: element });
+        setTooltipPos({ x: evt.clientX, y: evt.clientY });
+      } else {
+        setHoveredElement(null);
+        setTooltipPos(null);
+      }
+    },
   };
 
   return (
@@ -279,16 +350,55 @@ const GraphVisualization = () => {
           </div>
         )}
         {graphData && graphFetched && graphData.nodes.length > 0 && (
-          <InteractiveNvlWrapper
-            nodes={graphData.nodes}
-            rels={graphData.relationships}
-            nvlOptions={{
-              initialZoom: 3,
-              disableTelemetry: true,
-            }}
-            height={600}
-            width={800}
-          />
+          <>
+            <InteractiveNvlWrapper
+              nodes={styledNodes}
+              rels={styledRels}
+              nvlOptions={{
+                initialZoom: 3,
+                disableTelemetry: true,
+              }}
+              mouseEventCallbacks={mouseEventCallbacks}
+              height={600}
+              width={800}
+            />
+            {hoveredElement && tooltipPos && (
+              <div
+                style={{
+                  position: "fixed",
+                  left: tooltipPos.x + 12,
+                  top: tooltipPos.y + 12,
+                  background: "rgba(0,0,0,0.85)",
+                  color: "#fff",
+                  padding: "8px 12px",
+                  borderRadius: 6,
+                  pointerEvents: "none",
+                  zIndex: 1000,
+                  maxWidth: 320,
+                  fontSize: 14,
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                }}
+              >
+                {hoveredElement.type === "node" ? (
+                  <>
+                    <div><b>Node</b></div>
+                    <div><b>Labels:</b> {hoveredElement.data.labels?.join(", ")}</div>
+                    {Object.entries(hoveredElement.data.properties || {}).map(([k, v]) => (
+                      <div key={k}><b>{k}:</b> {String(v)}</div>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <div><b>Relationship</b></div>
+                    <div><b>Type:</b> {hoveredElement.data.type}</div>
+                    {Object.entries(hoveredElement.data.properties || {}).map(([k, v]) => (
+                      <div key={k}><b>{k}:</b> {String(v)}</div>
+                    ))}
+                  </>
+                )}
+              </div>
+            )}
+          </>
         )}
 
         {graphFetched && (!graphData || graphData.nodes.length < 1) && (

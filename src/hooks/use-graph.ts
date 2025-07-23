@@ -26,3 +26,16 @@ export const useGraph = (sender_id: string) => {
     enabled: !!sender_id,
   });
 };
+
+export const getTransactionGraph = async (info_id: string) => {
+  const response = await axiosPython.get(`/graph/transaction/${info_id}`);
+  return response.data;
+};
+
+export const useTransactionGraph = (info_id: string) => {
+  return useQuery<GraphData>({
+    queryKey: ["transaction-graph", info_id],
+    queryFn: () => getTransactionGraph(info_id),
+    enabled: !!info_id,
+  });
+};
