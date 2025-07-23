@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { EditTransformationMapDialogue } from "./edit-transformation-map-dialogue";
+import { format } from "date-fns";
 
 const ActionsCell = ({ row }: { row: Row<TransformationMap> }) => {
     const { canDelete, canEdit } = usePermissions();
@@ -121,8 +122,9 @@ export const transformationMapColumns: ColumnDef<TransformationMap>[] = [
         accessorKey: "created_date",
         header: "CREATED AT",
         cell: ({ row }) => {
-            const createdAt = row.getValue("created_date") as string;
-            return <div className="text-sm text-muted-foreground">{createdAt}</div>;
+            const dateString = row.getValue("created_date") as string;
+            const date = format(new Date(dateString), "MM/dd/yyyy (HH:mm)");
+            return <div className="text-sm text-muted-foreground">{date}</div>;
         },
     },
     {
@@ -137,8 +139,9 @@ export const transformationMapColumns: ColumnDef<TransformationMap>[] = [
         accessorKey: "updated_date",
         header: "UPDATED AT",
         cell: ({ row }) => {
-            const createdAt = row.getValue("updated_date") as string;
-            return <div className="text-sm text-muted-foreground">{createdAt}</div>;
+            const dateString = row.getValue("updated_date") as string;
+            const date = format(new Date(dateString), "MM/dd/yyyy (HH:mm)");
+            return <div className="text-sm text-muted-foreground">{date}</div>;
         },
     },
     // {

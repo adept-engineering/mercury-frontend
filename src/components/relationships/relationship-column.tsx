@@ -10,6 +10,7 @@ import { Eye, FileText, MoreHorizontal, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/use-permissions";
+import { format } from "date-fns";
 
 const ActionCell = ({
   row,
@@ -108,8 +109,9 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
     accessorKey: "created_date",
     header: "CREATED AT",
     cell: ({ row }) => {
-        const createdAt = row.getValue("created_date") as string;
-        return <div className="text-sm text-muted-foreground">{createdAt}</div>;
+      const dateString = row.getValue("created_date") as string;
+      const date = format(new Date(dateString), "MM/dd/yyyy (HH:mm)");
+        return <div className="text-sm text-muted-foreground">{date}</div>;
     },
 },
 {
@@ -124,8 +126,9 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
     accessorKey: "updated_date",
     header: "UPDATED AT",
     cell: ({ row }) => {
-        const createdAt = row.getValue("updated_date") as string;
-        return <div className="text-sm text-muted-foreground">{createdAt}</div>;
+        const dateString = row.getValue("updated_date") as string;
+        const date = format(new Date(dateString), "MM/dd/yyyy (HH:mm)");
+        return <div className="text-sm text-muted-foreground">{date}</div>;
     },
 },
   {
