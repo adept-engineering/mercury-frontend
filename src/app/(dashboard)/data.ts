@@ -64,11 +64,11 @@ export const sidebarItems: SidebarItemType[] = [
             url: "/chatbot",
             icon: Headset,
           },
-          {
-            title: "Graph",
-            url: "/graph",
-            icon: GitGraphIcon,
-          },
+          // {
+          //   title: "Graph",
+          //   url: "/graph",
+          //   icon: GitGraphIcon,
+          // },
         ],
       },
       {

@@ -11,8 +11,8 @@ import { useCallback, useState } from "react";
 import { RelationshipDetails } from "../createFlow/RelationshipName";
 import { Handle, Node, NodeProps, Position } from "@xyflow/react";
 import { Edit } from "lucide-react";
-import { ComplianceRulesPage } from "../createFlow/reciever-information";
-import { TransformationRuleInformation } from "../createFlow/sender-information";
+// import { ComplianceRulesPage } from "@/components/relationships/createFlow/reciever-information";
+// import { TransformationRuleInformation } from "@/components/relationships/createFlow/sender-information";
 
 type NumberNode = Node<{ number: number }, "number">;
 
@@ -92,10 +92,10 @@ export function CreateEntityNodeOrRelationshipNode(props: any) {
             </DialogDescription>
           </DialogHeader>
 
-          {selectedOption === "complianceGuide" && <ComplianceRulesPage />}
+          {/* {selectedOption === "complianceGuide" && <ComplianceRulesPage />}
           {selectedOption === "transformationRule" && (
             <TransformationRuleInformation />
-          )}
+          )} */}
         </DialogContent>
       </Dialog>
       <Handle type="source" position={Position.Right} />

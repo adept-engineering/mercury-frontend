@@ -148,7 +148,9 @@ const Flow = () => {
   );
 };
 
-export default () => (
+export default Flow;
+
+export const FlowProvider = () => (
   <ReactFlowProvider>
     <Flow />
   </ReactFlowProvider>

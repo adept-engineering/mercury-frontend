@@ -21,6 +21,7 @@ import { toast, useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Tooltip, TooltipContent, TooltipTrigger  } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import ReactMarkdown from "react-markdown";
 import GraphModalVisualization from "@/components/graph-visualization/GraphModalVisualization";
 import { useTransactionGraph } from "@/hooks/use-graph";
@@ -99,7 +100,7 @@ const ChatBot = () => {
   );
 
   const { mutate: sendToLLM, isPending } = useCreateLLMChat(
-    session?.user.token || ""
+    session?.user.token || "",
   );
 
   const handleLike = (messageId: string) => {
@@ -171,7 +172,7 @@ const ChatBot = () => {
 
     queryClient.setQueryData(["chats", selectedChatId], updatedMessages);
     sendToLLM({
-      clientId: session?.user.id || "",
+      clientId: session?.user.client || "",
       sessionId: selectedChatId || "",
       question: input,
     });
@@ -197,11 +198,11 @@ const ChatBot = () => {
         <p className="p-2 text-muted-foreground font-semibold text-sm ">
           Chat history
         </p>
-        <div className="flex-grow overflow-y-auto">
+        <div className="flex-grow overflow-y-auto space-y-1">
           {chatSession?.map((chatSession) => (
             <div
               key={chatSession.id}
-              className={`p-2 cursor-pointer text-sm ${
+              className={`p-2 cursor-pointer text-sm line-clamp-1 truncate rounded-lg hover:bg-gray-100 ${
                 selectedChatId === chatSession?.id.toString()
                   ? "bg-gray-100"
                   : ""
@@ -317,24 +318,35 @@ const ChatBot = () => {
                     </TooltipTrigger> */}
                     </Tooltip>
                     {/* Graph button for testing with a sample info_id */}
-                    <Tooltip>
+                    {/* <Tooltip>
                       <TooltipTrigger>
                         <Button variant="ghost" size="icon" onClick={() => setGraphModalInfoId('8c12b574-4f63-46eb-837a-4edf74620a6f')}>
                           <ChartLine className="h-4 w-4" />
                         </Button>
                         <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Graph this transaction</TooltipContent>
                       </TooltipTrigger>
-                    </Tooltip>
-                    {metadata?.map((meta: any, index: number) => (
-                      <Tooltip key={index}>
-                      <TooltipTrigger>
-                        <Button variant="ghost" size="icon" onClick={() => setGraphModalInfoId(meta.info_id)}>
-                          <ChartLine className="h-4 w-4" />
-                        </Button>
-                        <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Graph this transaction</TooltipContent>
-                      </TooltipTrigger>
-                    </Tooltip>
-                    ))}
+                    </Tooltip> */}
+                    {metadata && metadata.length > 0 && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <ChartLine className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              {metadata.map((meta: any, index: number) => (
+                                <DropdownMenuItem key={index} onClick={() => setGraphModalInfoId(meta)}>
+                                  Graph Transaction {index + 1}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Graph transaction</TooltipContent>
+                      </Tooltip>
+                    )}
                   </div>
                 </section>
               );
