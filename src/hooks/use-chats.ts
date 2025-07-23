@@ -91,7 +91,8 @@ export const createChat = async (
   sessionId: string,
   question: string,
   answer: string,
-  token: string
+  token: string,
+  metadata?: any[]
 ) => {
   const response = await axiosInstance(token).post(
     `/chat/sessions/${sessionId}/chats`,
@@ -102,6 +103,7 @@ export const createChat = async (
       disliked_by_user: false,
       html_path: null,
       table: "",
+      metadata: metadata,
     }
   );
   return response.data;
@@ -140,7 +142,8 @@ export const useCreateLLMChat = (token: string) => {
         variables.sessionId,
         variables.question,
         data.response,
-        token
+        token,
+        data.metadata
       );
       toast({
         title: "Success",

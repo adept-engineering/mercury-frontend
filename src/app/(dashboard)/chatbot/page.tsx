@@ -325,6 +325,16 @@ const ChatBot = () => {
                         <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Graph this transaction</TooltipContent>
                       </TooltipTrigger>
                     </Tooltip>
+                    {metadata?.map((meta: any, index: number) => (
+                      <Tooltip key={index}>
+                      <TooltipTrigger>
+                        <Button variant="ghost" size="icon" onClick={() => setGraphModalInfoId(meta.info_id)}>
+                          <ChartLine className="h-4 w-4" />
+                        </Button>
+                        <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Graph this transaction</TooltipContent>
+                      </TooltipTrigger>
+                    </Tooltip>
+                    ))}
                   </div>
                 </section>
               );
