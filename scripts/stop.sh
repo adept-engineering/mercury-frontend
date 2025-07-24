@@ -5,6 +5,11 @@
 
 echo "🛑 Stopping Mercury Frontend server..."
 
+# Load PORT from .env if it exists and PORT is not already set
+if [ -z "$PORT" ] && [ -f .env ]; then
+    export $(grep -E '^PORT=' .env | xargs)
+fi
+
 # Default port
 PORT=${PORT:-3000}
 

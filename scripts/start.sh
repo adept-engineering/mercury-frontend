@@ -25,10 +25,15 @@ if ! command -v bun &> /dev/null; then
     exit 1
 fi
 
+# Load PORT from .env if it exists and PORT is not already set
+if [ -z "$PORT" ] && [ -f .env ]; then
+    export $(grep -E '^PORT=' .env | xargs)
+fi
+
 # Set default port if not provided
 PORT=${PORT:-3000}
 
 echo "🌐 Starting server on port $PORT..."
 
 # Start the production server
-bun run start --port $PORT 
+nohup bun run start --port $PORT &
