@@ -1,9 +1,10 @@
 "use client";
+import { BusinessRules } from "@/components/relationships/createFlow/business-rules";
 import { Confirmation } from "@/components/relationships/createFlow/confirmation";
-import { ReceiverInformation } from "@/components/relationships/createFlow/reciever-information";
+import { ComplianceRulesPage } from "@/components/relationships/createFlow/compliance-rules";
 import { RelationshipRules } from "@/components/relationships/createFlow/relationship-rules";
 import { RelationshipDetails } from "@/components/relationships/createFlow/RelationshipName";
-import { SenderInformation } from "@/components/relationships/createFlow/sender-information";
+import { TransformationMapPage } from "@/components/relationships/createFlow/transformation-rules";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Stepper,
@@ -22,14 +23,10 @@ const steps = [
   },
   {
     title: "Step 2",
-    description: "Transformation Map",
+    description: "Business Rules",
   },
   {
     title: "Step 3",
-    description: "Compliance Check",
-  },
-  {
-    title: "Step 4",
     description: "Confirmation",
   },
 ];
@@ -72,13 +69,7 @@ export default function CreateRelationshipFlow() {
 
             <StepperContent step={1}>
               <div className="md:py-6 animate-fade-up w-full">
-                <SenderInformation />
-              </div>
-            </StepperContent>
-
-            <StepperContent step={2}>
-              <div className="md:py-6 animate-fade-up">
-                <ReceiverInformation />
+                <BusinessRules />
               </div>
             </StepperContent>
 
@@ -88,7 +79,7 @@ export default function CreateRelationshipFlow() {
               </div>
             </StepperContent>
 
-            <StepperContent step={4}>
+            <StepperContent step={2}>
               <div className="md:py-6 animate-fade-up">
                 <Confirmation />
               </div>
