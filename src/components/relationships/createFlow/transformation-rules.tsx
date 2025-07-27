@@ -18,8 +18,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { useManageTransformationMaps } from "@/hooks/use-manage-transformation-maps";
-import { TransformationMap } from "@/lib/types";
+import { useMaps } from "@/hooks/use-maps";
 import { cn } from "@/lib/utils";
 
 interface TransformationMapPageProps {
@@ -43,8 +42,8 @@ export function TransformationMapPage({
     targetTransformation: "",
   });
 
-  const { transformationMaps, isLoadingTransformationMaps } =
-    useManageTransformationMaps();
+  const { maps, isLoading } = useMaps();
+  const transformationMaps = maps?.filter((map: any) => map.map_type === "TRANSFORMATION") || [];
 
   const updateFormData = (field: keyof SenderFormData, value: string) => {
     setFormData((prev) => ({
@@ -55,22 +54,16 @@ export function TransformationMapPage({
 
   const handleSubmit = () => {
     if (selectedMap) {
-      onRuleSelect([
-        {
-          id: selectedMap.id,
-          rule: "810 Informational Check",
-          rule_title: "810InformationalCheck",
-        },
-      ]);
+      onRuleSelect([selectedMap]);
       setOpen(false);
     }
   };
 
   const selectedMap = transformationMaps?.find(
-    (map: TransformationMap) => map.id === formData.selectedTransformationMap
+    (map: any) => map.id === formData.selectedTransformationMap
   );
 
-  if (isLoadingTransformationMaps) {
+  if (isLoading) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
@@ -109,7 +102,7 @@ export function TransformationMapPage({
                     <SelectValue placeholder="Select a transformation map" />
                   </SelectTrigger>
                   <SelectContent>
-                    {transformationMaps.map((map: TransformationMap) => (
+                    {transformationMaps.map((map: any) => (
                       <SelectItem key={map.id} value={map.id}>
                         <div className="flex flex-col">
                           <span className="font-medium">{map.map_title}</span>

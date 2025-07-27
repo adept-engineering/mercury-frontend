@@ -35,14 +35,18 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { ComplianceRules, ResearchRule, TransformationRule } from "@/lib/types";
 import { ResearchMapPage } from "./research-map";
+import { SeparatorArrow,ArrowConnector } from "@/components/ui/separator";
+import { useMaps } from "@/hooks/use-maps";
 
 export function BusinessRules() {
+  const { maps, isLoading } = useMaps();
   const [businessRules, setBusinessRules] = useState<{
-    complianceRules?: ComplianceRules[];
-    transformationRules?: TransformationRule[];
-    researchRules?: ResearchRule[];
-  }>({});
-
+    map_type: "COMPLIANCE" | "TRANSFORMATION" | "RESEARCH";
+    id: string;
+    map_title: string;
+    map_description: string;
+  }[]>([]);
+    
   //   Dialog States
   const [complianceOpen, setComplianceCheckOpen] = useState(false);
   const handleComplianceDialog = () => setComplianceCheckOpen(!complianceOpen);
@@ -61,67 +65,60 @@ export function BusinessRules() {
     })
   );
 
-  const handleDragEnd = (
-    event: DragEndEvent,
-    type: "compliance" | "transformation" | "research"
-  ) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      const rules =
-        type === "compliance"
-          ? businessRules.complianceRules || []
-          : type === "transformation"
-          ? businessRules.transformationRules || []
-          : businessRules.researchRules || [];
-
-      const oldIndex = rules.findIndex(
+      const oldIndex = businessRules.findIndex(
         (rule) => rule.id.toString() === active.id
       );
-      const newIndex = rules.findIndex(
+      const newIndex = businessRules.findIndex(
         (rule) => rule.id.toString() === over?.id
       );
 
-      const newRules = arrayMove(rules, oldIndex, newIndex);
-
-      setBusinessRules((prev) => ({
-        ...prev,
-        [type === "compliance"
-          ? "complianceRules"
-          : type === "transformation"
-          ? "transformationRules"
-          : "researchRules"]: newRules,
-      }));
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newRules = arrayMove(businessRules, oldIndex, newIndex);
+        setBusinessRules(newRules);
+      }
     }
   };
 
-  const handleAddComplianceRules = (rules: ComplianceRules[]) => {
-    setBusinessRules((prev) => ({
-      ...prev,
-      complianceRules: [...(prev.complianceRules || []), ...rules],
+  const handleAddComplianceMaps = (selectedMaps: any[]) => {
+    const newMaps = selectedMaps.map((map, index) => ({
+      map_type: "COMPLIANCE" as const,
+      id: `${map.id}-${Date.now()}-${index}`,
+      map_title: map.map_title,
+      map_description: map.map_description
     }));
+    setBusinessRules((prev) => [...prev, ...newMaps]);
   };
 
-  const handleAddTransformationRules = (rules: TransformationRule[]) => {
-    setBusinessRules((prev) => ({
-      ...prev,
-      transformationRules: [...(prev.transformationRules || []), ...rules],
+  const handleAddTransformationMaps = (selectedMaps: any[]) => {
+    const newMaps = selectedMaps.map((map, index) => ({
+      map_type: "TRANSFORMATION" as const,
+      id: `${map.id}-${Date.now()}-${index}`,
+      map_title: map.map_title,
+      map_description: map.map_description
     }));
+    setBusinessRules((prev) => [...prev, ...newMaps]);
   };
 
-  const handleAddResearchRules = (rules: ResearchRule[]) => {
-    setBusinessRules((prev) => ({
-      ...prev,
-      researchRules: [...(prev.researchRules || []), ...rules],
+  const handleAddResearchMaps = (selectedMaps: any[]) => {
+    const newMaps = selectedMaps.map((map, index) => ({
+      map_type: "RESEARCH" as const,
+      id: `${map.id}-${Date.now()}-${index}`,
+      map_title: map.map_title,
+      map_description: map.map_description
     }));
+    setBusinessRules((prev) => [...prev, ...newMaps]);
   };
 
   function SortableItem({
     rule,
-    type,
+    index,
   }: {
-    rule: ComplianceRules | TransformationRule | ResearchRule;
-    type: "compliance" | "transformation" | "research";
+    rule: { map_type: "COMPLIANCE" | "TRANSFORMATION" | "RESEARCH"; id: string; map_title: string; map_description: string; };
+    index: number;
   }) {
     const { attributes, listeners, setNodeRef, transform, transition } =
       useSortable({ id: rule.id.toString() });
@@ -130,24 +127,43 @@ export function BusinessRules() {
       transform: CSS.Transform.toString(transform),
       transition,
     };
+
+    const getTypeLabel = () => {
+      switch (rule.map_type) {
+        case "COMPLIANCE":
+          return "Compliance Map";
+        case "TRANSFORMATION":
+          return "Transformation Map";
+        case "RESEARCH":
+          return "Research Map";
+      }
+    };
+
+    const getIcon = () => {
+      switch (rule.map_type) {
+        case "COMPLIANCE":
+          return <ShieldCheck className="h-5 w-5 text-primary" />;
+        case "TRANSFORMATION":
+          return <Shuffle className="h-5 w-5 text-primary" />;
+        case "RESEARCH":
+          return <Search className="h-5 w-5 text-primary" />;
+      }
+    };
+
     return (
-      <div ref={setNodeRef} style={style} {...attributes} className="relative">
-        <Card className="hover:shadow-md transition-shadow duration-300 relative group">
+      <div ref={setNodeRef} style={style} {...attributes} className={`relative ${index !== 0 ? '-mt-5' : ''}`}>
+        <Card className="hover:shadow-md h-20 transition-shadow duration-300 relative group">
           <div className="absolute top-4 left-2 cursor-move" {...listeners}>
             <GripVertical className="h-4 w-4 text-muted-foreground" />
           </div>
           <CardHeader className="p-2 pl-8">
             <CardTitle className="text-lg flex items-center justify-between">
-              {type === "compliance" ? "Compliance Map" : "Transformation Map"}
-              {type === "compliance" ? (
-                <ShieldCheck className="h-5 w-5 text-muted-foreground" />
-              ) : (
-                <Shuffle className="h-5 w-5 text-muted-foreground" />
-              )}
+              {getTypeLabel()}
+              {getIcon()}
             </CardTitle>
           </CardHeader>
-          <CardContent className="">
-            <p className="text-sm text-muted-foreground">{rule.rule_title}</p>
+          <CardContent className="absolute bottom-2 left-0">
+            <p className="text-sm text-muted-foreground">{rule.map_title}</p>
           </CardContent>
         </Card>
       </div>
@@ -158,122 +174,82 @@ export function BusinessRules() {
       <ComplianceRulesPage
         open={complianceOpen}
         setOpen={setComplianceCheckOpen}
-        onRuleSelect={handleAddComplianceRules}
+        onRuleSelect={handleAddComplianceMaps}
       />
       <TransformationMapPage
         open={transformationOpen}
         setOpen={setTransformationOpen}
-        onRuleSelect={handleAddTransformationRules}
+        onRuleSelect={handleAddTransformationMaps}
       />
       <ResearchMapPage
         open={researchmapOpen}
         setOpen={setResearchmapOpen}
-        onRuleSelect={handleAddResearchRules}
+        onRuleSelect={handleAddResearchMaps}
       />
-      <div className="space-y-6 min-h-[40vh] relative overflow-y-auto">
-        {!businessRules.complianceRules &&
-        !businessRules.transformationRules ? (
-          <div className="flex flex-col items-center justify-center text-center space-y-4 py-12">
-            <div className="text-muted-foreground">
-              <p className="text-lg">
-                You have not added any business rules, please specify.
-              </p>
+              <div className="space-y-6 min-h-[40vh] relative overflow-y-auto">
+          {businessRules.length === 0 ? (
+            <div className="flex flex-col items-center justify-center text-center space-y-4 py-12">
+              <div className="text-muted-foreground">
+                <p className="text-lg">
+                  You have not added any business rules, please specify.
+                </p>
+              </div>
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="default" className="mt-4">
+                    Add Business Rule
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 space-y-2">
+                  <div className="grid gap-2">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start"
+                      onClick={handleComplianceDialog}
+                    >
+                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      Compliance Map
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start"
+                      onClick={handleTransformationDialog}
+                    >
+                      <Shuffle className="mr-2 h-4 w-4" />
+                      Transformation Map
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start"
+                      onClick={handleResearchDialog}
+                    >
+                      <Search className="mr-2 h-4 w-4" />
+                      Research Map
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="default" className="mt-4">
-                  Add Business Rule
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64 space-y-2">
-                <div className="grid gap-2">
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    onClick={handleComplianceDialog}
-                  >
-                    <ShieldCheck className="mr-2 h-4 w-4" />
-                    Compliance Map
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    onClick={handleTransformationDialog}
-                  >
-                    <Shuffle className="mr-2 h-4 w-4" />
-                    Transformation Map
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    onClick={handleResearchDialog}
-                  >
-                    <Search className="mr-2 h-4 w-4" />
-                    Research Map
-                  </Button>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
-        ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={(event) => handleDragEnd(event, "compliance")}
-          >
-            <SortableContext
-              items={(businessRules.complianceRules || []).map((rule) =>
-                rule.id.toString()
-              )}
-              strategy={rectSortingStrategy}
-            >
-              {businessRules.complianceRules?.map((rule) => (
-                <SortableItem key={rule.id} rule={rule} type="compliance" />
-              ))}
-            </SortableContext>
-          </DndContext>
-        )}
-
-        {businessRules.transformationRules &&
-          businessRules.transformationRules.length > 0 && (
+          ) : (
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
-              onDragEnd={(event) => handleDragEnd(event, "transformation")}
+              onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={(businessRules.transformationRules || []).map((rule) =>
-                  rule.id.toString()
-                )}
+                items={businessRules.map((rule) => rule.id.toString())}
                 strategy={rectSortingStrategy}
               >
-                {businessRules.transformationRules?.map((rule) => (
-                  <SortableItem
-                    key={rule.id}
-                    rule={rule}
-                    type="transformation"
-                  />
-                ))}
-              </SortableContext>
-            </DndContext>
-          )}
-
-        {businessRules.researchRules &&
-          businessRules.researchRules.length > 0 && (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={(event) => handleDragEnd(event, "research")}
-            >
-              <SortableContext
-                items={(businessRules.researchRules || []).map((rule) =>
-                  rule.id.toString()
-                )}
-                strategy={rectSortingStrategy}
-              >
-                {businessRules.researchRules?.map((rule) => (
-                  <SortableItem key={rule.id} rule={rule} type="research" />
+                {businessRules.map((rule,index) => (
+                  <div key={rule.id} className="relative">
+                    <SortableItem index={index} rule={rule} />
+                    {index !== businessRules.length - 1 && (
+                      <div className="my-1">
+                        <ArrowConnector color="primary" size="lg" />
+                      </div>
+                    )}
+                  </div>
                 ))}
               </SortableContext>
             </DndContext>

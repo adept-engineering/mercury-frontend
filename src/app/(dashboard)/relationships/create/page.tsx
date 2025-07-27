@@ -73,12 +73,6 @@ export default function CreateRelationshipFlow() {
               </div>
             </StepperContent>
 
-            <StepperContent step={3}>
-              <div className="md:py-6 animate-fade-up">
-                <RelationshipRules />
-              </div>
-            </StepperContent>
-
             <StepperContent step={2}>
               <div className="md:py-6 animate-fade-up">
                 <Confirmation />

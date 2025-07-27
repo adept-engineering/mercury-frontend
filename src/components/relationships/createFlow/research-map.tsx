@@ -18,8 +18,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { useManageResearchMaps } from "@/hooks/use-manage-research-maps";
-import { ResearchMap } from "@/lib/types";
+import { useMaps } from "@/hooks/use-maps";
 
 interface ResearchMapPageProps {
   open: boolean;
@@ -42,7 +41,8 @@ export function ResearchMapPage({
     targetResearch: "",
   });
 
-  const { researchMaps, isLoadingResearchMaps } = useManageResearchMaps();
+  const { maps, isLoading } = useMaps();
+  const researchMaps = maps?.filter((map: any) => map.map_type === "RESEARCH") || [];
 
   const updateFormData = (field: keyof SenderFormData, value: string) => {
     setFormData((prev) => ({
@@ -53,22 +53,16 @@ export function ResearchMapPage({
 
   const handleSubmit = () => {
     if (selectedMap) {
-      onRuleSelect([
-        {
-          id: selectedMap.id,
-          rule: "Research Map Check",
-          rule_title: "ResearchMapCheck",
-        },
-      ]);
+      onRuleSelect([selectedMap]);
       setOpen(false);
     }
   };
 
   const selectedMap = researchMaps?.find(
-    (map: ResearchMap) => map.id === formData.selectedResearchMap
+    (map: any) => map.id === formData.selectedResearchMap
   );
 
-  if (isLoadingResearchMaps) {
+  if (isLoading) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
@@ -107,7 +101,7 @@ export function ResearchMapPage({
                     <SelectValue placeholder="Select a research map" />
                   </SelectTrigger>
                   <SelectContent>
-                    {researchMaps.map((map: ResearchMap) => (
+                    {researchMaps.map((map: any) => (
                       <SelectItem key={map.id} value={map.id}>
                         <div className="flex flex-col">
                           <span className="font-medium">{map.map_title}</span>

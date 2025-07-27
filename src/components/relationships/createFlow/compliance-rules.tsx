@@ -12,8 +12,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { useManageComplianceRules } from "@/hooks/use-manage-compliance-rules";
-import { ComplianceRules } from "@/lib/types";
+import { useMaps } from "@/hooks/use-maps";
 import { DataTable } from "@/components/transformation-map/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -24,7 +23,7 @@ interface ComplianceRulesPageProps {
 }
 
 interface ReceiverFormData {
-  selectedComplianceRules: string[];
+  selectedComplianceMaps: string[];
   complianceCheckName: string;
   complianceCheckDescription: string;
 }
@@ -35,13 +34,13 @@ export function ComplianceRulesPage({
   onRuleSelect,
 }: ComplianceRulesPageProps) {
   const [formData, setFormData] = useState<ReceiverFormData>({
-    selectedComplianceRules: [],
+    selectedComplianceMaps: [],
     complianceCheckName: "",
     complianceCheckDescription: "",
   });
 
-  const { complianceRules, isLoadingComplianceRules } =
-    useManageComplianceRules();
+  const { maps, isLoading } = useMaps();
+  const complianceMaps = maps?.filter((map: any) => map.map_type === "COMPLIANCE") || [];
 
   const updateFormData = (
     field: keyof ReceiverFormData,
@@ -54,44 +53,44 @@ export function ComplianceRulesPage({
   };
 
   const handleSubmit = () => {
-    if (selectedRules.length > 0) {
-      onRuleSelect(selectedRules);
+    if (selectedMaps.length > 0) {
+      onRuleSelect(selectedMaps);
       setOpen(false);
     }
   };
 
-  const handleRuleSelection = (ruleId: string, checked: boolean) => {
+  const handleMapSelection = (mapId: string, checked: boolean) => {
     if (checked) {
-      updateFormData("selectedComplianceRules", [
-        ...(formData.selectedComplianceRules || []),
-        ruleId,
+      updateFormData("selectedComplianceMaps", [
+        ...(formData.selectedComplianceMaps || []),
+        mapId,
       ]);
     } else {
       updateFormData(
-        "selectedComplianceRules",
-        (formData.selectedComplianceRules || []).filter((id) => id !== ruleId)
+        "selectedComplianceMaps",
+        (formData.selectedComplianceMaps || []).filter((id) => id !== mapId)
       );
     }
   };
 
-  const selectedRules = (complianceRules || []).filter(
-    (rule: ComplianceRules) =>
-      (formData.selectedComplianceRules || []).includes(rule.id.toString())
+  const selectedMaps = (complianceMaps || []).filter(
+    (map: any) =>
+      (formData.selectedComplianceMaps || []).includes(map.id.toString())
   );
 
   // Define columns for the data table
-  const complianceRulesColumns: ColumnDef<ComplianceRules>[] = [
+  const complianceMapsColumns: ColumnDef<any>[] = [
     {
       id: "select",
       header: "Select",
       cell: ({ row }) => {
         return (
           <Checkbox
-            checked={(formData.selectedComplianceRules || []).includes(
+            checked={(formData.selectedComplianceMaps || []).includes(
               row.original.id.toString()
             )}
             onCheckedChange={(checked) =>
-              handleRuleSelection(
+              handleMapSelection(
                 row.original.id.toString(),
                 checked as boolean
               )
@@ -101,36 +100,36 @@ export function ComplianceRulesPage({
       },
     },
     {
-      accessorKey: "rule_title",
-      header: "RULE NAME",
+      accessorKey: "map_title",
+      header: "MAP NAME",
       cell: ({ row }) => {
         return (
           <div className="text-sm font-medium">
-            {row.getValue("rule_title")}
+            {row.getValue("map_title")}
           </div>
         );
       },
     },
     {
-      accessorKey: "rule",
+      accessorKey: "map_description",
       header: "DESCRIPTION",
       cell: ({ row }) => {
         return (
           <div className="text-sm text-muted-foreground">
-            {row.getValue("rule")}
+            {row.getValue("map_description")}
           </div>
         );
       },
     },
   ];
 
-  if (isLoadingComplianceRules) {
+  if (isLoading) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Compliance Rules</DialogTitle>
-            <DialogDescription>Loading compliance rules...</DialogDescription>
+            <DialogTitle>Compliance Maps</DialogTitle>
+            <DialogDescription>Loading compliance maps...</DialogDescription>
           </DialogHeader>
         </DialogContent>
       </Dialog>
@@ -141,30 +140,30 @@ export function ComplianceRulesPage({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="min-w-4xl">
         <DialogHeader>
-          <DialogTitle>Select Compliance Rules</DialogTitle>
+          <DialogTitle>Select Compliance Maps</DialogTitle>
           <DialogDescription>
-            Choose one or more compliance rules to form a compliance check
+            Choose one or more compliance maps to form a compliance check
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
-          {complianceRules && complianceRules.length > 0 ? (
+          {complianceMaps && complianceMaps.length > 0 ? (
             <DataTable
-              columns={complianceRulesColumns}
-              data={complianceRules}
+              columns={complianceMapsColumns}
+              data={complianceMaps}
             />
           ) : (
             <div className="text-center py-8">
               <div className="text-sm text-muted-foreground">
-                No compliance rules available. Please create some compliance
-                rules first.
+                No compliance maps available. Please create some compliance
+                maps first.
               </div>
             </div>
           )}
 
           {/* Compliance Check Details */}
-          {formData.selectedComplianceRules &&
-            formData.selectedComplianceRules.length > 0 && (
+          {formData.selectedComplianceMaps &&
+            formData.selectedComplianceMaps.length > 0 && (
               <div className="space-y-4">
                 <div>
                   <Label className="text-lg font-semibold">
@@ -176,18 +175,18 @@ export function ComplianceRulesPage({
                 </div>
 
                 <div className="space-y-4">
-                  {selectedRules.length > 0 && (
+                  {selectedMaps.length > 0 && (
                     <div className="p-4 bg-muted/50 rounded-lg">
                       <div className="text-sm font-medium mb-2">
-                        Selected Rules ({selectedRules.length}):
+                        Selected Maps ({selectedMaps.length}):
                       </div>
                       <div className="space-y-1">
-                        {selectedRules.map((rule: ComplianceRules) => (
+                        {selectedMaps.map((map: any) => (
                           <div
-                            key={rule.id}
+                            key={map.id}
                             className="text-sm text-muted-foreground"
                           >
-                            • {rule.rule_title}
+                            • {map.map_title}
                           </div>
                         ))}
                       </div>
@@ -195,10 +194,10 @@ export function ComplianceRulesPage({
                   )}
                   <Button
                     onClick={handleSubmit}
-                    disabled={selectedRules.length === 0}
+                    disabled={selectedMaps.length === 0}
                     className="w-full"
                   >
-                    Save Compliance Rules
+                    Save Compliance Maps
                   </Button>
                 </div>
               </div>
