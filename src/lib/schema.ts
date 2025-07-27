@@ -7,22 +7,12 @@ export const EntitySchema = z.object({
     email_address: z.string().email({
       message: "Please enter a valid email address.",
     }),
-    address1: z.string().min(1, {
-      message: "Address line 1 is required.",
-    }),
+    address1: z.string().optional(),
     address2: z.string().optional(),
-    city: z.string().min(1, {
-      message: "City is required.",
-    }),
-    country: z.string().min(1, {
-      message: "Country is required.",
-    }),
-    state: z.string().min(1, {
-      message: "State is required.",
-    }),
-    zipcode: z.string().min(1, {
-      message: "Zipcode is required.",
-    }),
+    city: z.string().optional(),
+    country: z.string().optional(),
+    state: z.string().optional(),
+    zipcode: z.string().optional(),
     organization_type: z.enum(["COMPANY", "PARTNER"], {
       required_error: "Please select an organization type.",
     }),
@@ -33,7 +23,9 @@ export const EntitySchema = z.object({
         GroupID: z.string().optional(),
         ApplicationID: z.string().optional(),
       })
-    ),
+    ).min(1, {
+      message: "At least one reference ID is required.",
+    }),
   });
 
   export const ComplianceRuleSchema = z.object({

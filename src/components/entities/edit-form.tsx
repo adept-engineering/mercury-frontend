@@ -30,10 +30,11 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
-import { useUpdateEntity } from "@/hooks/use-entity";
+import { useCheckIfTenantHasCompanyEntity, useUpdateEntity } from "@/hooks/use-entity";
 import { refIDS, organizationTypes } from "@/lib/constants";
 import { EntitySchema as formSchema } from "@/lib/schema";
 import { EntityData } from "@/lib/types";
+import { useCurrentSession } from "@/hooks/use-current-session";
 
 
 
@@ -49,7 +50,9 @@ interface EditEntityFormProps {
 export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
     const router = useRouter();
     const { mutate: updateEntity } = useUpdateEntity();
-
+    const { session } = useCurrentSession();
+    const { data: hasCompany } = useCheckIfTenantHasCompanyEntity(session?.user?.token ?? "");
+    console.log(hasCompany);
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues,
@@ -59,6 +62,12 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
         console.log(values);
         const apiData: EntityData = {
             ...values,
+            address1: values.address1 ?? "",
+            address2: values.address2 ?? "",
+            city: values.city ?? "",
+            country: values.country ?? "",
+            state: values.state ?? "",
+            zipcode: values.zipcode ?? "",
             referenceIDs: values.referenceIDs.map((ref) => ({
                 docType: ref.docType,
                 extn: [
@@ -252,7 +261,7 @@ export function EditEntityForm({ defaultValues, id }: EditEntityFormProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {organizationTypes.map((type) => (
+                      {organizationTypes.filter((type) => type.value !== "COMPANY" || !hasCompany).map((type) => (
                         <SelectItem key={type.value} value={type.value}>
                           {type.label}
                         </SelectItem>

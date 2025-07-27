@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createEntity, updateEntity } from "@/actions/entity";
+import { checkIfTenantHasCompanyEntity, createEntity, updateEntity } from "@/actions/entity";
 import { useToast } from "@/hooks/use-toast";
 import { EntityData } from "@/lib/types";
 import { useCurrentSession } from "./use-current-session";
@@ -145,6 +145,14 @@ export const useEntities = (token: string) => {
   return useQuery<Entity[]>({
     queryKey: ["entities"],
     queryFn: () => getEntities(token),
+    enabled: !!token,
+  });
+};
+
+export const useCheckIfTenantHasCompanyEntity = (token: string) => {
+  return useQuery<boolean>({
+    queryKey: ["checkIfTenantHasCompanyEntity"],
+    queryFn: () => checkIfTenantHasCompanyEntity(token),
     enabled: !!token,
   });
 };

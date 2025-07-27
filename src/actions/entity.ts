@@ -67,3 +67,13 @@ export async function updateEntity(
     throw error;
   }
 }
+
+export async function checkIfTenantHasCompanyEntity(token: string) {
+  try {
+    const response = await axiosInstance(token).get("/entities/check-company");
+    return response.data.hasCompany;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

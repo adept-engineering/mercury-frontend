@@ -26,12 +26,13 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useGetAllFormats } from "@/hooks/use-nlp";
-import { useCreateEntity } from "@/hooks/use-entity";
+import { useCheckIfTenantHasCompanyEntity, useCreateEntity } from "@/hooks/use-entity";
 import { useRouter } from "next/navigation";
 import { refIDS, organizationTypes } from "@/lib/constants";
 import { EntityData } from "@/lib/types";
 import { toast } from "@/hooks/use-toast";
 import { EntitySchema as formSchema } from "@/lib/schema";
+import { useCurrentSession } from "@/hooks/use-current-session";
 
 
 
@@ -54,16 +55,38 @@ export function EntryForm() {
       country: "",
       state: "",
       zipcode: "",
-      organization_type: "COMPANY",
+      organization_type: "PARTNER",
       referenceIDs: [],
     },
   });
+ 
   const { mutate: createEntity } = useCreateEntity();
+  const { session } = useCurrentSession();
+  const { data: hasCompany } = useCheckIfTenantHasCompanyEntity(session?.user?.token ?? "");
   const router = useRouter();
+  console.log(hasCompany);
+  
+  // Custom validation function to check only required fields
+  const isFormValid = () => {
+    const values = form.getValues();
+    const hasName = values.name && values.name.length >= 2;
+    const hasEmail = values.email_address && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email_address);
+    const hasOrgType = values.organization_type && values.organization_type.length > 0;
+    const hasReferenceIDs = values.referenceIDs && values.referenceIDs.length > 0;
+    
+    return hasName && hasEmail && hasOrgType && hasReferenceIDs;
+  };
+  
   function onSubmit(values: FormValues) {
     console.log(values);
     const apiData: EntityData = {
       ...values,
+      address1: values.address1 ?? "",
+      address2: values.address2 ?? "",
+      city: values.city ?? "",
+      country: values.country ?? "",
+      state: values.state ?? "",
+      zipcode: values.zipcode ?? "",
       referenceIDs: values.referenceIDs.map((ref) => ({
         docType: ref.docType,
         extn: [
@@ -258,7 +281,7 @@ export function EntryForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {organizationTypes.map((type) => (
+                      {organizationTypes.filter((type) => type.value !== "COMPANY" || !hasCompany).map((type) => (
                         <SelectItem key={type.value} value={type.value}>
                           {type.label}
                         </SelectItem>
@@ -427,7 +450,7 @@ export function EntryForm() {
           <Button
             className="bg-primary hover:bg-primary/90 text-white"
             type="submit"
-            disabled={!form.formState.isValid}
+            disabled={!isFormValid()}
           >
             Confirm
           </Button>
