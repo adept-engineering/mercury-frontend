@@ -145,6 +145,7 @@ export default function CreateRelationshipFlow() {
       description: "Relationship created successfully",
       variant: "success",
     });
+    router.push("/relationships");
     }catch(error){
       toast({
         title: "Error",

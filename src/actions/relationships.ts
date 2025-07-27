@@ -1,5 +1,7 @@
+"use server";
 import { axiosInstance, axiosLocal } from "@/lib/axios";
 import { auth } from "./auth";
+import { revalidatePath } from "next/cache";
 
 export async function getRelationships() {
   try {
@@ -7,6 +9,7 @@ export async function getRelationships() {
     const response = await axiosInstance(session?.user?.token ?? "").get(
       "/relationships"
     );
+    revalidatePath("/relationships");
     return response.data;
   } catch (error) {
     console.error(error);
@@ -29,6 +32,7 @@ export async function createRelationship(data: {
 },token:string) {
   try {
     const response = await axiosInstance(token).post("/relationships/create", data);
+    revalidatePath("/relationships");
     return response.data;
   } catch (error) {
     console.error(error);

@@ -1,6 +1,8 @@
+"use server";
 import { axiosInstance, axiosLocal } from "@/lib/axios";
 import { auth } from "./auth";
 import { EntityData } from "@/lib/types";
+import { revalidatePath } from "next/cache";
 
 export async function getEntityIds() {
   try {
@@ -19,6 +21,7 @@ export async function getEntities() {
     const response = await axiosInstance(session?.user?.token ?? "").get(
       "/entities"
     );
+    revalidatePath("/entities");
 
     return response.data;
   } catch (error) {
@@ -31,6 +34,7 @@ export async function getEntity(id: string) {
   try {
     if (!id) return [];
     const response = await axiosLocal.get(`/entities/entity?entityId=${id}`);
+    
     return response.data;
   } catch (error) {
     console.error(error);
@@ -44,6 +48,7 @@ export async function createEntity(entityData: EntityData, token: string) {
       "/entities/create",
       entityData
     );
+    revalidatePath("/entities");
     return response.data;
   } catch (error) {
     console.error(error);
