@@ -177,11 +177,9 @@ export const MapDataAuditLogObjToArray = (obj: Record<string, any>): {
 
 
 export const getEntityReferences = (entityId: string, entities: any): any => {
-  console.log(entityId, "entityId")
-  console.log(entities, "entities")
-  return entities?.find((entity: any) => entity.id === entityId)?.entityidtbl.map((item: any) => {
-    const extnMap = item.entityidtbl_extn.reduce((acc: any, extn: any) => {
-      acc[extn.reference_name] = extn.reference_value;
+  return entities?.find((entity: any) => entity.id === entityId)?.references.map((item: any) => {
+    const extnMap = item.extn.reduce((acc: any, extn: any) => {
+      acc[extn.name] = extn.value;
       return acc;
     }, {});
 
