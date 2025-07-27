@@ -113,14 +113,13 @@ export function BusinessRules() {
       transform: CSS.Transform.toString(transform),
       transition,
     };
-
     return (
       <div ref={setNodeRef} style={style} {...attributes} className="relative">
         <Card className="hover:shadow-md transition-shadow duration-300 relative group">
           <div className="absolute top-4 left-2 cursor-move" {...listeners}>
             <GripVertical className="h-4 w-4 text-muted-foreground" />
           </div>
-          <CardHeader className="p-2 pl-8 border">
+          <CardHeader className="p-2 pl-8">
             <CardTitle className="text-lg flex items-center justify-between">
               {type === "compliance" ? "Compliance Map" : "Transformation Map"}
               {type === "compliance" ? (
@@ -130,7 +129,7 @@ export function BusinessRules() {
               )}
             </CardTitle>
           </CardHeader>
-          <CardContent className="border">
+          <CardContent className="">
             <p className="text-sm text-muted-foreground">{rule.rule_title}</p>
           </CardContent>
         </Card>
@@ -149,7 +148,7 @@ export function BusinessRules() {
         setOpen={setTransformationOpen}
         onRuleSelect={handleAddTransformationRules}
       />
-      <div className="space-y-6 min-h-[40vh] relative">
+      <div className="space-y-6 min-h-[40vh] relative overflow-y-auto">
         {!businessRules.complianceRules &&
         !businessRules.transformationRules ? (
           <div className="flex flex-col items-center justify-center text-center space-y-4 py-12">

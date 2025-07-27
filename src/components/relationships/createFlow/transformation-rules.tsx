@@ -55,7 +55,13 @@ export function TransformationMapPage({
 
   const handleSubmit = () => {
     if (selectedMap) {
-      onRuleSelect([selectedMap]);
+      onRuleSelect([
+        {
+          id: selectedMap.id,
+          rule: "810 Informational Check",
+          rule_title: "810InformationalCheck",
+        },
+      ]);
       setOpen(false);
     }
   };
