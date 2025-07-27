@@ -124,8 +124,8 @@ export type EntityData = {
     extn: {
       reference_name: string;
       reference_value: string;
-    }[]
-  }[]
+    }[];
+  }[];
 };
 
 export type TransformationRule = {
@@ -139,6 +139,24 @@ export type TransformationMap = {
   map_title: string;
   map_description: string;
   rules: TransformationRule[];
+  map_type: string;
+  updated_by: string;
+  updated_date: string;
+  created_by: string;
+  created_date: string;
+};
+
+export type ResearchRule = {
+  id: string;
+  rule: string;
+  rule_title: string;
+};
+
+export type ResearchMap = {
+  id: string;
+  map_title: string;
+  map_description: string;
+  rules: ResearchRule[];
   map_type: string;
   updated_by: string;
   updated_date: string;
