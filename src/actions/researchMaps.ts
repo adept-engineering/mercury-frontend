@@ -49,7 +49,13 @@ export const createResearchMap = async (
     // Simulate creating a new research map
     const newResearchMap: ResearchMap = {
       id: (dummyResearchMaps.length + 1).toString(),
-      ...data,
+      map_title: data.map_title,
+      map_description: data.map_description,
+      rules: data.rules.map((rule, index) => ({
+        id: `rule_${Date.now()}_${index}`,
+        rule: rule.rule,
+        rule_title: rule.rule_title,
+      })),
       map_type: "research",
       updated_by: "admin",
       updated_date: new Date().toISOString(),

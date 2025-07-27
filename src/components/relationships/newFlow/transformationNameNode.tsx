@@ -8,7 +8,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useCallback, useState } from "react";
-import { RelationshipDetails } from "../createFlow/RelationshipName";
 import { Handle, Node, NodeProps, Position } from "@xyflow/react";
 import { Edit } from "lucide-react";
 // import { ComplianceRulesPage } from "@/components/relationships/createFlow/reciever-information";
@@ -32,7 +31,7 @@ export function RelationshipNameNode({ data }: NodeProps<NumberNode>) {
               Configure the details of your relationship
             </DialogDescription>
           </DialogHeader>
-          <RelationshipDetails />
+         
         </DialogContent>
       </Dialog>
       <Handle type="source" position={Position.Right} />
