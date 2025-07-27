@@ -33,12 +33,14 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ComplianceRules, TransformationRule } from "@/lib/types";
+import { ComplianceRules, ResearchRule, TransformationRule } from "@/lib/types";
+import { ResearchMapPage } from "./research-map";
 
 export function BusinessRules() {
   const [businessRules, setBusinessRules] = useState<{
     complianceRules?: ComplianceRules[];
     transformationRules?: TransformationRule[];
+    researchRules?: ResearchRule[];
   }>({});
 
   //   Dialog States
@@ -49,6 +51,9 @@ export function BusinessRules() {
   const handleTransformationDialog = () =>
     setTransformationOpen(!transformationOpen);
 
+  const [researchmapOpen, setResearchmapOpen] = useState(false);
+  const handleResearchDialog = () => setResearchmapOpen(!researchmapOpen);
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -58,7 +63,7 @@ export function BusinessRules() {
 
   const handleDragEnd = (
     event: DragEndEvent,
-    type: "compliance" | "transformation"
+    type: "compliance" | "transformation" | "research"
   ) => {
     const { active, over } = event;
 
@@ -66,7 +71,9 @@ export function BusinessRules() {
       const rules =
         type === "compliance"
           ? businessRules.complianceRules || []
-          : businessRules.transformationRules || [];
+          : type === "transformation"
+          ? businessRules.transformationRules || []
+          : businessRules.researchRules || [];
 
       const oldIndex = rules.findIndex(
         (rule) => rule.id.toString() === active.id
@@ -79,8 +86,11 @@ export function BusinessRules() {
 
       setBusinessRules((prev) => ({
         ...prev,
-        [type === "compliance" ? "complianceRules" : "transformationRules"]:
-          newRules,
+        [type === "compliance"
+          ? "complianceRules"
+          : type === "transformation"
+          ? "transformationRules"
+          : "researchRules"]: newRules,
       }));
     }
   };
@@ -99,12 +109,19 @@ export function BusinessRules() {
     }));
   };
 
+  const handleAddResearchRules = (rules: ResearchRule[]) => {
+    setBusinessRules((prev) => ({
+      ...prev,
+      researchRules: [...(prev.researchRules || []), ...rules],
+    }));
+  };
+
   function SortableItem({
     rule,
     type,
   }: {
-    rule: ComplianceRules | TransformationRule;
-    type: "compliance" | "transformation";
+    rule: ComplianceRules | TransformationRule | ResearchRule;
+    type: "compliance" | "transformation" | "research";
   }) {
     const { attributes, listeners, setNodeRef, transform, transition } =
       useSortable({ id: rule.id.toString() });
@@ -148,6 +165,11 @@ export function BusinessRules() {
         setOpen={setTransformationOpen}
         onRuleSelect={handleAddTransformationRules}
       />
+      <ResearchMapPage
+        open={researchmapOpen}
+        setOpen={setResearchmapOpen}
+        onRuleSelect={handleAddResearchRules}
+      />
       <div className="space-y-6 min-h-[40vh] relative overflow-y-auto">
         {!businessRules.complianceRules &&
         !businessRules.transformationRules ? (
@@ -185,9 +207,7 @@ export function BusinessRules() {
                   <Button
                     variant="outline"
                     className="w-full justify-start"
-                    onClick={() => {
-                      /* Navigate or open research rule modal */
-                    }}
+                    onClick={handleResearchDialog}
                   >
                     <Search className="mr-2 h-4 w-4" />
                     Research Map
@@ -239,6 +259,26 @@ export function BusinessRules() {
             </DndContext>
           )}
 
+        {businessRules.researchRules &&
+          businessRules.researchRules.length > 0 && (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={(event) => handleDragEnd(event, "research")}
+            >
+              <SortableContext
+                items={(businessRules.researchRules || []).map((rule) =>
+                  rule.id.toString()
+                )}
+                strategy={rectSortingStrategy}
+              >
+                {businessRules.researchRules?.map((rule) => (
+                  <SortableItem key={rule.id} rule={rule} type="research" />
+                ))}
+              </SortableContext>
+            </DndContext>
+          )}
+
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -269,9 +309,7 @@ export function BusinessRules() {
               <Button
                 variant="outline"
                 className="w-full justify-start"
-                onClick={() => {
-                  /* Navigate or open research rule modal */
-                }}
+                onClick={handleResearchDialog}
               >
                 <Search className="mr-2 h-4 w-4" />
                 Research Map

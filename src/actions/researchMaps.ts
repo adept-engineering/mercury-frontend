@@ -1,16 +1,42 @@
 "use server";
-import axiosInstance from "@/lib/axios";
-import { revalidatePath } from "next/cache";
+import { ResearchMap, ResearchRule } from "@/lib/types";
+
+// Dummy data based on types from @/lib/types.ts
+const dummyResearchMaps: ResearchMap[] = [
+  {
+    id: "1",
+    map_title: "Research Map 1",
+    map_description: "First research map for data exploration",
+    rules: [
+      {
+        id: "rule1",
+        rule: "Rule 1 details",
+        rule_title: "Initial Research Rule",
+      },
+      {
+        id: "rule2",
+        rule: "Rule 2 details",
+        rule_title: "Advanced Research Rule",
+      },
+    ],
+    map_type: "research",
+    updated_by: "admin",
+    updated_date: new Date().toISOString(),
+    created_by: "admin",
+    created_date: new Date().toISOString(),
+  },
+];
 
 export const getResearchMaps = async (token: string) => {
   try {
-    const response = await axiosInstance(token).get("/research-maps");
-    return response.data;
+    // Simulate API response with dummy data
+    return dummyResearchMaps;
   } catch (error) {
-    console.error("Error getting transformation maps:", error);
+    console.error("Error getting research maps:", error);
     throw error;
   }
 };
+
 export const createResearchMap = async (
   token: string,
   data: {
@@ -20,28 +46,37 @@ export const createResearchMap = async (
   }
 ) => {
   try {
-    const response = await axiosInstance(token).post(
-      "/research-maps/create",
-      data
-    );
-    revalidatePath("/research-map");
-    return response.data;
+    // Simulate creating a new research map
+    const newResearchMap: ResearchMap = {
+      id: (dummyResearchMaps.length + 1).toString(),
+      ...data,
+      map_type: "research",
+      updated_by: "admin",
+      updated_date: new Date().toISOString(),
+      created_by: "admin",
+      created_date: new Date().toISOString(),
+    };
+
+    dummyResearchMaps.push(newResearchMap);
+    return newResearchMap;
   } catch (error) {
-    console.error("Error creating transformation map:", error);
+    console.error("Error creating research map:", error);
     throw error;
   }
 };
+
 export const getResearchMapsRules = async (
   token: string,
-  transformationMapId: string
+  researchMapId: string
 ) => {
   try {
-    const response = await axiosInstance(token).get(
-      `/reasearch-maps/rules/${transformationMapId}`
+    // Find the research map and return its rules
+    const researchMap = dummyResearchMaps.find(
+      (map) => map.id === researchMapId
     );
-    return response.data;
+    return researchMap ? researchMap.rules : [];
   } catch (error) {
-    console.error("Error getting transformation map rules:", error);
+    console.error("Error getting research map rules:", error);
     throw error;
   }
 };

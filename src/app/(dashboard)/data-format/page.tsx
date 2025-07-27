@@ -19,7 +19,7 @@ import { toast } from "@/hooks/use-toast";
 import { convertArrayToTemplate, parseTemplateToArray } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
-export function DataFormat() {
+export default function DataFormat() {
   const [selectedFormat, setSelectedFormat] = useQueryState("format");
   const [selectedVersion, setSelectedVersion] = useQueryState("version");
   const [selectedTransactionSet, setSelectedTransactionSet] =
@@ -93,9 +93,9 @@ export function DataFormat() {
   // console.log(parsedTemplate, "parsedTemplate", elements, "elements");
 
   return (
-    <>
+    <div className="m-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">NLP Configuration</h1>
+        <h1 className="text-2xl font-bold">Manage Data Format</h1>
 
         <NLPBreadcrumbList
           selectedFormat={description || ""}
@@ -157,6 +157,6 @@ export function DataFormat() {
           )
         )}
       </div>
-    </>
+    </div>
   );
 }
