@@ -1,158 +1,91 @@
-import { useCallback } from 'react';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createRelationship } from "@/actions/relationships";
+import { useCurrentSession } from "./use-current-session";
 
-interface RelationshipData {
-    name: string;
-    senderInfo: {
-        entityType: string;
-        senderEntity: string;
-        interChangeId: string;
-        groupId: string;
-        transactionName: string;
-        standardVersion: string;
-        accepterAliasLookup: string;
-    };
-    receiverInfo: {
-        entityType: string;
-        receiverEntity: string;
-        interChangeId: string;
-        groupId: string;
-        transactionName: string;
-        standardVersion: string;
-        accepterAliasLookup: string;
-    };
-    implementationGuide: {
-        choice: 'upload' | 'generate' | null;
-        uploadedFile?: {
-            name: string;
-            size: number;
-            type: string;
-            lastModified: number;
-        };
-        generateGuide?: {
-            selectedFormat: string;
-            selectedVersion: string;
-            selectedTransactionSet: string;
-            selectedSegments: string[];
-        };
-    };
+interface CreateRelationshipData {
+  entityid_id_sender: string;
+  entityid_id_receiver: string;
+  transaction_name: string;
+  sender_id: string;
+  receiver_id: string;
+  std_version: string;
+  extn_data: Array<{
+    reference_name: string;
+    reference_value: string;
+    position: number;
+  }>;
+}
+
+interface BusinessRule {
+  map_type: "COMPLIANCE" | "TRANSFORMATION" | "RESEARCH";
+  id: string;
+  map_title: string;
+  map_description: string;
 }
 
 export function useManageCreateRelationship() {
-    const getCreateRelationshipData = useCallback((): Partial<RelationshipData> => {
-        if (typeof window === 'undefined') {
-            return {};
-        }
+  const queryClient = useQueryClient();
+  const { session } = useCurrentSession();
+  const createRelationshipMutation = useMutation({
+    mutationFn: async (data: CreateRelationshipData) => {
+      return await createRelationship(data, session?.user?.token || "");
+    },
+    onSuccess: () => {
+      // Invalidate and refetch relationships list
+      queryClient.invalidateQueries({ queryKey: ["relationships"] });
+    },
+  });
 
-        try {
-            // Get relationship name
-            const nameData = localStorage.getItem('Relationship_name');
-            const name = nameData || '';
+  const createRelationshipWithData = async (
+    senderEntity: string,
+    receiverEntity: string,
+    transactionSet: string,
+    senderReference: string,
+    receiverReference: string,
+    standardVersion: string,
+    endpointUrl: string,
+    businessRules: BusinessRule[]
+  ) => {
+    // Build extn_data array
+    const extn_data: Array<{
+      reference_name: string;
+      reference_value: string;
+      position: number;
+    }> = [];
 
-            // Get sender information
-            const senderData = localStorage.getItem('createRelationship_senderInfo');
-            const senderInfo = senderData ? JSON.parse(senderData) : {
-                entityType: '',
-                senderEntity: '',
-                interChangeId: '',
-                groupId: '',
-                transactionName: '',
-                standardVersion: '',
-                accepterAliasLookup: ''
-            };
+    // Add endpoint URL
+    if (endpointUrl) {
+      extn_data.push({
+        reference_name: "endpoint",
+        reference_value: endpointUrl,
+        position: 0,
+      });
+    }
 
-            // Get receiver information
-            const receiverData = localStorage.getItem('createRelationship_receiverInfo');
-            const receiverInfo = receiverData ? JSON.parse(receiverData) : {
-                entityType: '',
-                receiverEntity: '',
-                interChangeId: '',
-                groupId: '',
-                transactionName: '',
-                standardVersion: '',
-                accepterAliasLookup: ''
-            };
+    // Add business rules
+    businessRules.forEach((rule, index) => {
+      extn_data.push({
+        reference_name: rule.map_type,
+        reference_value: rule.id,
+        position: index + 1,
+      });
+    });
 
-            // Get implementation guide choice
-            const choiceData = localStorage.getItem('createRelationship_choice');
-            const choice = choiceData ? JSON.parse(choiceData) : { implementationChoice: null };
-
-            // Get uploaded file data
-            const uploadedFileData = localStorage.getItem('createRelationship_uploadedFile');
-            const uploadedFile = uploadedFileData ? JSON.parse(uploadedFileData) : undefined;
-
-            // Get generate guide data
-            const generateGuideData = localStorage.getItem('createRelationship_generateGuide');
-            const generateGuide = generateGuideData ? JSON.parse(generateGuideData) : {
-                selectedFormat: '',
-                selectedVersion: '',
-                selectedTransactionSet: '',
-                selectedSegments: []
-            };
-
-            return {
-                name,
-                senderInfo,
-                receiverInfo,
-                implementationGuide: {
-                    choice: choice.implementationChoice,
-                    uploadedFile,
-                    generateGuide
-                }
-            };
-        } catch (error) {
-            console.warn('Failed to get create relationship data from localStorage:', error);
-            return {};
-        }
-    }, []);
-
-    const resetCreateRelationshipData = useCallback(() => {
-        if (typeof window === 'undefined') {
-            return;
-        }
-
-        try {
-            // List of all localStorage keys used in create relationship flow
-            const keysToRemove = [
-                'Relationship_name',
-                'createRelationship_senderInfo',
-                'createRelationship_receiverInfo',
-                'createRelationship_choice',
-                'createRelationship_uploadedFile',
-                'createRelationship_generateGuide'
-            ];
-
-            // Remove all keys
-            keysToRemove.forEach(key => {
-                localStorage.removeItem(key);
-            });
-
-            console.log('Create relationship data reset successfully');
-        } catch (error) {
-            console.warn('Failed to reset create relationship data:', error);
-        }
-    }, []);
-
-    const isDataComplete = useCallback((): boolean => {
-        const data = getCreateRelationshipData();
-
-        // Check if basic info is complete
-        const hasName = !!data.name;
-        const hasSenderInfo = !!(data.senderInfo && Object.values(data.senderInfo).some(value => !!value));
-        const hasReceiverInfo = !!(data.receiverInfo && Object.values(data.receiverInfo).some(value => !!value));
-
-        // Check if implementation guide is configured
-        const hasImplementationGuide = data.implementationGuide?.choice === 'upload'
-            ? !!data.implementationGuide.uploadedFile
-            : data.implementationGuide?.choice === 'generate'
-                ? !!(data.implementationGuide.generateGuide?.selectedSegments?.length || 0)
-                : false;
-
-        return hasName && hasSenderInfo && hasReceiverInfo && hasImplementationGuide;
-    }, [getCreateRelationshipData]);
-
-    return {
-        getCreateRelationshipData,
-        resetCreateRelationshipData,
-        isDataComplete
+    const relationshipData: CreateRelationshipData = {
+      entityid_id_sender: senderEntity,
+      entityid_id_receiver: receiverEntity,
+      transaction_name: transactionSet,
+      sender_id: senderReference,
+      receiver_id: receiverReference,
+      std_version: standardVersion,
+      extn_data,
     };
+
+    return createRelationshipMutation.mutateAsync(relationshipData);
+  };
+
+  return {
+    createRelationshipWithData,
+    createRelationshipMutation,
+  };
 }

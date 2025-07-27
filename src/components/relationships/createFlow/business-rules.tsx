@@ -13,6 +13,7 @@ import {
   Search,
   GripVertical,
   PlusCircle,
+  Trash2,
 } from "lucide-react";
 import { ComplianceRulesPage } from "./compliance-rules";
 import { TransformationMapPage } from "./transformation-rules";
@@ -38,14 +39,23 @@ import { ResearchMapPage } from "./research-map";
 import { SeparatorArrow,ArrowConnector } from "@/components/ui/separator";
 import { useMaps } from "@/hooks/use-maps";
 
-export function BusinessRules() {
-  const { maps, isLoading } = useMaps();
-  const [businessRules, setBusinessRules] = useState<{
+interface BusinessRulesProps {
+  businessRules: {
     map_type: "COMPLIANCE" | "TRANSFORMATION" | "RESEARCH";
     id: string;
     map_title: string;
     map_description: string;
-  }[]>([]);
+  }[];
+  setBusinessRules: React.Dispatch<React.SetStateAction<{
+    map_type: "COMPLIANCE" | "TRANSFORMATION" | "RESEARCH";
+    id: string;
+    map_title: string;
+    map_description: string;
+  }[]>>;
+}
+
+export function BusinessRules({ businessRules, setBusinessRules }: BusinessRulesProps) {
+  const { maps, isLoading } = useMaps();
     
   //   Dialog States
   const [complianceOpen, setComplianceCheckOpen] = useState(false);
@@ -86,7 +96,7 @@ export function BusinessRules() {
   const handleAddComplianceMaps = (selectedMaps: any[]) => {
     const newMaps = selectedMaps.map((map, index) => ({
       map_type: "COMPLIANCE" as const,
-      id: `${map.id}-${Date.now()}-${index}`,
+      id: `${map.id}`,
       map_title: map.map_title,
       map_description: map.map_description
     }));
@@ -96,7 +106,7 @@ export function BusinessRules() {
   const handleAddTransformationMaps = (selectedMaps: any[]) => {
     const newMaps = selectedMaps.map((map, index) => ({
       map_type: "TRANSFORMATION" as const,
-      id: `${map.id}-${Date.now()}-${index}`,
+      id: `${map.id}`,
       map_title: map.map_title,
       map_description: map.map_description
     }));
@@ -106,19 +116,25 @@ export function BusinessRules() {
   const handleAddResearchMaps = (selectedMaps: any[]) => {
     const newMaps = selectedMaps.map((map, index) => ({
       map_type: "RESEARCH" as const,
-      id: `${map.id}-${Date.now()}-${index}`,
+      id: `${map.id}`,
       map_title: map.map_title,
       map_description: map.map_description
     }));
     setBusinessRules((prev) => [...prev, ...newMaps]);
   };
 
+  const handleDeleteRule = (ruleId: string) => {
+    setBusinessRules((prev) => prev.filter((rule) => rule.id !== ruleId));
+  };
+
   function SortableItem({
     rule,
     index,
+    onDelete,
   }: {
     rule: { map_type: "COMPLIANCE" | "TRANSFORMATION" | "RESEARCH"; id: string; map_title: string; map_description: string; };
     index: number;
+    onDelete: (ruleId: string) => void;
   }) {
     const { attributes, listeners, setNodeRef, transform, transition } =
       useSortable({ id: rule.id.toString() });
@@ -159,7 +175,20 @@ export function BusinessRules() {
           <CardHeader className="p-2 pl-8">
             <CardTitle className="text-lg flex items-center justify-between">
               {getTypeLabel()}
-              {getIcon()}
+              <div className="flex items-center gap-2">
+                {getIcon()}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(rule.id);
+                  }}
+                  className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:text-destructive-foreground"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="absolute bottom-2 left-0">
@@ -243,7 +272,11 @@ export function BusinessRules() {
               >
                 {businessRules.map((rule,index) => (
                   <div key={rule.id} className="relative">
-                    <SortableItem index={index} rule={rule} />
+                    <SortableItem 
+                      index={index} 
+                      rule={rule} 
+                      onDelete={handleDeleteRule}
+                    />
                     {index !== businessRules.length - 1 && (
                       <div className="my-1">
                         <ArrowConnector color="primary" size="lg" />

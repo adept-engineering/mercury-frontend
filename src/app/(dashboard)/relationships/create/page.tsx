@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { BusinessRules } from "@/components/relationships/createFlow/business-rules";
 import { Confirmation } from "@/components/relationships/createFlow/confirmation";
 import { ComplianceRulesPage } from "@/components/relationships/createFlow/compliance-rules";
@@ -15,6 +16,13 @@ import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, MoveLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useQueryState, parseAsInteger } from "nuqs";
+import { useEntities } from "@/hooks/use-entity";
+import { useCurrentSession } from "@/hooks/use-current-session";
+import { getEntityReferences } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { useManageCreateRelationship } from "@/hooks/use-manage-create-relationship";
 
 const steps = [
   {
@@ -27,17 +35,124 @@ const steps = [
   },
   {
     title: "Step 3",
+    description: "Endpoint URL",
+  },
+  {
+    title: "Step 4",
     description: "Confirmation",
   },
 ];
 
 export default function CreateRelationshipFlow() {
-  const [currentTab, setCurrentTab] = useQueryState(
-    "currentTab",
-    parseAsInteger.withDefault(0)
-  );
+  const [currentTab, setCurrentTab] = useState(0);
   const lastPage = steps.length - 1;
   const router = useRouter();
+
+  // Relationship Details States
+  const { session } = useCurrentSession();
+  const { data: entities } = useEntities(session?.user.token || "");
+  const [selectedSenderEntity, setSelectedSenderEntity] = useState<string>("");
+  const [selectedReceiverEntity, setSelectedReceiverEntity] =
+    useState<string>("");
+  const [selectedSenderReference, setSelectedSenderReference] =
+    useState<string>("");
+  const [selectedReceiverReference, setSelectedReceiverReference] =
+    useState<string>("");
+  const [relationshipName, setRelationshipName] = useState<string>("");
+  const [senderReferences, setSenderReferences] = useState<any>([]);
+  const [receiverReferences, setReceiverReferences] = useState<any>([]);
+  const [docType, setDocType] = useState<string>("");
+  const [selectedVersion, setSelectedVersion] = useState<string>("");
+  const [selectedTransactionSet, setSelectedTransactionSet] =useState<string>("");
+  const [endPointUrl, setEndPointUrl] = useState<string>("");
+  const { createRelationshipWithData } = useManageCreateRelationship();
+
+  // Business Rules States
+  const [businessRules, setBusinessRules] = useState<
+    {
+      map_type: "COMPLIANCE" | "TRANSFORMATION" | "RESEARCH";
+      id: string;
+      map_title: string;
+      map_description: string;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    if (selectedSenderEntity && entities) {
+      const senderReference = getEntityReferences(
+        selectedSenderEntity,
+        entities
+      );
+      setSenderReferences(senderReference);
+    }
+    if (selectedReceiverEntity && entities) {
+      const receiverReference = getEntityReferences(
+        selectedReceiverEntity,
+        entities
+      );
+      setReceiverReferences(receiverReference);
+    }
+  }, [selectedSenderEntity, selectedReceiverEntity, entities]);
+
+  const { toast } = useToast();
+
+  const validateUrl = (url: string): boolean => {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.protocol === "http:" || urlObj.protocol === "https:";
+    } catch {
+      return false;
+    }
+  };
+
+  const handleEndPointUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEndPointUrl(value);
+
+   
+  };
+  const handleNext = () => {
+    if (endPointUrl !== "" && !validateUrl(endPointUrl)) {
+      toast({
+        title: "Invalid URL",
+        description: "Please enter a valid HTTP/HTTPS URL",
+        variant: "destructive",
+      });
+      return;
+    }
+    setCurrentTab(
+      currentTab + 1 <= lastPage ? currentTab + 1 : lastPage
+    )
+  };
+
+  const handleCreateRelationship =  async () => {
+    try{
+      const senderEntityId = entities?.find((entity:any)=>entity.id === selectedSenderEntity)?.entityid_id;
+      const receiverEntityId = entities?.find((entity:any)=>entity.id === selectedReceiverEntity)?.entityid_id;
+      console.log(senderEntityId, receiverEntityId, selectedTransactionSet, selectedSenderReference, selectedReceiverReference, selectedVersion, endPointUrl, businessRules);
+     createRelationshipWithData(
+      senderEntityId || "",
+      receiverEntityId || "",
+      selectedTransactionSet,
+      selectedSenderReference,
+      selectedReceiverReference,
+      selectedVersion,
+      endPointUrl,
+      businessRules
+    )
+    toast({
+      title: "Relationship created successfully",
+      description: "Relationship created successfully",
+      variant: "success",
+    });
+    }catch(error){
+      toast({
+        title: "Error",
+        description: "Failed to create relationship",
+        variant: "destructive",
+      });
+    }
+  }
 
   return (
     <div className="pt-10 w-full">
@@ -47,8 +162,7 @@ export default function CreateRelationshipFlow() {
         className={cn(
           buttonVariants({ variant: "link" }),
           "flex items-center gap-3 text-base text-primary cursor-pointer pl-20"
-        )}
-      >
+        )}>
         <MoveLeft />
         Back
       </Button>
@@ -63,19 +177,69 @@ export default function CreateRelationshipFlow() {
           <section className="md:col-span-3 px-12 w-full 2xl:max-w-3xl max-md:px-3 flex flex-col min-h-[70vh]">
             <StepperContent step={0}>
               <div className="md:py-6 animate-fade-up h-full">
-                <RelationshipDetails />
+                <RelationshipDetails
+                  entities={entities}
+                  selectedSenderEntity={selectedSenderEntity}
+                  setSelectedSenderEntity={setSelectedSenderEntity}
+                  selectedReceiverEntity={selectedReceiverEntity}
+                  setSelectedReceiverEntity={setSelectedReceiverEntity}
+                  selectedSenderReference={selectedSenderReference}
+                  setSelectedSenderReference={setSelectedSenderReference}
+                  selectedReceiverReference={selectedReceiverReference}
+                  setSelectedReceiverReference={setSelectedReceiverReference}
+                  relationshipName={relationshipName}
+                  setRelationshipName={setRelationshipName}
+                  senderReferences={senderReferences}
+                  receiverReferences={receiverReferences}
+                  docType={docType}
+                  setDocType={setDocType}
+                  selectedVersion={selectedVersion}
+                  setSelectedVersion={setSelectedVersion}
+                  selectedTransactionSet={selectedTransactionSet}
+                  setSelectedTransactionSet={setSelectedTransactionSet}
+                />
               </div>
             </StepperContent>
 
             <StepperContent step={1}>
               <div className="md:py-6 animate-fade-up w-full">
-                <BusinessRules />
+                <BusinessRules
+                  businessRules={businessRules}
+                  setBusinessRules={setBusinessRules}
+                />
               </div>
             </StepperContent>
 
             <StepperContent step={2}>
+              <div className="md:py-6 animate-fade-up w-full">
+                <div className="space-y-2">
+                  <Label htmlFor="endpoint-url">End Point URL</Label>
+                  <Input
+                    id="endpoint-url"
+                    type="text"
+                    placeholder="https://example.com/api/endpoint"
+                    value={endPointUrl}
+                    onChange={handleEndPointUrlChange}
+                  />
+                </div>
+              </div>
+            </StepperContent>
+
+            <StepperContent step={3}>
               <div className="md:py-6 animate-fade-up">
-                <Confirmation />
+                <Confirmation
+                  relationshipName={relationshipName}
+                  selectedSenderEntity={selectedSenderEntity}
+                  selectedReceiverEntity={selectedReceiverEntity}
+                  selectedSenderReference={selectedSenderReference}
+                  selectedReceiverReference={selectedReceiverReference}
+                  docType={docType}
+                  selectedVersion={selectedVersion}
+                  selectedTransactionSet={selectedTransactionSet}
+                  businessRules={businessRules}
+                  entities={entities}
+                  endPointUrl={endPointUrl}
+                />
               </div>
             </StepperContent>
 
@@ -86,8 +250,7 @@ export default function CreateRelationshipFlow() {
                 }
                 disabled={currentTab == 0}
                 variant="outline"
-                className="px-4 disabled:opacity-50"
-              >
+                className="px-4 disabled:opacity-50">
                 <ChevronLeft className="size-3 mr-2" />
                 Previous
               </Button>
@@ -95,12 +258,7 @@ export default function CreateRelationshipFlow() {
               {currentTab < lastPage && (
                 <Button
                   className="px-4 bg-primary text-primary-foreground"
-                  onClick={() =>
-                    setCurrentTab(
-                      currentTab + 1 <= lastPage ? currentTab + 1 : lastPage
-                    )
-                  }
-                >
+                  onClick={handleNext}>
                   Next
                   <ChevronRight className="size-3 ml-2" />
                 </Button>
@@ -109,9 +267,8 @@ export default function CreateRelationshipFlow() {
               {currentTab === lastPage && (
                 <Button
                   className="px-4 py-2 bg-primary text-primary-foreground rounded"
-                  onClick={() => {}}
-                  disabled={false}
-                >
+                  onClick={handleCreateRelationship}
+                  disabled={false}>
                   Create Relationship
                 </Button>
               )}
