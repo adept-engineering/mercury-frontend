@@ -39,3 +39,14 @@ export async function createRelationship(data: {
     throw error;
   }
 }
+
+export async function deleteRelationship(id:string,entityidtbl_relationship_id:string,token:string) {
+  try {
+    const response = await axiosInstance(token).delete(`/relationships/delete?id=${id}&entityidtbl_relationship_id=${entityidtbl_relationship_id}`);
+    revalidatePath("/relationships");
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

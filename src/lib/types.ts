@@ -77,7 +77,7 @@ export type EntityTbl = {
 };
 
 export type Relationships = {
-  id: number;
+  id: string;
   entityid_id_sender: string;
   entityid_id_receiver: string;
   entityidtbl_relationship_id: string;

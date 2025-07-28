@@ -1,25 +1,22 @@
 import { Relationships } from "@/lib/types";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, FileText, MoreHorizontal, Trash2 } from "lucide-react";
+import { Eye, FileText, MoreHorizontal, Trash2,Map, Pencil } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/use-permissions";
 import { format } from "date-fns";
+import { useDeleteRelationship } from "@/hooks/use-manage-create-relationship";
 
-const ActionCell = ({
-  row,
-}: {
-  row: { original: { entityidtbl_relationship_id: string } };
-}) => {
+const ActionCell = ({row}:{row:Row<Relationships>}) => {
   const router = useRouter();
   const { isSystemAdmin } = usePermissions();
-
+  const { deleteRelationshipMutation } = useDeleteRelationship();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -35,14 +32,19 @@ const ActionCell = ({
             )
           }
         >
-          <Eye className="mr-2 h-4 w-4" />
-          View Compliance Rules
+          <Pencil className="mr-2 h-4 w-4" />
+          Edit
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <FileText className="mr-2 h-4 w-4" />
-          Implementation Guide
+          <Eye className="mr-2 h-4 w-4" />
+          View 
         </DropdownMenuItem>
-       {isSystemAdmin &&   <DropdownMenuItem className="text-red-600">
+       {isSystemAdmin &&   <DropdownMenuItem className="text-red-600" onClick={()=>{
+        deleteRelationshipMutation.mutate({
+          id:row.original.id,
+          entityidtbl_relationship_id:row.original.entityidtbl_relationship_id
+        })
+       }}>
             <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </DropdownMenuItem>}

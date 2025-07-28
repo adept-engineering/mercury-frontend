@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createRelationship } from "@/actions/relationships";
+import { createRelationship, deleteRelationship } from "@/actions/relationships";
 import { useCurrentSession } from "./use-current-session";
 
 interface CreateRelationshipData {
@@ -34,6 +34,11 @@ export function useManageCreateRelationship() {
     onSuccess: () => {
       // Invalidate and refetch relationships list
       queryClient.invalidateQueries({ queryKey: ["relationships"] });
+    },
+  });
+  const deleteRelationshipMutation = useMutation({
+    mutationFn: async ({id,entityidtbl_relationship_id}:{id:string,entityidtbl_relationship_id:string}) => {
+      return await deleteRelationship(id,entityidtbl_relationship_id,session?.user?.token || "");
     },
   });
 
@@ -91,5 +96,19 @@ export function useManageCreateRelationship() {
   return {
     createRelationshipWithData,
     createRelationshipMutation,
+    deleteRelationshipMutation,
+  };
+}
+
+export function useDeleteRelationship() {
+  const queryClient = useQueryClient();
+  const { session } = useCurrentSession();
+  const deleteRelationshipMutation = useMutation({
+    mutationFn: async ({id,entityidtbl_relationship_id}:{id:string,entityidtbl_relationship_id:string}) => {
+      return await deleteRelationship(id,entityidtbl_relationship_id,session?.user?.token || "");
+    },
+  });
+  return {
+    deleteRelationshipMutation,
   };
 }
