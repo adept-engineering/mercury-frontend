@@ -129,7 +129,7 @@ export default function CreateRelationshipFlow() {
     try{
       const senderEntityId = entities?.find((entity:any)=>entity.id === selectedSenderEntity)?.entityid_id;
       const receiverEntityId = entities?.find((entity:any)=>entity.id === selectedReceiverEntity)?.entityid_id;
-      console.log(senderEntityId, receiverEntityId, selectedTransactionSet, selectedSenderReference, selectedReceiverReference, selectedVersion, endPointUrl, businessRules);
+     
      createRelationshipWithData(
       senderEntityId || "",
       receiverEntityId || "",

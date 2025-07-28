@@ -12,7 +12,8 @@ interface CreateRelationshipData {
   extn_data: Array<{
     reference_name: string;
     reference_value: string;
-    position: number;
+    position: number | null;
+    businessrule:"COMM"|"RULE"
   }>;
 }
 
@@ -50,7 +51,8 @@ export function useManageCreateRelationship() {
     const extn_data: Array<{
       reference_name: string;
       reference_value: string;
-      position: number;
+      position: number | null;
+      businessrule:"COMM"|"RULE"
     }> = [];
 
     // Add endpoint URL
@@ -58,7 +60,8 @@ export function useManageCreateRelationship() {
       extn_data.push({
         reference_name: "endpoint",
         reference_value: endpointUrl,
-        position: 0,
+        position: null,
+        businessrule:"COMM"
       });
     }
 
@@ -68,6 +71,7 @@ export function useManageCreateRelationship() {
         reference_name: rule.map_type,
         reference_value: rule.id,
         position: index + 1,
+        businessrule:"RULE"
       });
     });
 

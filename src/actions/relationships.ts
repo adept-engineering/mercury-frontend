@@ -26,7 +26,8 @@ export async function createRelationship(data: {
   extn_data: {
     reference_name: string;
     reference_value: string;
-    position: number;
+    position: number | null;
+    businessrule:"COMM"|"RULE"
   }[];
 },token:string) {
   try {
