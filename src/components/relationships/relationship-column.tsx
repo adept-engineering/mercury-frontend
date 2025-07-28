@@ -35,7 +35,9 @@ const ActionCell = ({row}:{row:Row<Relationships>}) => {
           <Pencil className="mr-2 h-4 w-4" />
           Edit
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={()=>{
+          router.push(`/relationships/${row.original.id}`)
+        }}>
           <Eye className="mr-2 h-4 w-4" />
           View 
         </DropdownMenuItem>

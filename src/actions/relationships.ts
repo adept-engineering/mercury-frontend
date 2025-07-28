@@ -16,6 +16,16 @@ export async function getRelationships() {
   }
 }
 
+export async function getRelationshipById(id:string,token:string) {
+  try {
+    const response = await axiosLocal.get(`/relationships/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 export async function createRelationship(data: {
   entityid_id_sender: string;
   entityid_id_receiver: string;
