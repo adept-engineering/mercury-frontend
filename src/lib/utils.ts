@@ -241,6 +241,7 @@ export const MapRelationshipObjToArray = (
   RelationshipDetails: Array<{ name: string; value: any }>;
   TransactionDetails: Array<{ name: string; value: any }>;
   AuditInfo: Array<{ name: string; value: any }>;
+  Maps: Array<{ map_id:string }>;
 } => {
   // Get destination endpoint from extension data
   const destinationEndpoint = obj.extndata?.find(
@@ -255,13 +256,12 @@ export const MapRelationshipObjToArray = (
   const relationshipDetails = {
     "Sender Entity ID": senderEntity?.name,
     "Receiver Entity ID": receiverEntity?.name,
-    "Endpoint": "N/A",
+    Endpoint: "N/A",
   };
 
   // Add destination endpoint if it exists
   if (destinationEndpoint) {
-    relationshipDetails["Endpoint"] =
-      destinationEndpoint.reference_value;
+    relationshipDetails["Endpoint"] = destinationEndpoint.reference_value;
   }
 
   const transactionDetails = {
@@ -303,10 +303,20 @@ export const MapRelationshipObjToArray = (
     };
   });
 
+  const maps = obj.extndata?.map((extn: any) => {
+    if (extn.businessrule === "RULE") {
+      return {
+        map_id: extn.reference_value,
+      };
+    }
+    return null;
+  }).filter((map: any) => map !== null);
+
   return {
     RelationshipDetails: relationshipDetailsArray,
     TransactionDetails: transactionDetailsArray,
     AuditInfo: auditInfoArray,
+    Maps: maps, // Maps will be handled by the Map component
   };
 };
 

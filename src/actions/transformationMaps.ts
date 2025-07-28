@@ -33,3 +33,12 @@ export const getTransformationMapRules = async (token: string, transformationMap
     }
 }
 
+export const getMapById = async (token: string, mapId: string) => {
+    try{
+        const response = await axiosInstance(token).get(`/transformation-maps/map/${mapId}`)
+        return response.data.map
+    }catch(error){
+        console.error("Error getting map by id:", error)
+        throw error
+    }
+}

@@ -11,10 +11,14 @@ export const useMaps = () => {
     const filterMapsByType = (type: "TRANSFORMATION" | "RESEARCH"|"COMPLIANCE") => {
         return data?.filter((map: any) => map.map_type === type);
     }
+    const filterMapsByIds = (id: string) => {
+        return data?.find((map: any) => map.map_id === id);
+    }
     return {
         maps: data,
         isLoading,
         error,
         filterMapsByType,
+        filterMapsByIds,
     };
 }

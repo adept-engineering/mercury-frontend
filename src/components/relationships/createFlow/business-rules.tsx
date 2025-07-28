@@ -56,7 +56,7 @@ interface BusinessRulesProps {
 
 export function BusinessRules({ businessRules, setBusinessRules }: BusinessRulesProps) {
   const { maps, isLoading } = useMaps();
-    
+  console.log(maps);
   //   Dialog States
   const [complianceOpen, setComplianceCheckOpen] = useState(false);
   const handleComplianceDialog = () => setComplianceCheckOpen(!complianceOpen);
@@ -96,7 +96,7 @@ export function BusinessRules({ businessRules, setBusinessRules }: BusinessRules
   const handleAddComplianceMaps = (selectedMaps: any[]) => {
     const newMaps = selectedMaps.map((map, index) => ({
       map_type: "COMPLIANCE" as const,
-      id: `${map.id}`,
+      id: `${map.map_id}`,
       map_title: map.map_title,
       map_description: map.map_description
     }));
@@ -106,7 +106,7 @@ export function BusinessRules({ businessRules, setBusinessRules }: BusinessRules
   const handleAddTransformationMaps = (selectedMaps: any[]) => {
     const newMaps = selectedMaps.map((map, index) => ({
       map_type: "TRANSFORMATION" as const,
-      id: `${map.id}`,
+      id: `${map.map_id}`,
       map_title: map.map_title,
       map_description: map.map_description
     }));
@@ -116,7 +116,7 @@ export function BusinessRules({ businessRules, setBusinessRules }: BusinessRules
   const handleAddResearchMaps = (selectedMaps: any[]) => {
     const newMaps = selectedMaps.map((map, index) => ({
       map_type: "RESEARCH" as const,
-      id: `${map.id}`,
+      id: `${map.map_id}`,
       map_title: map.map_title,
       map_description: map.map_description
     }));

@@ -9,6 +9,7 @@ import {
   FileText,
   Settings,
   Database,
+  Map,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Card } from "../ui/card";
@@ -16,6 +17,7 @@ import { TableInfoContentDesktop } from "../table-info-column-content";
 import { MapRelationshipObjToArray } from "@/lib/utils";
 import { useEntities } from "@/hooks/use-entity";
 import { useCurrentSession } from "@/hooks/use-current-session";
+import { Map as MapComponent } from "./map";
 
 interface RelationshipDetailsProps {
   relationship: any;
@@ -27,7 +29,10 @@ export function RelationshipDetails({
   const router = useRouter();
   const { session } = useCurrentSession();
   const { data: entities } = useEntities(session?.user?.token || "");
-  const mappedRelationship = MapRelationshipObjToArray(relationship,entities || []);
+  const mappedRelationship = MapRelationshipObjToArray(
+    relationship,
+    entities || []
+  );
 
   const extensionData =
     relationship.extndata?.map((extn: any, index: number) => ({
@@ -52,8 +57,6 @@ export function RelationshipDetails({
           <ArrowLeft className="mr-2 h-4 w-4" />
           Go Back
         </Button>
-
-        
       </div>
 
       {/* Tabs */}
@@ -77,6 +80,12 @@ export function RelationshipDetails({
               className="tabs_trigger data-[state=active]:bg-transparent data-[state=active]:text-primary">
               <FileText className="h-4 w-4" />
               Transaction Info
+            </TabsTrigger>
+            <TabsTrigger
+              value="maps"
+              className="tabs_trigger data-[state=active]:bg-transparent data-[state=active]:text-primary">
+              <Map className="h-4 w-4" />
+              Maps
             </TabsTrigger>
             <TabsTrigger
               value="audit-info"
@@ -109,6 +118,9 @@ export function RelationshipDetails({
           </TabsContent>
           <TabsContent value="audit-info" className="mt-7">
             <TableInfoContentDesktop details={mappedRelationship.AuditInfo} />
+          </TabsContent>
+          <TabsContent value="maps" className="mt-7">
+            <MapComponent mapIds={mappedRelationship.Maps} />
           </TabsContent>
         </Tabs>
       </Card>
