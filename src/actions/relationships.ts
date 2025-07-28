@@ -9,7 +9,6 @@ export async function getRelationships() {
     const response = await axiosInstance(session?.user?.token ?? "").get(
       "/relationships"
     );
-    revalidatePath("/relationships");
     return response.data;
   } catch (error) {
     console.error(error);
