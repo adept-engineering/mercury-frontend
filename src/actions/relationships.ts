@@ -16,7 +16,7 @@ export async function getRelationships() {
   }
 }
 
-export async function getRelationshipById(id:string,token:string) {
+export async function getRelationshipById(id: string, token: string) {
   try {
     const response = await axiosLocal.get(`/relationships/${id}`);
     return response.data;
@@ -26,22 +26,28 @@ export async function getRelationshipById(id:string,token:string) {
   }
 }
 
-export async function createRelationship(data: {
-  entityid_id_sender: string;
-  entityid_id_receiver: string;
-  transaction_name: string;
-  sender_id: string;
-  receiver_id: string;
-  std_version: string;
-  extn_data: {
-    reference_name: string;
-    reference_value: string;
-    position: number | null;
-    businessrule:"COMM"|"RULE"
-  }[];
-},token:string) {
+export async function createRelationship(
+  data: {
+    entityid_id_sender: string;
+    entityid_id_receiver: string;
+    transaction_name: string;
+    sender_id: string;
+    receiver_id: string;
+    std_version: string;
+    extn_data: {
+      reference_name: string;
+      reference_value: string;
+      position: number | null;
+      businessrule: "COMM" | "RULE";
+    }[];
+  },
+  token: string
+) {
   try {
-    const response = await axiosInstance(token).post("/relationships/create", data);
+    const response = await axiosInstance(token).post(
+      "/relationships/create",
+      data
+    );
     revalidatePath("/relationships");
     return response.data;
   } catch (error) {
@@ -50,9 +56,46 @@ export async function createRelationship(data: {
   }
 }
 
-export async function deleteRelationship(id:string,entityidtbl_relationship_id:string,token:string) {
+export async function deleteRelationship(
+  id: string,
+  entityidtbl_relationship_id: string,
+  token: string
+) {
   try {
-    const response = await axiosInstance(token).delete(`/relationships/delete?id=${id}&entityidtbl_relationship_id=${entityidtbl_relationship_id}`);
+    const response = await axiosInstance(token).delete(
+      `/relationships/delete?id=${id}&entityidtbl_relationship_id=${entityidtbl_relationship_id}`
+    );
+    revalidatePath("/relationships");
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function updateRelationship(
+  id: string,
+  data: {
+    entityid_id_sender: string;
+    entityid_id_receiver: string;
+    transaction_name: string;
+    sender_id: string;
+    receiver_id: string;
+    std_version: string;
+    extn_data: {
+      reference_name: string;
+      reference_value: string;
+      position: number | null;
+      businessrule: "COMM" | "RULE";
+    }[];
+  },
+  token: string
+) {
+  try {
+    const response = await axiosInstance(token).put(
+      `/relationships/update/${id}`,
+      data
+    );
     revalidatePath("/relationships");
     return response.data;
   } catch (error) {

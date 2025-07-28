@@ -32,6 +32,7 @@ interface RelationshipDetailsProps {
   setSelectedVersion: (value: string) => void;
   selectedTransactionSet: string;
   setSelectedTransactionSet: (value: string) => void;
+  isEdit?: boolean;
 }
 
 export function RelationshipDetails({
@@ -54,6 +55,7 @@ export function RelationshipDetails({
   setSelectedVersion,
   selectedTransactionSet,
   setSelectedTransactionSet,
+  isEdit,
 }: RelationshipDetailsProps) {
   const handleSenderReferenceChange = (reference: string) => {
     const docType = senderReferences.find((ref: any) => ref.reference_id === reference)?.docType || "";
@@ -61,6 +63,9 @@ export function RelationshipDetails({
     setDocType(docType);
     console.log('doctypeSet', docType);
   };
+
+  console.log('selectedSenderReference', selectedSenderReference);
+  console.log('selectedReceiverReference', selectedReceiverReference);
   
   const { data: versions } = useGetVersionByFormat(docType === "EDI/EDIFACT" ? "E" : "X");
   const { data: transactionSets } = useGetTransactionSetByVersion(selectedVersion,docType === "EDI/EDIFACT" ? "E" : "X");
@@ -69,7 +74,7 @@ export function RelationshipDetails({
   
   return (
     <div className="space-y-6 ">
-      <div className="space-y-2">
+    { !isEdit && <div className="space-y-2">
         <Label htmlFor="relationship-name" className="text-sm font-medium">
           Relationship Name
         </Label>
@@ -81,7 +86,7 @@ export function RelationshipDetails({
           value={relationshipName}
           onChange={(e) => setRelationshipName(e.target.value)}
         />
-      </div>
+      </div>}
 
       <section className="grid grid-cols-2 gap-4">
         <div className="space-y-2">

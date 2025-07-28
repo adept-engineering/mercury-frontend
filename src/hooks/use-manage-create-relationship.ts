@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createRelationship, deleteRelationship } from "@/actions/relationships";
+import { createRelationship, deleteRelationship, getRelationshipById, updateRelationship } from "@/actions/relationships";
 import { useCurrentSession } from "./use-current-session";
 
 interface CreateRelationshipData {
@@ -110,5 +110,49 @@ export function useDeleteRelationship() {
   });
   return {
     deleteRelationshipMutation,
+  };
+}
+export function useGetRelationshipById() {
+  const queryClient = useQueryClient();
+  const { session } = useCurrentSession();
+  const getRelationshipByIdMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await getRelationshipById(id,session?.user?.token || "");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["relationship"] });
+    },
+  });
+  return {
+    getRelationshipByIdMutation,
+  };
+}
+
+export function useUpdateRelationship() {
+  const queryClient = useQueryClient();
+  const { session } = useCurrentSession();
+  const updateRelationshipMutation = useMutation({
+    mutationFn: async (data: {
+      id: string;
+      data: {
+        entityid_id_sender: string;
+        entityid_id_receiver: string;
+        transaction_name: string;
+        sender_id: string;
+        receiver_id: string;
+        std_version: string;
+        extn_data: Array<{
+          reference_name: string;
+          reference_value: string;
+          position: number | null;
+          businessrule: "RULE" | "COMM";
+        }>;
+      };
+    }) => {
+      return await updateRelationship(data.id, data.data, session?.user?.token || "");
+    },
+  });
+  return {
+    updateRelationshipMutation,
   };
 }

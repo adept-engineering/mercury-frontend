@@ -241,7 +241,7 @@ export const MapRelationshipObjToArray = (
   RelationshipDetails: Array<{ name: string; value: any }>;
   TransactionDetails: Array<{ name: string; value: any }>;
   AuditInfo: Array<{ name: string; value: any }>;
-  Maps: Array<{ map_id:string }>;
+  Maps: Array<{ map_id: string }>;
 } => {
   // Get destination endpoint from extension data
   const destinationEndpoint = obj.extndata?.find(
@@ -303,14 +303,16 @@ export const MapRelationshipObjToArray = (
     };
   });
 
-  const maps = obj.extndata?.map((extn: any) => {
-    if (extn.businessrule === "RULE") {
-      return {
-        map_id: extn.reference_value,
-      };
-    }
-    return null;
-  }).filter((map: any) => map !== null);
+  const maps = obj.extndata
+    ?.map((extn: any) => {
+      if (extn.businessrule === "RULE") {
+        return {
+          map_id: extn.reference_value,
+        };
+      }
+      return null;
+    })
+    .filter((map: any) => map !== null);
 
   return {
     RelationshipDetails: relationshipDetailsArray,
@@ -321,33 +323,36 @@ export const MapRelationshipObjToArray = (
 };
 
 export const getEntityReferences = (entityId: string, entities: any): any => {
-  return entities
-    ?.find((entity: any) => entity.id === entityId)
-    ?.references.map((item: any) => {
-      const extnMap = item.extn.reduce((acc: any, extn: any) => {
-        acc[extn.name] = extn.value;
-        return acc;
-      }, {});
+  const entity = entities?.find((entity: any) => entity.id === entityId);
+  if (!entity || !entity.references) {
+    return [];
+  }
 
-      let reference_id = "";
+  return entity.references.map((item: any) => {
+    const extnMap = item.extn.reduce((acc: any, extn: any) => {
+      acc[extn.name] = extn.value;
+      return acc;
+    }, {});
 
-      if (
-        item.reference_id_type === "EDI/EDIFACT" ||
-        item.reference_id_type === "EDI/X12"
-      ) {
-        const interchangeID = extnMap["InterchangeID"];
-        const groupID = extnMap["GroupID"];
+    let reference_id = "";
 
-        reference_id = `${interchangeID}/${groupID}`;
-      } else {
-        reference_id = extnMap["ApplicationID"];
-      }
+    if (
+      item.reference_id_type === "EDI/EDIFACT" ||
+      item.reference_id_type === "EDI/X12"
+    ) {
+      const interchangeID = extnMap["InterchangeID"];
+      const groupID = extnMap["GroupID"];
 
-      return {
-        docType: item.reference_id_type,
-        reference_id,
-      };
-    });
+      reference_id = `${interchangeID}/${groupID}`;
+    } else {
+      reference_id = extnMap["ApplicationID"];
+    }
+
+    return {
+      docType: item.reference_id_type,
+      reference_id,
+    };
+  });
 };
 
 export const parseTemplateToArray = (

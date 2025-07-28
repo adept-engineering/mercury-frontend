@@ -22,7 +22,8 @@ import { getEntityReferences } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { useManageCreateRelationship } from "@/hooks/use-manage-create-relationship";
+import { updateRelationship } from "@/actions/relationships";
+import { useUpdateRelationship } from "@/hooks/use-manage-create-relationship";
 
 const steps = [
   {
@@ -43,31 +44,70 @@ const steps = [
   },
 ];
 
-export default function CreateRelationshipFlow() {
+interface EditRelationshipFlowProps {
+  relationship: any;
+}
+
+export function EditRelationshipFlow({
+  relationship,
+}: EditRelationshipFlowProps) {
   const [currentTab, setCurrentTab] = useState(0);
   const lastPage = steps.length - 1;
   const router = useRouter();
 
-  // Relationship Details States
+  // Relationship Details States with default values from relationship data
   const { session } = useCurrentSession();
   const { data: entities } = useEntities(session?.user.token || "");
-  const [selectedSenderEntity, setSelectedSenderEntity] = useState<string>("");
-  const [selectedReceiverEntity, setSelectedReceiverEntity] =
-    useState<string>("");
+
+  // Extract default values from relationship data
+  const destinationEndpoint = relationship?.extndata?.find(
+    (extn: any) => extn.reference_name === "DestinationEndPoint"
+  );
+
+  const defaultBusinessRules =
+    relationship?.extndata
+      ?.filter(
+        (extn: any) =>
+          extn.businessrule === "COMM" &&
+          extn.reference_name !== "DestinationEndPoint"
+      )
+      .map((extn: any) => ({
+        map_type: "COMPLIANCE" as const,
+        id: extn.reference_value,
+        map_title: extn.reference_name,
+        map_description: extn.reference_value,
+      })) || [];
+  const getEntityIdbyEtityid_id = (entityid_id: string) => {
+    return entities?.find((entity: any) => entity.entityid_id === entityid_id)
+      ?.id;
+  };
+  console.log(relationship);
+
+  const [selectedSenderEntity, setSelectedSenderEntity] = useState<string>(
+    relationship?.entityid_id_sender || ""
+  );
+  const [selectedReceiverEntity, setSelectedReceiverEntity] = useState<string>(
+    relationship?.entityid_id_receiver || ""
+  );
   const [selectedSenderReference, setSelectedSenderReference] =
-    useState<string>("");
+    useState<string>(relationship?.sender_id || "");
   const [selectedReceiverReference, setSelectedReceiverReference] =
-    useState<string>("");
+    useState<string>(relationship?.receiver_id || "");
   const [relationshipName, setRelationshipName] = useState<string>("");
   const [senderReferences, setSenderReferences] = useState<any>([]);
   const [receiverReferences, setReceiverReferences] = useState<any>([]);
-  const [docType, setDocType] = useState<string>("");
-  const [selectedVersion, setSelectedVersion] = useState<string>("");
-  const [selectedTransactionSet, setSelectedTransactionSet] =useState<string>("");
-  const [endPointUrl, setEndPointUrl] = useState<string>("");
-  const { createRelationshipWithData } = useManageCreateRelationship();
-
-  // Business Rules States
+  const [docType, setDocType] = useState<string>(relationship?.docType || "");
+  const [selectedVersion, setSelectedVersion] = useState<string>(
+    relationship?.std_version || ""
+  );
+  const [selectedTransactionSet, setSelectedTransactionSet] = useState<string>(
+    relationship?.transaction_name || ""
+  );
+  const [endPointUrl, setEndPointUrl] = useState<string>(
+    destinationEndpoint?.reference_value || ""
+  );
+  console.log(selectedSenderEntity, selectedReceiverEntity);
+  // Business Rules States with default values
   const [businessRules, setBusinessRules] = useState<
     {
       map_type: "COMPLIANCE" | "TRANSFORMATION" | "RESEARCH";
@@ -75,7 +115,27 @@ export default function CreateRelationshipFlow() {
       map_title: string;
       map_description: string;
     }[]
-  >([]);
+  >(relationship?.maps || []);
+  const { updateRelationshipMutation } = useUpdateRelationship();
+
+  // Set default values when entities are loaded
+  useEffect(() => {
+    if (entities && entities.length > 0 && relationship) {
+      const senderEntityId = getEntityIdbyEtityid_id(
+        relationship.entityid_id_sender
+      );
+      const receiverEntityId = getEntityIdbyEtityid_id(
+        relationship.entityid_id_receiver
+      );
+
+      if (senderEntityId && !selectedSenderEntity) {
+        setSelectedSenderEntity(senderEntityId);
+      }
+      if (receiverEntityId && !selectedReceiverEntity) {
+        setSelectedReceiverEntity(receiverEntityId);
+      }
+    }
+  }, [entities, relationship, selectedSenderEntity, selectedReceiverEntity]);
 
   useEffect(() => {
     if (selectedSenderEntity && entities) {
@@ -84,13 +144,18 @@ export default function CreateRelationshipFlow() {
         entities
       );
       setSenderReferences(senderReference);
+    } else {
+      setSenderReferences([]);
     }
+
     if (selectedReceiverEntity && entities) {
       const receiverReference = getEntityReferences(
         selectedReceiverEntity,
         entities
       );
       setReceiverReferences(receiverReference);
+    } else {
+      setReceiverReferences([]);
     }
   }, [selectedSenderEntity, selectedReceiverEntity, entities]);
 
@@ -108,9 +173,8 @@ export default function CreateRelationshipFlow() {
   const handleEndPointUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEndPointUrl(value);
-
-   
   };
+
   const handleNext = () => {
     if (endPointUrl !== "" && !validateUrl(endPointUrl)) {
       toast({
@@ -120,41 +184,67 @@ export default function CreateRelationshipFlow() {
       });
       return;
     }
-    setCurrentTab(
-      currentTab + 1 <= lastPage ? currentTab + 1 : lastPage
-    )
+    setCurrentTab(currentTab + 1 <= lastPage ? currentTab + 1 : lastPage);
   };
 
-  const handleCreateRelationship =  async () => {
-    try{
-      const senderEntityId = entities?.find((entity:any)=>entity.id === selectedSenderEntity)?.entityid_id;
-      const receiverEntityId = entities?.find((entity:any)=>entity.id === selectedReceiverEntity)?.entityid_id;
-      console.log(businessRules)
-     
-     createRelationshipWithData(
-      senderEntityId || "",
-      receiverEntityId || "",
-      selectedTransactionSet,
-      selectedSenderReference,
-      selectedReceiverReference,
-      selectedVersion,
-      endPointUrl,
-      businessRules
-    )
-    toast({
-      title: "Relationship created successfully",
-      description: "Relationship created successfully",
-      variant: "success",
-    });
-    router.push("/relationships");
-    }catch(error){
+  const handleUpdateRelationship = async () => {
+    try {
+      // Prepare extension data
+      const extn_data = [
+        {
+          reference_name: "DestinationEndPoint",
+          reference_value: endPointUrl,
+          position: 1,
+          businessrule: "COMM" as const,
+        },
+        ...businessRules.map((rule,index) => ({
+          reference_name: rule.map_title,
+          reference_value: rule.id,
+          position:index+1,
+          businessrule: "RULE" as const,
+        })),
+      ];
+
+      console.log({
+        id: relationship.id,
+        data: {
+          entityid_id_sender: selectedSenderEntity,
+          entityid_id_receiver: selectedReceiverEntity,
+          transaction_name: selectedTransactionSet,
+          sender_id: relationship.sender_id,
+          receiver_id: relationship.receiver_id,
+          std_version: selectedVersion,
+          extn_data,
+        },
+      })
+
+       updateRelationshipMutation.mutate({
+        id: relationship.id,
+        data: {
+          entityid_id_sender: selectedSenderEntity,
+          entityid_id_receiver: selectedReceiverEntity,
+          transaction_name: selectedTransactionSet,
+          sender_id: relationship.sender_id,
+          receiver_id: relationship.receiver_id,
+          std_version: selectedVersion,
+          extn_data,
+        },
+      });
+
+      toast({
+        title: "Relationship updated successfully",
+        description: "Relationship updated successfully",
+        variant: "success",
+      });
+      router.push("/relationships");
+    } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to create relationship",
+        description: "Failed to update relationship",
         variant: "destructive",
       });
     }
-  }
+  };
 
   return (
     <div className="pt-10 w-full">
@@ -168,9 +258,7 @@ export default function CreateRelationshipFlow() {
         <MoveLeft />
         Back
       </Button>
-      <h1 className="text-center text-2xl font-bold mb-6">
-        Create Relationship
-      </h1>
+      <h1 className="text-center text-2xl font-bold mb-6">Edit Relationship</h1>
 
       <div className="w-full grid md:grid-cols-4 mx-auto pl-12">
         <Stepper activeStep={currentTab} onStepChange={setCurrentTab}>
@@ -199,6 +287,7 @@ export default function CreateRelationshipFlow() {
                   setSelectedVersion={setSelectedVersion}
                   selectedTransactionSet={selectedTransactionSet}
                   setSelectedTransactionSet={setSelectedTransactionSet}
+                  isEdit={true}
                 />
               </div>
             </StepperContent>
@@ -269,9 +358,9 @@ export default function CreateRelationshipFlow() {
               {currentTab === lastPage && (
                 <Button
                   className="px-4 py-2 bg-primary text-primary-foreground rounded"
-                  onClick={handleCreateRelationship}
+                  onClick={handleUpdateRelationship}
                   disabled={false}>
-                  Create Relationship
+                  Update Relationship
                 </Button>
               )}
             </footer>

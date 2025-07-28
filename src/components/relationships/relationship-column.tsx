@@ -28,7 +28,7 @@ const ActionCell = ({row}:{row:Row<Relationships>}) => {
         <DropdownMenuItem
           onClick={() =>
             router.push(
-              `/relationships/${row.original.entityidtbl_relationship_id}/compliance/rules`
+              `/relationships/${row.original.id}/edit`
             )
           }
         >
