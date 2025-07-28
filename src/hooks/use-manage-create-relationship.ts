@@ -63,9 +63,9 @@ export function useManageCreateRelationship() {
     // Add endpoint URL
     if (endpointUrl) {
       extn_data.push({
-        reference_name: "endpoint",
+        reference_name: "DestinationEndPoint",
         reference_value: endpointUrl,
-        position: null,
+        position: 1,
         businessrule:"COMM"
       });
     }
