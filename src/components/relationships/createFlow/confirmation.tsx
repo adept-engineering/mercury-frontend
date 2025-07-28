@@ -84,8 +84,6 @@ export function Confirmation({
         }
     };
 
-    // Check if data is complete
-    const isComplete = relationshipName && selectedSenderEntity && selectedReceiverEntity && businessRules.length > 0;
 
     return (
         <div className="space-y-6">
@@ -98,18 +96,6 @@ export function Confirmation({
                     Please review your relationship configuration before creating
                 </p>
             </div>
-
-            {/* Completion Status */}
-            <Card className={`border-2 ${isComplete ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'}`}>
-                <CardContent className="pt-4">
-                    <div className="flex items-center gap-3">
-                        {isComplete ? <CheckCircle className="w-6 h-6 text-green-500" /> : <XCircle className="w-6 h-6 text-red-500" />}
-                        <span className={`font-medium `}>
-                            {isComplete ? 'Configuration Complete' : 'Configuration Incomplete'}
-                        </span>
-                    </div>
-                </CardContent>
-            </Card>
 
             {/* Relationship Name */}
            
