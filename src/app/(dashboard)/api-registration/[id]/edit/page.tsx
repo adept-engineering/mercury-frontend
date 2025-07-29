@@ -50,4 +50,5 @@ export default async function EditApiRegistrationPage({
     console.error("Error fetching API data:", error);
     notFound();
   }
+  
 }
