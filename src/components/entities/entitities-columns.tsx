@@ -58,12 +58,12 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
     header: "ORGANIZATION TYPE",
   },
   {
-    accessorKey: "created_by",
+    accessorKey: "updated_by",
     header: "UPDATED BY",
     cell: ({ row }) => {
-      const createdBy = row.getValue("created_by") as string;
+      const updatedBy = row.getValue("updated_by") as string;
       return (
-        <div className="text-sm text-foreground">{createdBy.toUpperCase()}</div>
+        <div className="text-sm text-foreground">{updatedBy.toUpperCase()}</div>
       );
     },
   },

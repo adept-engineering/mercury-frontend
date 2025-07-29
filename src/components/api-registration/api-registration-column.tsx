@@ -104,8 +104,8 @@ export const apiRegistrationColumns: ColumnDef<any>[] = [
     accessorKey: "updated_by",
     header: "UPDATED BY",
     cell: ({ row }) => {
-      const createdBy = row.getValue("created_by") as string;
-      return <div className="">{createdBy}</div>;
+      const updatedBy = row.getValue("updated_by") as string;
+      return <div className="">{updatedBy}</div>;
     },
   },
   {
