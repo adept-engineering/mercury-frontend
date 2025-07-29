@@ -1,5 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createRelationship, deleteRelationship, getRelationshipById, updateRelationship } from "@/actions/relationships";
+import {
+  createRelationship,
+  deleteRelationship,
+  getRelationshipById,
+  updateRelationship,
+} from "@/actions/relationships";
 import { useCurrentSession } from "./use-current-session";
 
 interface CreateRelationshipData {
@@ -13,15 +18,16 @@ interface CreateRelationshipData {
     reference_name: string;
     reference_value: string;
     position: number | null;
-    businessrule:"COMM"|"RULE"
+    businessrule: "COMM" | "RULE";
   }>;
 }
 
 interface BusinessRule {
-  map_type: "COMPLIANCE" | "TRANSFORMATION" | "RESEARCH";
-  id: string;
-  map_title: string;
-  map_description: string;
+  reference_name: string;
+  reference_value: string;
+  position: number;
+  stepName: string;
+  registrationid: string;
 }
 
 export function useManageCreateRelationship() {
@@ -32,13 +38,23 @@ export function useManageCreateRelationship() {
       return await createRelationship(data, session?.user?.token || "");
     },
     onSuccess: () => {
-      // Invalidate and refetch relationships list
-      queryClient.invalidateQueries({ queryKey: ["relationships"] });
+      queryClient.invalidateQueries({ queryKey: ["relationship"] });
     },
   });
+
   const deleteRelationshipMutation = useMutation({
-    mutationFn: async ({id,entityidtbl_relationship_id}:{id:string,entityidtbl_relationship_id:string}) => {
-      return await deleteRelationship(id,entityidtbl_relationship_id,session?.user?.token || "");
+    mutationFn: async ({
+      id,
+      entityidtbl_relationship_id,
+    }: {
+      id: string;
+      entityidtbl_relationship_id: string;
+    }) => {
+      return await deleteRelationship(
+        id,
+        entityidtbl_relationship_id,
+        session?.user?.token || ""
+      );
     },
   });
 
@@ -57,7 +73,7 @@ export function useManageCreateRelationship() {
       reference_name: string;
       reference_value: string;
       position: number | null;
-      businessrule:"COMM"|"RULE"
+      businessrule: "COMM" | "RULE";
     }> = [];
 
     // Add endpoint URL
@@ -66,17 +82,17 @@ export function useManageCreateRelationship() {
         reference_name: "DestinationEndPoint",
         reference_value: endpointUrl,
         position: 1,
-        businessrule:"COMM"
+        businessrule: "COMM",
       });
     }
 
     // Add business rules
-    businessRules.forEach((rule, index) => {
+    businessRules.forEach((rule) => {
       extn_data.push({
-        reference_name: rule.map_type,
-        reference_value: rule.id,
-        position: index + 1,
-        businessrule:"RULE"
+        reference_name: rule.reference_name,
+        reference_value: rule.reference_value,
+        position: rule.position,
+        businessrule: "RULE",
       });
     });
 
@@ -104,8 +120,18 @@ export function useDeleteRelationship() {
   const queryClient = useQueryClient();
   const { session } = useCurrentSession();
   const deleteRelationshipMutation = useMutation({
-    mutationFn: async ({id,entityidtbl_relationship_id}:{id:string,entityidtbl_relationship_id:string}) => {
-      return await deleteRelationship(id,entityidtbl_relationship_id,session?.user?.token || "");
+    mutationFn: async ({
+      id,
+      entityidtbl_relationship_id,
+    }: {
+      id: string;
+      entityidtbl_relationship_id: string;
+    }) => {
+      return await deleteRelationship(
+        id,
+        entityidtbl_relationship_id,
+        session?.user?.token || ""
+      );
     },
   });
   return {
@@ -117,7 +143,7 @@ export function useGetRelationshipById() {
   const { session } = useCurrentSession();
   const getRelationshipByIdMutation = useMutation({
     mutationFn: async (id: string) => {
-      return await getRelationshipById(id,session?.user?.token || "");
+      return await getRelationshipById(id, session?.user?.token || "");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["relationship"] });
@@ -149,7 +175,11 @@ export function useUpdateRelationship() {
         }>;
       };
     }) => {
-      return await updateRelationship(data.id, data.data, session?.user?.token || "");
+      return await updateRelationship(
+        data.id,
+        data.data,
+        session?.user?.token || ""
+      );
     },
   });
   return {

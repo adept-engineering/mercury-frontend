@@ -35,10 +35,6 @@ const steps = [
   },
   {
     title: "Step 3",
-    description: "Endpoint URL",
-  },
-  {
-    title: "Step 4",
     description: "Confirmation",
   },
 ];
@@ -63,17 +59,18 @@ export default function CreateRelationshipFlow() {
   const [receiverReferences, setReceiverReferences] = useState<any>([]);
   const [docType, setDocType] = useState<string>("");
   const [selectedVersion, setSelectedVersion] = useState<string>("");
-  const [selectedTransactionSet, setSelectedTransactionSet] =useState<string>("");
-  const [endPointUrl, setEndPointUrl] = useState<string>("");
+  const [selectedTransactionSet, setSelectedTransactionSet] =
+    useState<string>("");
   const { createRelationshipWithData } = useManageCreateRelationship();
 
   // Business Rules States
   const [businessRules, setBusinessRules] = useState<
     {
-      map_type: "COMPLIANCE" | "TRANSFORMATION" | "RESEARCH";
-      id: string;
-      map_title: string;
-      map_description: string;
+      reference_name: string;
+      reference_value: string;
+      position: number;
+      stepName: string;
+      registrationid: string;
     }[]
   >([]);
 
@@ -96,65 +93,44 @@ export default function CreateRelationshipFlow() {
 
   const { toast } = useToast();
 
-  const validateUrl = (url: string): boolean => {
-    try {
-      const urlObj = new URL(url);
-      return urlObj.protocol === "http:" || urlObj.protocol === "https:";
-    } catch {
-      return false;
-    }
-  };
-
-  const handleEndPointUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setEndPointUrl(value);
-
-   
-  };
   const handleNext = () => {
-    if (endPointUrl !== "" && !validateUrl(endPointUrl)) {
-      toast({
-        title: "Invalid URL",
-        description: "Please enter a valid HTTP/HTTPS URL",
-        variant: "destructive",
-      });
-      return;
-    }
-    setCurrentTab(
-      currentTab + 1 <= lastPage ? currentTab + 1 : lastPage
-    )
+    setCurrentTab(currentTab + 1 <= lastPage ? currentTab + 1 : lastPage);
   };
 
-  const handleCreateRelationship =  async () => {
-    try{
-      const senderEntityId = entities?.find((entity:any)=>entity.id === selectedSenderEntity)?.entityid_id;
-      const receiverEntityId = entities?.find((entity:any)=>entity.id === selectedReceiverEntity)?.entityid_id;
-      console.log(businessRules)
-     
-     createRelationshipWithData(
-      senderEntityId || "",
-      receiverEntityId || "",
-      selectedTransactionSet,
-      selectedSenderReference,
-      selectedReceiverReference,
-      selectedVersion,
-      endPointUrl,
-      businessRules
-    )
-    toast({
-      title: "Relationship created successfully",
-      description: "Relationship created successfully",
-      variant: "success",
-    });
-    router.push("/relationships");
-    }catch(error){
+  const handleCreateRelationship = async () => {
+    try {
+      const senderEntityId = entities?.find(
+        (entity: any) => entity.id === selectedSenderEntity
+      )?.entityid_id;
+      const receiverEntityId = entities?.find(
+        (entity: any) => entity.id === selectedReceiverEntity
+      )?.entityid_id;
+      console.log(businessRules);
+
+      createRelationshipWithData(
+        senderEntityId || "",
+        receiverEntityId || "",
+        selectedTransactionSet,
+        selectedSenderReference,
+        selectedReceiverReference,
+        selectedVersion,
+        "", // endpointUrl - empty string since step 3 was removed
+        businessRules
+      );
+      toast({
+        title: "Relationship created successfully",
+        description: "Relationship created successfully",
+        variant: "success",
+      });
+      router.push("/relationships");
+    } catch (error) {
       toast({
         title: "Error",
         description: "Failed to create relationship",
         variant: "destructive",
       });
     }
-  }
+  };
 
   return (
     <div className="pt-10 w-full">
@@ -213,21 +189,6 @@ export default function CreateRelationshipFlow() {
             </StepperContent>
 
             <StepperContent step={2}>
-              <div className="md:py-6 animate-fade-up w-full">
-                <div className="space-y-2">
-                  <Label htmlFor="endpoint-url">End Point URL</Label>
-                  <Input
-                    id="endpoint-url"
-                    type="text"
-                    placeholder="https://example.com/api/endpoint"
-                    value={endPointUrl}
-                    onChange={handleEndPointUrlChange}
-                  />
-                </div>
-              </div>
-            </StepperContent>
-
-            <StepperContent step={3}>
               <div className="md:py-6 animate-fade-up">
                 <Confirmation
                   relationshipName={relationshipName}
@@ -240,7 +201,6 @@ export default function CreateRelationshipFlow() {
                   selectedTransactionSet={selectedTransactionSet}
                   businessRules={businessRules}
                   entities={entities}
-                  endPointUrl={endPointUrl}
                 />
               </div>
             </StepperContent>
