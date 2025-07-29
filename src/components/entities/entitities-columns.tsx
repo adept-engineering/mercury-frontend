@@ -59,7 +59,7 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
   },
   {
     accessorKey: "created_by",
-    header: "CREATED BY",
+    header: "UPDATED BY",
     cell: ({ row }) => {
       const createdBy = row.getValue("created_by") as string;
       return (

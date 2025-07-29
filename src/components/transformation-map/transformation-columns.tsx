@@ -111,7 +111,7 @@ export const transformationMapColumns: ColumnDef<TransformationMap>[] = [
     },
     {
         accessorKey: "created_by",
-        header: "CREATED BY",
+        header: "UPDATED BY",
         cell: ({ row }) => {
             const createdBy = row.getValue("created_by") as string;
             return <div className="text-sm text-muted-foreground">{createdBy.toUpperCase()}</div>;
