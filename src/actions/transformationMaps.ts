@@ -7,7 +7,8 @@ import { revalidatePath } from "next/cache";
 export const getTransformationMaps = async (token: string) => {
     try{
         const response = await axiosInstance(token).get("/maps")
-        return response.data.formattedMaps
+        console.log(response.data)
+        return response.data
     }catch(error){
         console.error("Error getting transformation maps:", error)
         throw error
