@@ -129,24 +129,7 @@ export function ResearchMapPage({
           {formData.selectedResearchMap && (
             <div className="space-y-4">
               <div className="space-y-3">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="target-research"
-                    className="text-sm font-medium"
-                  >
-                    Target Research Focus
-                  </Label>
-                  <Input
-                    id="target-research"
-                    type="text"
-                    value={formData.targetResearch}
-                    onChange={(e) =>
-                      updateFormData("targetResearch", e.target.value)
-                    }
-                    placeholder="e.g., Market Analysis, Competitor Research, etc."
-                    className="w-full"
-                  />
-                </div>
+               
 
                 {selectedMap && (
                   <div className="p-4 bg-muted/50 rounded-lg">

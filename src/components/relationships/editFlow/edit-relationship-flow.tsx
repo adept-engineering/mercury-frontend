@@ -204,12 +204,14 @@ export function EditRelationshipFlow({
           businessrule: "RULE" as const,
         })),
       ];
-
+      const senderEntityId = entities?.find((entity:any)=>entity.id === selectedSenderEntity)?.entityid_id;
+      const receiverEntityId = entities?.find((entity:any)=>entity.id === selectedReceiverEntity)?.entityid_id;
+      console.log(senderEntityId,receiverEntityId)
       console.log({
         id: relationship.id,
         data: {
-          entityid_id_sender: selectedSenderEntity,
-          entityid_id_receiver: selectedReceiverEntity,
+          entityid_id_sender: senderEntityId,
+          entityid_id_receiver: receiverEntityId,
           transaction_name: selectedTransactionSet,
           sender_id: relationship.sender_id,
           receiver_id: relationship.receiver_id,

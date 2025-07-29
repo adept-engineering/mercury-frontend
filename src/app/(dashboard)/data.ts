@@ -21,6 +21,7 @@ import {
   GitGraphIcon,
   FileBarChart2,
   FileText,
+  Webhook,
 } from "lucide-react";
 
 import { DropdownMenuType, SidebarItemType } from "@/lib/types";
@@ -90,6 +91,11 @@ export const sidebarItems: SidebarItemType[] = [
         title: "Maps",
         url: "/maps",
         icon: TestTube,
+      },
+      {
+        title:"API Registration",
+        url:"/api-registration",
+        icon:Webhook,
       },
       // {
       //   title: "Compliance Rules",
