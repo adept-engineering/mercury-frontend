@@ -35,17 +35,24 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface Parameter {
+  name: string;
+  description: string;
+}
+
+interface InputParameter {
+  name: string;
+  description: string;
+  display_name: string;
+  mandatory: string;
+}
+
 interface Endpoint {
   url: string;
   input_parameters: string;
   output_parameters: string;
   is_default: boolean;
   version: number;
-}
-
-interface Parameter {
-  name: string;
-  description: string;
 }
 
 export function ApiRegistrationForm() {

@@ -20,6 +20,13 @@ interface Parameter {
   description: string;
 }
 
+interface InputParameter {
+  name: string;
+  description: string;
+  display_name: string;
+  mandatory: string;
+}
+
 interface Endpoint {
   url: string;
   input_parameters: string;
@@ -40,7 +47,7 @@ export function AddEndpointDialog({
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState("");
   const [urlError, setUrlError] = useState("");
-  const [inputParameters, setInputParameters] = useState<Parameter[]>([]);
+  const [inputParameters, setInputParameters] = useState<InputParameter[]>([]);
   const [outputParameters, setOutputParameters] = useState<Parameter[]>([]);
 
   const validateUrl = (url: string): boolean => {
@@ -53,7 +60,10 @@ export function AddEndpointDialog({
   };
 
   const addInputParameter = () => {
-    setInputParameters([...inputParameters, { name: "", description: "" }]);
+    setInputParameters([
+      ...inputParameters,
+      { name: "", description: "", display_name: "", mandatory: "no" },
+    ]);
   };
 
   const removeInputParameter = (index: number) => {
@@ -62,7 +72,7 @@ export function AddEndpointDialog({
 
   const updateInputParameter = (
     index: number,
-    field: keyof Parameter,
+    field: keyof InputParameter,
     value: string
   ) => {
     const updated = [...inputParameters];
@@ -88,7 +98,19 @@ export function AddEndpointDialog({
     setOutputParameters(updated);
   };
 
-  const convertParametersToJson = (parameters: Parameter[]) => {
+  const convertInputParametersToJson = (parameters: InputParameter[]) => {
+    const paramArray = parameters
+      .filter((param) => param.name && param.description)
+      .map((param) => ({
+        name: param.name,
+        description: param.description,
+        display_name: param.display_name,
+        mandatory: param.mandatory,
+      }));
+    return JSON.stringify(paramArray, null, 2);
+  };
+
+  const convertOutputParametersToJson = (parameters: Parameter[]) => {
     const paramArray = parameters
       .filter((param) => param.name && param.description)
       .map((param) => ({
@@ -112,8 +134,8 @@ export function AddEndpointDialog({
 
     setUrlError("");
 
-    const inputJson = convertParametersToJson(inputParameters);
-    const outputJson = convertParametersToJson(outputParameters);
+    const inputJson = convertInputParametersToJson(inputParameters);
+    const outputJson = convertOutputParametersToJson(outputParameters);
 
     onAddEndpoint({
       url: url.trim(),
@@ -188,35 +210,73 @@ export function AddEndpointDialog({
               </div>
               <div className="space-y-2">
                 {inputParameters.map((param, index) => (
-                  <div key={index} className="flex gap-2 items-center">
-                    <Input
-                      placeholder="Parameter name"
-                      value={param.name}
-                      onChange={(e) =>
-                        updateInputParameter(index, "name", e.target.value)
-                      }
-                      className="flex-1"
-                    />
-                    <Input
-                      placeholder="Parameter description"
-                      value={param.description}
-                      onChange={(e) =>
-                        updateInputParameter(
-                          index,
-                          "description",
-                          e.target.value
-                        )
-                      }
-                      className="flex-1"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeInputParameter(index)}
-                      className="h-8 w-8 p-0">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                  <div
+                    key={index}
+                    className="flex flex-col gap-2 p-3 border rounded-md">
+                    <div className="flex gap-2 items-center">
+                      <Input
+                        placeholder="Parameter name"
+                        value={param.name}
+                        onChange={(e) =>
+                          updateInputParameter(index, "name", e.target.value)
+                        }
+                        className="flex-1"
+                      />
+                      <Input
+                        placeholder="Parameter description"
+                        value={param.description}
+                        onChange={(e) =>
+                          updateInputParameter(
+                            index,
+                            "description",
+                            e.target.value
+                          )
+                        }
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeInputParameter(index)}
+                        className="h-8 w-8 p-0">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      <Input
+                        placeholder="Display name"
+                        value={param.display_name}
+                        onChange={(e) =>
+                          updateInputParameter(
+                            index,
+                            "display_name",
+                            e.target.value
+                          )
+                        }
+                        className="flex-1"
+                      />
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id={`mandatory-${index}`}
+                          checked={param.mandatory === "yes"}
+                          onChange={(e) =>
+                            updateInputParameter(
+                              index,
+                              "mandatory",
+                              e.target.checked ? "yes" : "no"
+                            )
+                          }
+                          className="h-4 w-4"
+                        />
+                        <label
+                          htmlFor={`mandatory-${index}`}
+                          className="text-sm">
+                          Mandatory
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

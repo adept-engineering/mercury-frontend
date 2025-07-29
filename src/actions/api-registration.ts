@@ -91,6 +91,7 @@ export async function updateApiRegistration(
       data.data
     );
     revalidatePath("/api-registration");
+    revalidatePath(`/api-registration/${data.id}`);
     return response.data;
   } catch (error) {
     console.error(error);

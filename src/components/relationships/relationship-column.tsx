@@ -126,10 +126,19 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
 },
 {
     accessorKey: "updated_date",
-    header: "UPDATED DATE",
+    header: "DATE",
     cell: ({ row }) => {
         const dateString = row.getValue("updated_date") as string;
         const date = format(new Date(dateString), "MM/dd/yyyy");
+        return <div className="text-sm text-muted-foreground">{date}</div>;
+    },
+},
+{
+    accessorKey: "updated_date",
+    header: "TIME",
+    cell: ({ row }) => {
+        const dateString = row.getValue("updated_date") as string;
+        const date = format(new Date(dateString), "HH:mm");
         return <div className="text-sm text-muted-foreground">{date}</div>;
     },
 },

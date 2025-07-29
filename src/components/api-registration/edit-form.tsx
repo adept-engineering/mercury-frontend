@@ -35,17 +35,24 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface Parameter {
+  name: string;
+  description: string;
+}
+
+interface InputParameter {
+  name: string;
+  description: string;
+  display_name: string;
+  mandatory: string;
+}
+
 interface Endpoint {
   url: string;
   input_parameters: string;
   output_parameters: string;
   is_default: boolean;
   version: number;
-}
-
-interface Parameter {
-  name: string;
-  description: string;
 }
 
 interface ApiData {
@@ -75,7 +82,18 @@ interface EditApiRegistrationFormProps {
 export function EditApiRegistrationForm({
   apiData,
 }: EditApiRegistrationFormProps) {
-  const [endpoints, setEndpoints] = useState<Endpoint[]>(apiData.endpoints);
+  // Filter to only show the latest version of each endpoint
+  const latestEndpoints = apiData.endpoints.reduce((acc, endpoint) => {
+    const existingEndpoint = acc.find((e) => e.url === endpoint.url);
+    if (!existingEndpoint || endpoint.version > existingEndpoint.version) {
+      // Remove the old version and add the new one
+      const filtered = acc.filter((e) => e.url !== endpoint.url);
+      return [...filtered, endpoint];
+    }
+    return acc;
+  }, [] as Endpoint[]);
+
+  const [endpoints, setEndpoints] = useState<Endpoint[]>(latestEndpoints);
   const { session } = useCurrentSession();
   const router = useRouter();
   const { updateApiRegistrationMutation, isUpdatingApiRegistration } =
