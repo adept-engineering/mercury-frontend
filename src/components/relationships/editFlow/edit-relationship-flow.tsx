@@ -36,13 +36,17 @@ const steps = [
   },
   {
     title: "Step 3",
-    description: "Endpoint URL",
-  },
-  {
-    title: "Step 4",
     description: "Confirmation",
   },
 ];
+
+interface BusinessRule {
+  reference_name: string;
+  reference_value: string;
+  position: number;
+  stepName: string;
+  registrationid: string;
+}
 
 interface EditRelationshipFlowProps {
   relationship: any;
@@ -59,24 +63,6 @@ export function EditRelationshipFlow({
   const { session } = useCurrentSession();
   const { data: entities } = useEntities(session?.user.token || "");
 
-  // Extract default values from relationship data
-  const destinationEndpoint = relationship?.extndata?.find(
-    (extn: any) => extn.reference_name === "DestinationEndPoint"
-  );
-
-  const defaultBusinessRules =
-    relationship?.extndata
-      ?.filter(
-        (extn: any) =>
-          extn.businessrule === "COMM" &&
-          extn.reference_name !== "DestinationEndPoint"
-      )
-      .map((extn: any) => ({
-        map_type: "COMPLIANCE" as const,
-        id: extn.reference_value,
-        map_title: extn.reference_name,
-        map_description: extn.reference_value,
-      })) || [];
   const getEntityIdbyEtityid_id = (entityid_id: string) => {
     return entities?.find((entity: any) => entity.entityid_id === entityid_id)
       ?.id;
@@ -103,19 +89,20 @@ export function EditRelationshipFlow({
   const [selectedTransactionSet, setSelectedTransactionSet] = useState<string>(
     relationship?.transaction_name || ""
   );
-  const [endPointUrl, setEndPointUrl] = useState<string>(
-    destinationEndpoint?.reference_value || ""
-  );
+
   console.log(selectedSenderEntity, selectedReceiverEntity);
-  // Business Rules States with default values
-  const [businessRules, setBusinessRules] = useState<
-    {
-      map_type: "COMPLIANCE" | "TRANSFORMATION" | "RESEARCH";
-      id: string;
-      map_title: string;
-      map_description: string;
-    }[]
-  >(relationship?.maps || []);
+
+  // Business Rules States with default values from extndata
+  const [businessRules, setBusinessRules] = useState<BusinessRule[]>(
+    relationship?.extndata?.map((extn: any) => ({
+      reference_name: extn.reference_name,
+      reference_value: extn.reference_value,
+      position: parseInt(extn.position) || 1,
+      stepName: extn.stepName || "",
+      registrationid: extn.registrationid || "",
+    })) || []
+  );
+
   const { updateRelationshipMutation } = useUpdateRelationship();
 
   // Set default values when entities are loaded
@@ -161,52 +148,28 @@ export function EditRelationshipFlow({
 
   const { toast } = useToast();
 
-  const validateUrl = (url: string): boolean => {
-    try {
-      const urlObj = new URL(url);
-      return urlObj.protocol === "http:" || urlObj.protocol === "https:";
-    } catch {
-      return false;
-    }
-  };
-
-  const handleEndPointUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setEndPointUrl(value);
-  };
-
   const handleNext = () => {
-    if (endPointUrl !== "" && !validateUrl(endPointUrl)) {
-      toast({
-        title: "Invalid URL",
-        description: "Please enter a valid HTTP/HTTPS URL",
-        variant: "destructive",
-      });
-      return;
-    }
     setCurrentTab(currentTab + 1 <= lastPage ? currentTab + 1 : lastPage);
   };
 
   const handleUpdateRelationship = async () => {
     try {
-      // Prepare extension data
-      const extn_data = [
-        {
-          reference_name: "DestinationEndPoint",
-          reference_value: endPointUrl,
-          position: 1,
-          businessrule: "COMM" as const,
-        },
-        ...businessRules.map((rule,index) => ({
-          reference_name: rule.map_title,
-          reference_value: rule.id,
-          position:index+1,
-          businessrule: "RULE" as const,
-        })),
-      ];
-      const senderEntityId = entities?.find((entity:any)=>entity.id === selectedSenderEntity)?.entityid_id;
-      const receiverEntityId = entities?.find((entity:any)=>entity.id === selectedReceiverEntity)?.entityid_id;
-      console.log(senderEntityId,receiverEntityId)
+      // Prepare extension data from business rules
+      const extn_data = businessRules.map((rule) => ({
+        reference_name: rule.reference_name,
+        reference_value: rule.reference_value,
+        position: rule.position,
+        stepName: rule.stepName,
+        registrationid: rule.registrationid,
+      }));
+
+      const senderEntityId = entities?.find(
+        (entity: any) => entity.id === selectedSenderEntity
+      )?.entityid_id;
+      const receiverEntityId = entities?.find(
+        (entity: any) => entity.id === selectedReceiverEntity
+      )?.entityid_id;
+
       console.log({
         id: relationship.id,
         data: {
@@ -218,13 +181,13 @@ export function EditRelationshipFlow({
           std_version: selectedVersion,
           extn_data,
         },
-      })
+      });
 
-       updateRelationshipMutation.mutate({
+      updateRelationshipMutation.mutate({
         id: relationship.id,
         data: {
-          entityid_id_sender: selectedSenderEntity,
-          entityid_id_receiver: selectedReceiverEntity,
+          entityid_id_sender: senderEntityId || "",
+          entityid_id_receiver: receiverEntityId || "",
           transaction_name: selectedTransactionSet,
           sender_id: relationship.sender_id,
           receiver_id: relationship.receiver_id,
@@ -304,21 +267,6 @@ export function EditRelationshipFlow({
             </StepperContent>
 
             <StepperContent step={2}>
-              <div className="md:py-6 animate-fade-up w-full">
-                <div className="space-y-2">
-                  <Label htmlFor="endpoint-url">End Point URL</Label>
-                  <Input
-                    id="endpoint-url"
-                    type="text"
-                    placeholder="https://example.com/api/endpoint"
-                    value={endPointUrl}
-                    onChange={handleEndPointUrlChange}
-                  />
-                </div>
-              </div>
-            </StepperContent>
-
-            <StepperContent step={3}>
               <div className="md:py-6 animate-fade-up">
                 <Confirmation
                   relationshipName={relationshipName}
@@ -331,7 +279,7 @@ export function EditRelationshipFlow({
                   selectedTransactionSet={selectedTransactionSet}
                   businessRules={businessRules}
                   entities={entities}
-                  endPointUrl={endPointUrl}
+                  isEdit={true}
                 />
               </div>
             </StepperContent>

@@ -166,7 +166,8 @@ export function useUpdateRelationship() {
           reference_name: string;
           reference_value: string;
           position: number | null;
-          businessrule: "RULE" | "COMM";
+          stepName: string;
+          registrationid: string;
         }>;
       };
     }) => {

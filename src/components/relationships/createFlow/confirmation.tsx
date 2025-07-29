@@ -38,6 +38,7 @@ interface ConfirmationProps {
     registrationid: string;
   }[];
   entities: any[] | undefined;
+  isEdit?: boolean;
 }
 
 export function Confirmation({
@@ -51,6 +52,7 @@ export function Confirmation({
   selectedTransactionSet,
   businessRules,
   entities,
+  isEdit,
 }: ConfirmationProps) {
   // Collapsible state for each section
   const [openSections, setOpenSections] = useState({
@@ -89,7 +91,7 @@ export function Confirmation({
 
       {/* Relationship Name */}
 
-      <div className="flex w-full bg-card text-card-foreground rounded-xl p-4 border shadow-sm justify-between gap-2">
+     {!isEdit && <div className="flex w-full bg-card text-card-foreground rounded-xl p-4 border shadow-sm justify-between gap-2">
         <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
           <FileText className="w-5 h-5" />
           Relationship Name
@@ -99,7 +101,7 @@ export function Confirmation({
             <span className="text-muted-foreground italic">Not specified</span>
           )}
         </p>
-      </div>
+      </div>}
 
       
       {/* Sender Information */}
