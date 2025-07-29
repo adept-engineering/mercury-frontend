@@ -10,6 +10,7 @@ import {
   Settings,
   Database,
   Map,
+  Globe,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Card } from "../ui/card";
@@ -17,7 +18,7 @@ import { TableInfoContentDesktop } from "../table-info-column-content";
 import { MapRelationshipObjToArray } from "@/lib/utils";
 import { useEntities } from "@/hooks/use-entity";
 import { useCurrentSession } from "@/hooks/use-current-session";
-import { Map as MapComponent } from "./map";
+import { Badge } from "../ui/badge";
 
 interface RelationshipDetailsProps {
   relationship: any;
@@ -33,6 +34,13 @@ export function RelationshipDetails({
     relationship,
     entities || []
   );
+
+  // Sort business rules by position
+  const sortedBusinessRules = mappedRelationship.BusinessRules.sort((a, b) => {
+    const positionA = parseInt(a.position) || 0;
+    const positionB = parseInt(b.position) || 0;
+    return positionA - positionB;
+  });
 
   const extensionData =
     relationship.extndata?.map((extn: any, index: number) => ({
@@ -57,6 +65,11 @@ export function RelationshipDetails({
           <ArrowLeft className="mr-2 h-4 w-4" />
           Go Back
         </Button>
+        <h1 className="text-2xl font-bold">
+          Relationship Details:{" "}
+          {mappedRelationship.RelationshipDetails[0].value} to{" "}
+          {mappedRelationship.RelationshipDetails[1].value}
+        </h1>
       </div>
 
       {/* Tabs */}
@@ -82,10 +95,10 @@ export function RelationshipDetails({
               Transaction Info
             </TabsTrigger>
             <TabsTrigger
-              value="maps"
+              value="business-rules"
               className="tabs_trigger data-[state=active]:bg-transparent data-[state=active]:text-primary">
               <Map className="h-4 w-4" />
-              Maps
+              Business Rules
             </TabsTrigger>
             <TabsTrigger
               value="audit-info"
@@ -119,8 +132,39 @@ export function RelationshipDetails({
           <TabsContent value="audit-info" className="mt-7">
             <TableInfoContentDesktop details={mappedRelationship.AuditInfo} />
           </TabsContent>
-          <TabsContent value="maps" className="mt-7">
-            <MapComponent mapIds={mappedRelationship.Maps} />
+          <TabsContent value="business-rules" className="mt-7">
+            {sortedBusinessRules.length > 0 ? (
+              <div className="space-y-3">
+                {sortedBusinessRules.map((rule, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 border rounded-md bg-background">
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <Globe className="h-4 w-4 text-primary" />
+                          <span className="font-medium">{rule.stepName}</span>
+                          <Badge variant="outline">Step {rule.position}</Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          API: {rule.registrationid}
+                        </p>
+                        <div className="mt-2 space-y-1">
+                          <p className="text-sm text-muted-foreground">
+                            Parameter: {rule.reference_name} ={" "}
+                            {rule.reference_value}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                No business rules available
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </Card>

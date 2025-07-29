@@ -105,7 +105,15 @@ export default function CreateRelationshipFlow() {
       const receiverEntityId = entities?.find(
         (entity: any) => entity.id === selectedReceiverEntity
       )?.entityid_id;
-      console.log(businessRules);
+      console.log({
+        senderEntityId,
+        receiverEntityId,
+        selectedTransactionSet,
+        selectedSenderReference,
+        selectedReceiverReference,
+        selectedVersion,
+        businessRules,
+      });
 
       createRelationshipWithData(
         senderEntityId || "",
@@ -114,13 +122,12 @@ export default function CreateRelationshipFlow() {
         selectedSenderReference,
         selectedReceiverReference,
         selectedVersion,
-        "", // endpointUrl - empty string since step 3 was removed
         businessRules
       );
       toast({
         title: "Relationship created successfully",
         description: "Relationship created successfully",
-        variant: "success",
+        variant: "default",
       });
       router.push("/relationships");
     } catch (error) {

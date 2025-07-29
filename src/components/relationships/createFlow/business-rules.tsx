@@ -234,6 +234,11 @@ export function BusinessRules({
       return;
     }
 
+    const apiReg = apiRegistrations.find(
+      (api) => api.id === selectedApiForParams
+    );
+    if (!apiReg) return;
+
     const inputParams = getInputParametersForApi(selectedApiForParams);
     const newBusinessRules: BusinessRule[] = selectedInputParameters.map(
       (paramName, index) => {
@@ -243,7 +248,7 @@ export function BusinessRules({
           reference_value: parameterValues[paramName] || "",
           position: businessRules.length + 1, // Same position for all params from same API
           stepName: stepName.trim(),
-          registrationid: selectedApiForParams,
+          registrationid: apiReg.registration_id, // Use registration_id instead of id
         };
       }
     );
@@ -372,8 +377,9 @@ export function BusinessRules({
     };
 
     const apiReg = apiRegistrations.find(
-      (api) => api.id === rules[0].registrationid
+      (api) => api.registration_id === rules[0].registrationid
     );
+    console.log("apiReg:", apiReg);
 
     return (
       <div
@@ -390,13 +396,11 @@ export function BusinessRules({
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <Globe className="h-4 w-4 text-primary" />
-              <span className="font-medium">
-                {apiReg?.name || "Unknown API"}
-              </span>
+              <span className="font-medium">{rules[0].stepName}</span>
               <Badge variant="outline">Step {rules[0].position}</Badge>
             </div>
             <p className="text-sm text-muted-foreground">
-              Step Name: {rules[0].stepName}
+              API: {apiReg?.name || "System Defined API"}
             </p>
             <div className="mt-2 space-y-1">
               {rules.map((rule, ruleIndex) => (

@@ -18,7 +18,8 @@ interface CreateRelationshipData {
     reference_name: string;
     reference_value: string;
     position: number | null;
-    businessrule: "COMM" | "RULE";
+    stepName: string;
+    registrationid: string;
   }>;
 }
 
@@ -65,7 +66,7 @@ export function useManageCreateRelationship() {
     senderReference: string,
     receiverReference: string,
     standardVersion: string,
-    endpointUrl: string,
+ 
     businessRules: BusinessRule[]
   ) => {
     // Build extn_data array
@@ -73,18 +74,10 @@ export function useManageCreateRelationship() {
       reference_name: string;
       reference_value: string;
       position: number | null;
-      businessrule: "COMM" | "RULE";
+      stepName: string;
+      registrationid: string;
     }> = [];
 
-    // Add endpoint URL
-    if (endpointUrl) {
-      extn_data.push({
-        reference_name: "DestinationEndPoint",
-        reference_value: endpointUrl,
-        position: 1,
-        businessrule: "COMM",
-      });
-    }
 
     // Add business rules
     businessRules.forEach((rule) => {
@@ -92,7 +85,9 @@ export function useManageCreateRelationship() {
         reference_name: rule.reference_name,
         reference_value: rule.reference_value,
         position: rule.position,
-        businessrule: "RULE",
+       
+        stepName: rule.stepName,
+        registrationid: rule.registrationid,
       });
     });
 

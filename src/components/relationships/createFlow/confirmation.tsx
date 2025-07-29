@@ -101,17 +101,7 @@ export function Confirmation({
         </p>
       </div>
 
-      <div className="flex w-full bg-card text-card-foreground rounded-xl p-4 border shadow-sm justify-between gap-2">
-        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-          <Settings className="w-5 h-5" />
-          Endpoint URL
-        </h2>
-        <p className="text-muted-foreground">
-          {/* Removed endPointUrl prop, so this will always show "Not specified" */}
-          <span className="text-muted-foreground italic">Not specified</span>
-        </p>
-      </div>
-
+      
       {/* Sender Information */}
       <Collapsible
         open={openSections.sender}

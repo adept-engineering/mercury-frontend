@@ -38,7 +38,8 @@ export async function createRelationship(
       reference_name: string;
       reference_value: string;
       position: number | null;
-      businessrule: "COMM" | "RULE";
+      stepName: string;
+      registrationid: string;
     }[];
   },
   token: string
