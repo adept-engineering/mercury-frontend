@@ -27,7 +27,8 @@ function ActionsCell({ entity }: { entity: Entities }) {
           <Eye className="mr-2 h-4 w-4" />
           View
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push(`/entities/${entity.id}/edit`)}>
+        <DropdownMenuItem
+          onClick={() => router.push(`/entities/${entity.id}/edit`)}>
           <Edit className="mr-2 h-4 w-4" />
           Edit
         </DropdownMenuItem>
@@ -41,12 +42,15 @@ function ActionsCell({ entity }: { entity: Entities }) {
 }
 
 export const entititiesColumns: ColumnDef<Entities>[] = [
-
   {
     accessorKey: "name",
     header: "ENTITY Name",
     cell: ({ row }) => {
-      return <div className="text-sm pl-2 text-foreground">{row.getValue("name")}</div>;
+      return (
+        <div className="text-sm pl-2 text-foreground">
+          {row.getValue("name")}
+        </div>
+      );
     },
   },
   {
@@ -58,35 +62,39 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
     header: "CREATED BY",
     cell: ({ row }) => {
       const createdBy = row.getValue("created_by") as string;
-      return <div className="text-sm text-foreground">{createdBy.toUpperCase()}</div>;
+      return (
+        <div className="text-sm text-foreground">{createdBy.toUpperCase()}</div>
+      );
     },
   },
   {
     accessorKey: "created_date",
-    header: "CREATED AT",
+    header: "DATE",
     cell: ({ row }) => {
       const dateString = row.getValue("created_date") as string;
-      const date = format(new Date(dateString), "MM/dd/yyyy (HH:mm)");
-      return <div className="text-sm text-foreground">{date}</div>;
+      // date should be in format MM/DD/YYYY
+      const date = new Date(dateString);
+      return (
+        <div className="text-sm">
+          {date.toLocaleDateString("en-US", {
+            month: "2-digit",
+            day: "2-digit",
+            year: "numeric",
+          })}
+        </div>
+      );
     },
   },
   {
-    accessorKey: "updated_by",
-    header: "LAST UPDATED BY",
+    accessorKey: "created_date",
+    header: "TIME",
     cell: ({ row }) => {
-      const updatedBy = row.getValue("updated_by") as string;
-      return <div className="text-sm text-foreground">{updatedBy.toUpperCase()}</div>;
+      const dateString = row.getValue("created_date") as string;
+      const date = new Date(dateString);
+      return <div className="text-sm">{date.toLocaleTimeString("en-GB")}</div>;
     },
   },
-  {
-    accessorKey: "updated_date",
-    header: "LAST UPDATED AT",
-    cell: ({ row }) => {
-      // 24 hour format
-      const updatedAt = format(new Date(row.getValue("updated_date") as string), "MM/dd/yyyy (HH:mm)");
-      return <div className="text-sm text-foreground">{updatedAt}</div>;
-    },
-  },
+  
   {
     id: "actions",
     cell: ({ row }) => {

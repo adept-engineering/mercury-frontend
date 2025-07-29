@@ -120,27 +120,19 @@ export const transformationMapColumns: ColumnDef<TransformationMap>[] = [
     
     {
         accessorKey: "created_date",
-        header: "CREATED AT",
+        header: "DATE",
         cell: ({ row }) => {
             const dateString = row.getValue("created_date") as string;
-            const date = format(new Date(dateString), "MM/dd/yyyy (HH:mm)");
+            const date = format(new Date(dateString), "MM/dd/yyyy");
             return <div className="text-sm text-muted-foreground">{date}</div>;
         },
     },
     {
-        accessorKey: "updated_by",
-        header: "UPDATED BY",
+        accessorKey: "created_date",
+        header: "TIME",
         cell: ({ row }) => {
-            const createdBy = row.getValue("updated_by") as string;
-            return <div className="text-sm text-muted-foreground">{createdBy.toUpperCase()}</div>;
-        },
-    },
-    {
-        accessorKey: "updated_date",
-        header: "UPDATED AT",
-        cell: ({ row }) => {
-            const dateString = row.getValue("updated_date") as string;
-            const date = format(new Date(dateString), "MM/dd/yyyy (HH:mm)");
+            const dateString = row.getValue("created_date") as string;
+            const date = format(new Date(dateString), "HH:mm");
             return <div className="text-sm text-muted-foreground">{date}</div>;
         },
     },

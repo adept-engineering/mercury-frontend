@@ -97,7 +97,7 @@ export const apiRegistrationColumns: ColumnDef<any>[] = [
     header: "Version",
     cell: ({ row }) => {
       const defaultVersion = row.getValue("default_version") as string;
-      return <div className="text-center pr-20 ">{defaultVersion}</div>;
+      return <div className="">{defaultVersion}</div>;
     },
   },
   {
@@ -105,14 +105,21 @@ export const apiRegistrationColumns: ColumnDef<any>[] = [
     header: "Created By",
     cell: ({ row }) => {
       const createdBy = row.getValue("created_by") as string;
-      return <div className="text-center pr-20 ">{createdBy}</div>;
+      return <div className="">{createdBy}</div>;
     },
   },
   {
     accessorKey: "created_at",
-    header: ({ column }) => {
-      return <Button variant="ghost">Created Date</Button>;
+    header: "DATE",
+    cell: ({ row }) => {
+      const dateString = row.getValue("created_at") as string;
+      const date = new Date(dateString);
+      return <div className=" ">{date.toLocaleDateString()}</div>;
     },
+  },
+  {
+    accessorKey: "created_at",
+    header: "TIME",
     cell: ({ row }) => {
       const dateString = row.getValue("created_at") as string;
       if (!dateString) {
@@ -120,8 +127,8 @@ export const apiRegistrationColumns: ColumnDef<any>[] = [
       }
       try {
         const date = new Date(dateString);
-        const formatted = date.toLocaleDateString();
-        return <div className="font-medium text-center pr-10">{formatted}</div>;
+        const formatted = date.toLocaleTimeString("en-GB");
+        return <div className="font-medium">{formatted}</div>;
       } catch (error) {
         return <div className="font-medium">Invalid Date</div>;
       }

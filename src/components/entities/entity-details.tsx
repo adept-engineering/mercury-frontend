@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Building, Clock, MapPin ,File} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Card } from "../ui/card";
-import { TableInfoContentDesktop } from "../table-info-content";
+import { TableInfoContentDesktop } from "../table-info-column-content";
 import { TableInfoReferences } from "../table-info-references";
 
 interface EntityDetailsProps {

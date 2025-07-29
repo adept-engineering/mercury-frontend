@@ -12,11 +12,31 @@ import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/use-permissions";
 import { format } from "date-fns";
 import { useDeleteRelationship } from "@/hooks/use-manage-create-relationship";
+import { useToast } from "@/hooks/use-toast";
 
 const ActionCell = ({row}:{row:Row<Relationships>}) => {
   const router = useRouter();
   const { isSystemAdmin } = usePermissions();
   const { deleteRelationshipMutation } = useDeleteRelationship();
+  const {toast} = useToast();
+  const handleDelete = () => {
+    try {
+    deleteRelationshipMutation.mutate({
+      id:row.original.id,
+      entityidtbl_relationship_id:row.original.entityidtbl_relationship_id
+    })
+    toast({
+      title: "Relationship deleted successfully",
+      description: "The relationship has been deleted successfully",
+    })
+  } catch (error) {
+    console.error("Error deleting relationship:", error);
+    toast({
+      title: "Error deleting relationship",
+      description: "An error occurred while deleting the relationship",
+    })
+  }
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -41,12 +61,7 @@ const ActionCell = ({row}:{row:Row<Relationships>}) => {
           <Eye className="mr-2 h-4 w-4" />
           View 
         </DropdownMenuItem>
-       {isSystemAdmin &&   <DropdownMenuItem className="text-red-600" onClick={()=>{
-        deleteRelationshipMutation.mutate({
-          id:row.original.id,
-          entityidtbl_relationship_id:row.original.entityidtbl_relationship_id
-        })
-       }}>
+       {isSystemAdmin &&   <DropdownMenuItem className="text-red-600" onClick={handleDelete}>
             <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </DropdownMenuItem>}
@@ -100,24 +115,7 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
       return <div className="text-sm">{row.getValue("std_version")}</div>;
     },
   },
-  {
-    accessorKey: "created_by",
-    header: "CREATED BY",
-    cell: ({ row }) => {
-        const createdBy = row.getValue("created_by") as string;
-        return <div className="text-sm text-muted-foreground">{createdBy.toUpperCase()}</div>;
-    },
-},
-
-{
-    accessorKey: "created_date",
-    header: "CREATED AT",
-    cell: ({ row }) => {
-      const dateString = row.getValue("created_date") as string;
-      const date = format(new Date(dateString), "MM/dd/yyyy (HH:mm)");
-        return <div className="text-sm text-muted-foreground">{date}</div>;
-    },
-},
+  
 {
     accessorKey: "updated_by",
     header: "UPDATED BY",
@@ -128,13 +126,14 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
 },
 {
     accessorKey: "updated_date",
-    header: "UPDATED AT",
+    header: "UPDATED DATE",
     cell: ({ row }) => {
         const dateString = row.getValue("updated_date") as string;
-        const date = format(new Date(dateString), "MM/dd/yyyy (HH:mm)");
+        const date = format(new Date(dateString), "MM/dd/yyyy");
         return <div className="text-sm text-muted-foreground">{date}</div>;
     },
 },
+
   {
     id: "actions",
     cell: ({ row }) => <ActionCell row={row} />,
