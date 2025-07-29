@@ -23,6 +23,7 @@ const ActionsCell = ({ row }: { row: Row<any> }) => {
   const router = useRouter();
   const { isSystemAdmin } = usePermissions();
   const api = row.original;
+
   const { deleteApiRegistrationMutation } =
     useManageApiRegistration();
   const { toast } = useToast();
@@ -56,24 +57,24 @@ const ActionsCell = ({ row }: { row: Row<any> }) => {
       <DropdownMenuContent align="end">
         {isSystemAdmin && (
           <>
-            <DropdownMenuItem
+            {row.original.tenant_id != 'SYSTEM' && <DropdownMenuItem
               onClick={() =>
                 router.push(`/api-registration/${api.id}/edit`)
               }>
               <Pencil className="w-4 h-4 mr-2" />
               Edit API
-            </DropdownMenuItem>
+            </DropdownMenuItem>}
             <DropdownMenuItem
               onClick={() => router.push(`/api-registration/${api.id}`)}>
               <Eye className="w-4 h-4 mr-2" />
               View Details
             </DropdownMenuItem>
-            <DropdownMenuItem
+           {row.original.tenant_id != 'SYSTEM' && <DropdownMenuItem
               onClick={handleDelete}>
               <Trash2 className="w-4 h-4 mr-2" />
               Delete API
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            </DropdownMenuItem>}
+          
           </>
         )}
       </DropdownMenuContent>
@@ -100,17 +101,17 @@ export const apiRegistrationColumns: ColumnDef<any>[] = [
       return <div className="">{defaultVersion}</div>;
     },
   },
-  {
-    accessorKey: "updated_by",
-    header: "UPDATED BY",
-    cell: ({ row }) => {
-      const updatedBy = row.getValue("updated_by") as string;
-      return <div className="">{updatedBy}</div>;
-    },
-  },
+  // {
+  //   accessorKey: "updated_by",
+  //   header: "Updated By",
+  //   cell: ({ row }) => {
+  //     const updatedBy = row.getValue("updated_by") as string;
+  //     return <div className="">{updatedBy}</div>;
+  //   },
+  // },
   {
     accessorKey: "created_at",
-    header: "DATE",
+    header: "Date",
     cell: ({ row }) => {
       const dateString = row.getValue("created_at") as string;
       const date = new Date(dateString);
@@ -119,7 +120,7 @@ export const apiRegistrationColumns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "created_at",
-    header: "TIME",
+    header: "Time",
     cell: ({ row }) => {
       const dateString = row.getValue("created_at") as string;
       if (!dateString) {

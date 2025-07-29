@@ -14,17 +14,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-  SelectTrigger,
-} from "@/components/ui/select";
 
 interface Parameter {
   name: string;
-  type: string;
+  description: string;
 }
 
 interface Endpoint {
@@ -50,16 +43,6 @@ export function AddEndpointDialog({
   const [inputParameters, setInputParameters] = useState<Parameter[]>([]);
   const [outputParameters, setOutputParameters] = useState<Parameter[]>([]);
 
-  const parameterTypes = [
-    "String",
-    "Number",
-    "Boolean",
-    "Object",
-    "Array",
-    "Integer",
-    "Float",
-  ];
-
   const validateUrl = (url: string): boolean => {
     try {
       new URL(url);
@@ -70,7 +53,7 @@ export function AddEndpointDialog({
   };
 
   const addInputParameter = () => {
-    setInputParameters([...inputParameters, { name: "", type: "String" }]);
+    setInputParameters([...inputParameters, { name: "", description: "" }]);
   };
 
   const removeInputParameter = (index: number) => {
@@ -88,7 +71,7 @@ export function AddEndpointDialog({
   };
 
   const addOutputParameter = () => {
-    setOutputParameters([...outputParameters, { name: "", type: "String" }]);
+    setOutputParameters([...outputParameters, { name: "", description: "" }]);
   };
 
   const removeOutputParameter = (index: number) => {
@@ -106,13 +89,13 @@ export function AddEndpointDialog({
   };
 
   const convertParametersToJson = (parameters: Parameter[]) => {
-    const jsonObj: Record<string, string> = {};
-    parameters.forEach((param) => {
-      if (param.name && param.type) {
-        jsonObj[param.name] = param.type;
-      }
-    });
-    return JSON.stringify(jsonObj, null, 2);
+    const paramArray = parameters
+      .filter((param) => param.name && param.description)
+      .map((param) => ({
+        name: param.name,
+        description: param.description,
+      }));
+    return JSON.stringify(paramArray, null, 2);
   };
 
   const handleSubmit = () => {
@@ -214,22 +197,18 @@ export function AddEndpointDialog({
                       }
                       className="flex-1"
                     />
-                    <Select
-                      value={param.type}
-                      onValueChange={(value) =>
-                        updateInputParameter(index, "type", value)
-                      }>
-                      <SelectTrigger className="w-32">
-                        <SelectValue placeholder="Type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {parameterTypes.map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {type}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      placeholder="Parameter description"
+                      value={param.description}
+                      onChange={(e) =>
+                        updateInputParameter(
+                          index,
+                          "description",
+                          e.target.value
+                        )
+                      }
+                      className="flex-1"
+                    />
                     <Button
                       type="button"
                       variant="ghost"
@@ -266,22 +245,18 @@ export function AddEndpointDialog({
                       }
                       className="flex-1"
                     />
-                    <Select
-                      value={param.type}
-                      onValueChange={(value) =>
-                        updateOutputParameter(index, "type", value)
-                      }>
-                      <SelectTrigger className="w-32">
-                        <SelectValue placeholder="Type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {parameterTypes.map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {type}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      placeholder="Parameter description"
+                      value={param.description}
+                      onChange={(e) =>
+                        updateOutputParameter(
+                          index,
+                          "description",
+                          e.target.value
+                        )
+                      }
+                      className="flex-1"
+                    />
                     <Button
                       type="button"
                       variant="ghost"

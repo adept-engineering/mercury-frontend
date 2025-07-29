@@ -43,6 +43,11 @@ interface Endpoint {
   version: number;
 }
 
+interface Parameter {
+  name: string;
+  description: string;
+}
+
 export function ApiRegistrationForm() {
   const [endpoints, setEndpoints] = useState<Endpoint[]>([]);
   const { createApiRegistrationMutation, isCreatingApiRegistration } =
@@ -212,17 +217,53 @@ export function ApiRegistrationForm() {
                           <h4 className="text-sm font-medium mb-2">
                             Input Parameters
                           </h4>
-                          <pre className="text-xs bg-gray-50 p-2 rounded border overflow-auto max-h-20">
-                            {endpoint.input_parameters}
-                          </pre>
+                          <div className="text-xs bg-gray-50 p-2 rounded border overflow-auto max-h-20">
+                            <pre className="whitespace-pre-wrap">
+                              {(() => {
+                                try {
+                                  // First, try to parse as JSON
+                                  let parsed = JSON.parse(
+                                    endpoint.input_parameters
+                                  );
+
+                                  // If the parsed result is a string (with escaped characters), parse it again
+                                  if (typeof parsed === "string") {
+                                    parsed = JSON.parse(parsed);
+                                  }
+
+                                  return JSON.stringify(parsed, null, 2);
+                                } catch (error) {
+                                  return endpoint.input_parameters;
+                                }
+                              })()}
+                            </pre>
+                          </div>
                         </div>
                         <div>
                           <h4 className="text-sm font-medium mb-2">
                             Output Parameters
                           </h4>
-                          <pre className="text-xs bg-gray-50 p-2 rounded border overflow-auto max-h-20">
-                            {endpoint.output_parameters}
-                          </pre>
+                          <div className="text-xs bg-gray-50 p-2 rounded border overflow-auto max-h-20">
+                            <pre className="whitespace-pre-wrap">
+                              {(() => {
+                                try {
+                                  // First, try to parse as JSON
+                                  let parsed = JSON.parse(
+                                    endpoint.output_parameters
+                                  );
+
+                                  // If the parsed result is a string (with escaped characters), parse it again
+                                  if (typeof parsed === "string") {
+                                    parsed = JSON.parse(parsed);
+                                  }
+
+                                  return JSON.stringify(parsed, null, 2);
+                                } catch (error) {
+                                  return endpoint.output_parameters;
+                                }
+                              })()}
+                            </pre>
+                          </div>
                         </div>
                       </div>
                     </CardContent>
