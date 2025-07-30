@@ -113,7 +113,7 @@ export function EditTransformationRuleDialogue({
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-lg text-foreground">
-            Edit Transformation Rule
+            Edit Rule
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">

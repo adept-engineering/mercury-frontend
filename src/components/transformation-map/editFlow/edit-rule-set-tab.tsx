@@ -8,7 +8,6 @@ import {
   Table,
 } from "@/components/ui/table";
 import { TransformationRule } from "@/lib/types";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Trash2, Edit, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -35,7 +34,6 @@ export const EditRuleSetTab = ({
   mapId: string;
   mapType: string;
 }) => {
-  const [selectedRules, setSelectedRules] = useState<string[]>([]);
   const [editingRule, setEditingRule] = useState<TransformationRule | null>(
     null
   );
@@ -56,22 +54,6 @@ export const EditRuleSetTab = ({
     isEditingMapRules,
     isDeletingMapRules,
   } = useMapRules();
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedRules(rules.map((rule: TransformationRule) => rule.id));
-    } else {
-      setSelectedRules([]);
-    }
-  };
-
-  const handleRuleSelection = (ruleId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedRules((prev) => [...prev, ruleId]);
-    } else {
-      setSelectedRules((prev) => prev.filter((id) => id !== ruleId));
-    }
-  };
 
   const editRule = (rule: TransformationRule) => {
     setEditingRule(rule);
@@ -164,39 +146,30 @@ export const EditRuleSetTab = ({
     });
   };
 
-  const deleteSelectedRules = () => {
-    const deletePromises = selectedRules.map((ruleId) => {
-      return new Promise((resolve, reject) => {
-        deleteMapRulesMutation(
-          { mapId: mapId, id: ruleId },
-          {
-            onSuccess: () => resolve(true),
-            onError: (error) => reject(error),
-          }
-        );
-      });
-    });
+  const deleteRule = (ruleId: string) => {
+    deleteMapRulesMutation(
+      { mapId: mapId, id: ruleId },
+      {
+        onSuccess: () => {
+          // Force refetch as fallback
+          setTimeout(() => {
+            refetch();
+          }, 100);
 
-    Promise.all(deletePromises)
-      .then(() => {
-        // Force refetch as fallback
-        setTimeout(() => {
-          refetch();
-        }, 100);
-
-        setSelectedRules([]);
-        toast({
-          title: "Rules deleted successfully",
-          variant: "default",
-        });
-      })
-      .catch((error) => {
-        console.error("Error deleting rules:", error);
-        toast({
-          title: "Failed to delete rules",
-          variant: "destructive",
-        });
-      });
+          toast({
+            title: "Rule deleted successfully",
+            variant: "default",
+          });
+        },
+        onError: (error) => {
+          console.error("Error deleting rule:", error);
+          toast({
+            title: "Failed to delete rule",
+            variant: "destructive",
+          });
+        },
+      }
+    );
   };
 
   if (isLoadingRules) {
@@ -247,52 +220,18 @@ export const EditRuleSetTab = ({
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  checked={
-                    selectedRules.length === rules.length && rules.length > 0
-                  }
-                  onCheckedChange={handleSelectAll}
-                />
-                <span className="text-sm text-muted-foreground">
-                  {selectedRules.length} of {rules.length} selected
-                </span>
-              </div>
-              {selectedRules.length > 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={deleteSelectedRules}
-                  disabled={isDeletingMapRules}
-                  className="text-red-600 hover:text-red-700">
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  {isDeletingMapRules ? "Deleting..." : "Delete Selected"}
-                </Button>
-              )}
-            </div>
-
             <div className="border rounded-lg">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-12">Select</TableHead>
                     <TableHead>Rule Title</TableHead>
                     <TableHead>Rule</TableHead>
-                    <TableHead className="w-20">Actions</TableHead>
+                    <TableHead className="w-32">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {rules.map((rule: TransformationRule, index: number) => (
                     <TableRow key={rule.id}>
-                      <TableCell>
-                        <Checkbox
-                          checked={selectedRules.includes(rule.id)}
-                          onCheckedChange={(checked) =>
-                            handleRuleSelection(rule.id, checked as boolean)
-                          }
-                        />
-                      </TableCell>
                       <TableCell className="font-medium">
                         {rule.rule_title}
                       </TableCell>
@@ -302,13 +241,23 @@ export const EditRuleSetTab = ({
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => editRule(rule)}
-                          disabled={isEditingMapRules}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => editRule(rule)}
+                            disabled={isEditingMapRules}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteRule(rule.id)}
+                            disabled={isDeletingMapRules}
+                            className="text-red-600 hover:text-red-700">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -323,7 +272,7 @@ export const EditRuleSetTab = ({
       <Dialog open={addRuleDialogOpen} onOpenChange={setAddRuleDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Add {mapType} Rule</DialogTitle>
+            <DialogTitle>Add Rule</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -342,7 +291,7 @@ export const EditRuleSetTab = ({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="rule">Rule Description</Label>
+              <Label htmlFor="rule">Rule</Label>
               <Textarea
                 id="rule"
                 value={newRule.rule}

@@ -54,7 +54,7 @@ export const EditRuleDialogue = ({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="editRule">Rule Description</Label>
+            <Label htmlFor="editRule">Rule </Label>
             <Textarea
               id="editRule"
               value={editingRule?.rule || ""}

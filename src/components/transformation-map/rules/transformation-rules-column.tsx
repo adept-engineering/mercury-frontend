@@ -111,7 +111,7 @@ export const createTransformationRuleColumns = (
 ): ColumnDef<TransformationRule>[] => [
   {
     accessorKey: "rule_title",
-    header: "RULE TITLE",
+    header: "Rule Title",
     cell: ({ row }) => {
       return (
         <div className="text-sm font-medium">{row.getValue("rule_title")}</div>
@@ -120,7 +120,7 @@ export const createTransformationRuleColumns = (
   },
   {
     accessorKey: "rule",
-    header: "TRANSFORMATION RULE",
+    header: "Rule",
     cell: ({ row }) => {
       const rule = row.getValue("rule") as string;
       return (
