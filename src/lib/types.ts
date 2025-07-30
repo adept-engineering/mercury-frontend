@@ -134,11 +134,12 @@ export type TransformationRule = {
   rule_title: string;
 };
 
-export type TransformationMap = {
+export type Map = {
   id: string;
-  map_title: string;
+  map_name: string;
   map_description: string;
   rules: TransformationRule[];
+  map_id: string;
   map_type: string;
   updated_by: string;
   updated_date: string;

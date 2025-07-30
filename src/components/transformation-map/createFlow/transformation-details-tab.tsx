@@ -44,6 +44,20 @@ export const TransformationDetailsTab = ({
             required
           />
         </div>
+        <div className="space-y-2 w-full ">
+          <Label htmlFor="mapType">Map Type</Label>
+          <Select value={mapType} onValueChange={(value) => setMapType(value)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select map type" />
+            </SelectTrigger>
+            <SelectContent >
+              <SelectItem value="TRANSFORMATION">Transformation</SelectItem>
+              <SelectItem value="COMPLIANCE">Compliance</SelectItem>
+              {/* <SelectItem value="TRACKING">Tracking</SelectItem> */}
+              <SelectItem value="RESEARCH">Research</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="space-y-2">
           <Label htmlFor="description">Description</Label>
           <Textarea
@@ -55,20 +69,7 @@ export const TransformationDetailsTab = ({
             required
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="mapType">Map Type</Label>
-          <Select value={mapType} onValueChange={(value) => setMapType(value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select map type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="TRANSFORMATION">Transformation</SelectItem>
-              <SelectItem value="COMPLIANCE">Compliance</SelectItem>
-              {/* <SelectItem value="TRACKING">Tracking</SelectItem> */}
-              <SelectItem value="RESEARCH">Research</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        
       </div>
     </div>
   );

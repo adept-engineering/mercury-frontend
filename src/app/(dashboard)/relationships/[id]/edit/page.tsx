@@ -3,7 +3,7 @@ import { auth } from "@/actions/auth";
 import { getEntities } from "@/actions/entity";
 import { EditRelationshipFlow } from "@/components/relationships/editFlow/edit-relationship-flow";
 import { getEntityReferences, MapRelationshipObjToArray } from "@/lib/utils";
-import { getTransformationMaps } from "@/actions/transformationMaps";
+import { getTransformationMaps } from "@/actions/maps";
 
 export const dynamic = "force-dynamic";
 

@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 import { DataTable } from "./data-table";
 import { transformationMapColumns } from "./transformation-columns";
-import { TransformationMap } from "@/lib/types";
+import { Map } from "@/lib/types";
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/use-permissions";
 
-export function TransformationMapContainer({transformationMaps}:{transformationMaps:TransformationMap[]}) {
+export function TransformationMapContainer({transformationMaps}:{transformationMaps:Map[]}) {
     
 const router = useRouter();
 const {isSystemAdmin} = usePermissions();

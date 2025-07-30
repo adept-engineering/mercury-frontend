@@ -1,5 +1,5 @@
 "use client"
-import { TransformationMap } from "@/lib/types";
+import { Map } from "@/lib/types";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import {
     DropdownMenu,
@@ -15,12 +15,13 @@ import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { EditTransformationMapDialogue } from "./edit-transformation-map-dialogue";
 import { format } from "date-fns";
+import { useMaps } from "@/hooks/use-maps";
 
-const ActionsCell = ({ row }: { row: Row<TransformationMap> }) => {
+const ActionsCell = ({ row }: { row: Row<Map> }) => {
     const { canDelete, canEdit } = usePermissions();
     const router = useRouter();
     const [editOpen, setEditOpen] = useState(false);
-
+    const { deleteMapMutation } = useMaps();
     // If user has no permissions for this row, don't show dropdown
     if (!canDelete && !canEdit) {
         return null;
@@ -29,6 +30,7 @@ const ActionsCell = ({ row }: { row: Row<TransformationMap> }) => {
     const handleDelete = () => {
         try {
             // TODO: Implement delete transformation map mutation
+            deleteMapMutation({ mapId: row.original.id, maps_id: row.original.map_id });
             toast({
                 title: "Transformation map deleted successfully",
                 variant: "default",
@@ -55,7 +57,7 @@ const ActionsCell = ({ row }: { row: Row<TransformationMap> }) => {
                         <Eye className="mr-2 h-4 w-4" />
                         View Details
                     </DropdownMenuItem> */}
-                    <DropdownMenuItem onClick={() => router.push(`/maps/${row.original.id}/rules?map_title=${row.original.map_title}&map_type=${row.original.map_type}`)}>
+                    <DropdownMenuItem onClick={() => router.push(`/maps/${row.original.id}/rules?map_title=${row.original.map_name}&map_type=${row.original.map_type}&map_id=${row.original.map_id}`)}>
                         <List className="mr-2 h-4 w-4" />
                         View Rules
                     </DropdownMenuItem>
@@ -82,7 +84,7 @@ const ActionsCell = ({ row }: { row: Row<TransformationMap> }) => {
     );
 };
 
-export const transformationMapColumns: ColumnDef<TransformationMap>[] = [
+export const transformationMapColumns: ColumnDef<Map>[] = [
     {
         accessorKey: "map_name",
         header: "MAP NAME",
