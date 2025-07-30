@@ -183,24 +183,24 @@ export function EditRelationshipFlow({
         },
       });
 
-      // updateRelationshipMutation.mutate({
-      //   id: relationship.id,
-      //   data: {
-      //     entityid_id_sender: senderEntityId || "",
-      //     entityid_id_receiver: receiverEntityId || "",
-      //     transaction_name: selectedTransactionSet,
-      //     sender_id: relationship.sender_id,
-      //     receiver_id: relationship.receiver_id,
-      //     std_version: selectedVersion,
-      //     extn_data,
-      //   },
-      // });
+      updateRelationshipMutation.mutate({
+        id: relationship.id,
+        data: {
+          entityid_id_sender: senderEntityId || "",
+          entityid_id_receiver: receiverEntityId || "",
+          transaction_name: selectedTransactionSet,
+          sender_id: relationship.sender_id,
+          receiver_id: relationship.receiver_id,
+          std_version: selectedVersion,
+          extn_data,
+        },
+      });
 
-      // toast({
-      //   title: "Relationship updated successfully",
-      //   description: "Relationship updated successfully",
-      //   variant: "success",
-      // });
+      toast({
+        title: "Relationship updated successfully",
+        description: "Relationship updated successfully",
+        variant: "success",
+      });
       router.push("/relationships");
     } catch (error) {
       toast({
