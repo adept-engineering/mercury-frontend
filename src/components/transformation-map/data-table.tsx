@@ -40,6 +40,7 @@ export function DataTable<TData, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
+
     const table = useReactTable({
         data,
         columns,
@@ -113,7 +114,7 @@ export function DataTable<TData, TValue>({
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mt-2 lg:mt-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <span>Rows per page:</span>
                     <DropdownMenu>

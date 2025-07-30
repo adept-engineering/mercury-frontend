@@ -143,17 +143,19 @@ export default function EditTransformationMapPage({
 
   return (
     <div className="pt-10 w-full">
-      <Button
-        onClick={() => router.back()}
-        variant="link"
-        className={cn(
-          buttonVariants({ variant: "link" }),
-          "flex items-center gap-3 text-base text-primary cursor-pointer pl-20"
-        )}>
-        <MoveLeft />
-        Back
-      </Button>
-      <h1 className="text-center text-2xl font-bold mb-6">Edit Map</h1>
+      <div className="flex items-center justify-start px-8 md:px-12 lg:px-20">
+        <Button
+          onClick={() => router.back()}
+          variant="link"
+          className={cn(
+            buttonVariants({ variant: "link" }),
+            "flex items-center gap-3 text-base text-primary cursor-pointer"
+          )}>
+          <MoveLeft />
+          Back
+        </Button>
+        <h1 className="text-center w-full text-2xl font-bold">Edit Map</h1>
+      </div>
 
       <div className="w-full grid md:grid-cols-4 mx-auto pl-12">
         <Stepper activeStep={currentTab} onStepChange={setCurrentTab}>

@@ -264,12 +264,12 @@ const ChatBot = () => {
                   {/* Actions row */}
                   <div className="flex items-center gap-1">
                     <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger asChild>
                       <Button variant="ghost" size="icon" onClick={() => handleCopy(message.id)}>
                         <CopyIcon className="h-4 w-4" />
                       </Button>
-                      <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Copy</TooltipContent>
                     </TooltipTrigger>
+                    <TooltipContent side="bottom" className="text-white p-2 border border-black rounded-2xl text-sm">Copy</TooltipContent>
                     </Tooltip>
                     <Tooltip>
                     {/* <TooltipTrigger>

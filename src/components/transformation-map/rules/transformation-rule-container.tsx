@@ -34,7 +34,7 @@ export function TransformationRuleContainer({
             Back
           </Button>
           <h1 className="text-xl text-foreground font-semibold">
-            {map_title} rules
+            {map_title} Rules
           </h1>
         </div>
         <div className="pt-7.5">
