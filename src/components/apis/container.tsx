@@ -27,7 +27,7 @@ export function APIContainer({ endpoints }: APIContainerProps) {
           }`}
         >
           <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pt-2">
               <CardTitle className="text-lg font-mono">
                 {endpoint.endpoint}
               </CardTitle>

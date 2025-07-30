@@ -96,7 +96,7 @@ export function EntityDetails({ entity, entityDetails }: EntityDetailsProps) {
                     />
                     </TabsContent>
                     <TabsContent value="reference-ids" className="mt-7">
-                        <TableInfoReferences
+                        <TableInfoContentDesktop
                             details={entityDetails?.referenceIDs || []}
                             
                         />

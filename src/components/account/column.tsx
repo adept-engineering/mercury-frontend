@@ -32,7 +32,7 @@ const ActionsCell = ({ row }: { row: any }) => {
                 <Button variant="ghost" size="icon"><MoreVertical className="h-4 w-4" /></Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                {canEdit && <DropdownMenuItem>Edit</DropdownMenuItem>}
+                {/* {canEdit && <DropdownMenuItem>Edit</DropdownMenuItem>} */}
                 {canResetPassword && <DropdownMenuItem onClick={handleForgotPassword}>Reset Password</DropdownMenuItem>}
                 {canDelete && (
                     <>
