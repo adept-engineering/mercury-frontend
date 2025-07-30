@@ -9,20 +9,26 @@ import React from "react";
 
 interface WorkflowOutput {
     id: string;
-    workflow_execution_id: string;
-    relationship_id: string;
     position: number;
-    api_registration_id: string;
+    created_at: string;
+    input_data: string;
+    updated_at: string;
+    output_data: string;
     parameter_name: string;
     parameter_value: string;
-    input_data: string;
-    output_data: string;
-    created_at: string;
-    updated_at: string;
+    relationship_id: string;
+    api_registration_id: string;
+    api_registration_name: string;
+    workflow_execution_id: string;
+}
+
+interface WorkflowStep {
+    position: number;
+    outputs: WorkflowOutput[];
 }
 
 interface WorkflowOutputsProps {
-    workflowOutputs: WorkflowOutput[];
+    workflowOutputs: WorkflowStep[];
 }
 
 export function WorkflowOutputs({ workflowOutputs }: WorkflowOutputsProps) {
@@ -34,8 +40,8 @@ export function WorkflowOutputs({ workflowOutputs }: WorkflowOutputsProps) {
         );
     }
 
-    // Sort outputs by position
-    const sortedOutputs = [...workflowOutputs].sort((a, b) => a.position - b.position);
+    // Sort steps by position
+    const sortedSteps = [...workflowOutputs].sort((a, b) => a.position - b.position);
 
     const renderJSONValue = (value: any, key?: string): React.ReactElement => {
         if (typeof value === 'string') {
@@ -102,64 +108,57 @@ export function WorkflowOutputs({ workflowOutputs }: WorkflowOutputsProps) {
 
     return (
         <div className="space-y-4">
-            {sortedOutputs.map((output, index) => {
+            {sortedSteps.map((step) => {
+                // Get the first output for input/output data (they should be the same for all outputs in a step)
+                const firstOutput = step.outputs[0];
                 let inputData, outputData;
                 
                 try {
-                    inputData = JSON.parse(output.input_data);
+                    inputData = JSON.parse(firstOutput.input_data);
                 } catch {
-                    inputData = { raw: output.input_data };
+                    inputData = { raw: firstOutput.input_data };
                 }
                 
                 try {
-                    outputData = JSON.parse(output.output_data);
+                    outputData = JSON.parse(firstOutput.output_data);
                 } catch {
-                    outputData = { raw: output.output_data };
+                    outputData = { raw: firstOutput.output_data };
                 }
 
                 return (
-                    <Card key={output.id} className="pt-4">
+                    <Card key={step.position} className="pt-4">
                         <CardHeader className="pb-3">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center space-x-2">
                                     <Workflow className="h-4 w-4 text-primary" />
                                     <CardTitle className="text-lg">
-                                        Step {output.position}
+                                        Step {step.position}
                                     </CardTitle>
-                                    {/* <Badge variant="secondary">
-                                        Position {output.position}
-                                    </Badge> */}
                                 </div>
                                 <div className="flex items-center space-x-2">
                                     <Settings className="h-4 w-4 text-muted-foreground" />
                                     <span className="text-sm text-muted-foreground">
-                                        {output.api_registration_id}
+                                        {firstOutput?.api_registration_name || firstOutput?.api_registration_id}
                                     </span>
                                 </div>
                             </div>
                         </CardHeader>
                         
                         <CardContent className="space-y-4">
-                            {/* Relationship and Parameter Info */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <h4 className="font-medium text-sm text-muted-foreground mb-2">
-                                        Relationship ID
-                                    </h4>
-                                    <p className="text-sm font-mono bg-muted p-2 rounded">
-                                        {output.relationship_id}
-                                    </p>
-                                </div>
-                                <div>
-                                    <h4 className="font-medium text-sm text-muted-foreground mb-2">
-                                        Parameter
-                                    </h4>
-                                    <div className="flex items-center space-x-2">
-                                        <Code className="h-3 w-3 text-muted-foreground" />
-                                        <span className="text-sm font-medium">{output.parameter_name}</span>
-                                        <span className="text-sm text-muted-foreground">=</span>
-                                        <Badge variant="outline">{output.parameter_value}</Badge>
-                                    </div>
+                            {/* Parameters */}
+                            <div>
+                                <h4 className="font-medium text-sm text-muted-foreground mb-2 flex items-center">
+                                    <Code className="h-3 w-3 mr-1" />
+                                    Parameters
+                                </h4>
+                                <div className="space-y-2">
+                                    {step.outputs.map((output) => (
+                                        <div key={output.id} className="flex items-center space-x-2">
+                                            <span className="text-sm font-medium">{output.parameter_name}</span>
+                                            <span className="text-sm text-muted-foreground">=</span>
+                                            <Badge variant="outline">{output.parameter_value}</Badge>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
 
@@ -186,10 +185,10 @@ export function WorkflowOutputs({ workflowOutputs }: WorkflowOutputsProps) {
                             {/* Timestamps */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-muted-foreground">
                                 <div>
-                                    <span className="font-medium">Created:</span> {new Date(output.created_at).toLocaleString()}
+                                    <span className="font-medium">Created:</span> {new Date(firstOutput.created_at).toLocaleString()}
                                 </div>
                                 <div>
-                                    <span className="font-medium">Updated:</span> {new Date(output.updated_at).toLocaleString()}
+                                    <span className="font-medium">Updated:</span> {new Date(firstOutput.updated_at).toLocaleString()}
                                 </div>
                             </div>
                         </CardContent>
