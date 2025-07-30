@@ -65,7 +65,7 @@ export function NLPConfigClient() {
         return formatData?.Description;
     }
     const description = getFormatDescription(selectedFormat || '');
-    const parsedTemplate =   parseTemplateToArray(elements !== undefined ? elements[0].description : "");
+    const parsedTemplate =   parseTemplateToArray(elements !== undefined ? elements[0]?.description : "");
     // console.log(parsedTemplate, "parsedTemplate", elements, "elements");
     
 
@@ -87,7 +87,8 @@ export function NLPConfigClient() {
                 />
             </div>
             {!selectedSegment && <div className="flex gap-4">
-                {!selectedTransactionSet && <FormatSelector
+                {!selectedTransactionSet && 
+                <FormatSelector
                     formats={formats || []}
                     selectedFormat={selectedFormat || ''}
                     onFormatSelect={handleFormatSelect}

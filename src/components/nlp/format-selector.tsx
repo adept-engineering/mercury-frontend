@@ -17,8 +17,8 @@ interface FormatSelectorProps {
 export function FormatSelector({ formats, selectedFormat, onFormatSelect }: FormatSelectorProps) {
     
     return (
-        <Card className=" mb-0 max-w-[160px]">
-            <CardHeader className="bg-gray-100 px-3 py-2 h-12  rounded-t-xl border-b">
+        <Card className=" mb-0 max-w-[250px]">
+            <CardHeader className="bg-gray-100 px-3 py-2 h-10 rounded-t-xl border-b">
                 <CardTitle className="text-sm font-semibold mr-auto text-foreground uppercase tracking-wide">
                     Formats
                 </CardTitle>
