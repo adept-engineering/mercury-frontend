@@ -336,9 +336,9 @@ const ChatBot = () => {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                              {metadata.map((meta: any, index: number) => (
+                              {metadata.slice(0, 1).map((meta: any, index: number) => (
                                 <DropdownMenuItem key={index} onClick={() => setGraphModalInfoId(meta)}>
-                                  Graph Transaction {index + 1}
+                                  Graph Transaction
                                 </DropdownMenuItem>
                               ))}
                             </DropdownMenuContent>

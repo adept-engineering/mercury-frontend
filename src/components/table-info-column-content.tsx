@@ -18,7 +18,24 @@ export function TableInfoContentDesktop({
               {detail.name}
             </TableCell>
             <TableCell className="text-secondary-foreground">
-              {detail.value}
+              {detail.name.toLowerCase().includes("date")
+                ? (() => {
+                    const value = detail.value as string;
+                    // Check for 8-digit date string (YYYYMMDD)
+                    if (/^\d{8}$/.test(value)) {
+                      const formatted = `${value.slice(0,4)}-${value.slice(4,6)}-${value.slice(6,8)}`;
+                      const date = new Date(formatted);
+                      return isNaN(date.getTime())
+                        ? value
+                        : date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+                    }
+                    // Fallback to default parsing
+                    const date = new Date(value);
+                    return isNaN(date.getTime())
+                      ? value
+                      : date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+                  })()
+                : detail.value}
             </TableCell>
           </TableRow>
         ))}
