@@ -620,12 +620,66 @@ export function BusinessRules({
       {/* Selected Business Rules */}
       {businessRules.length > 0 && (
         <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            <h3 className="text-lg font-semibold">
-              Selected Business Rules (
-              {Object.keys(groupedBusinessRules).length})
-            </h3>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              <h3 className="text-lg font-semibold">
+                Selected Business Rules (
+                {Object.keys(groupedBusinessRules).length})
+              </h3>
+            </div>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-primary hover:bg-primary/90 text-white">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Business Rule
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="!w-fit !max-w-[1200px] max-h-[80vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Select Business Rule</DialogTitle>
+                  <DialogDescription>
+                    Choose an API registration to configure as a business rule
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-6 w-full">
+                  {/* API Registration Selection Table */}
+                  <div className="space-y-4">
+                    <Label>Select API Registration</Label>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-12">Select</TableHead>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Description</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {getAvailableApiRegistrations().map((api) => (
+                          <TableRow key={api.id}>
+                            <TableCell>
+                              <Checkbox
+                                checked={selectedApiForParams === api.id}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    handleApiSelection(api.id);
+                                  }
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              {api.name}
+                            </TableCell>
+                            <TableCell>{api.description}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
           <DndContext
             sensors={sensors}
@@ -652,61 +706,63 @@ export function BusinessRules({
         </div>
       )}
 
-      {/* Add Business Rule Button */}
-      <div className="flex justify-end">
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 text-white">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Business Rule
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="!w-fit !max-w-[1200px] max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Select Business Rule</DialogTitle>
-              <DialogDescription>
-                Choose an API registration to configure as a business rule
-              </DialogDescription>
-            </DialogHeader>
+      {/* Add Business Rule Button - Show when no business rules exist */}
+      {businessRules.length === 0 && (
+        <div className="flex justify-end">
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-primary hover:bg-primary/90 text-white">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Business Rule
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="!w-fit !max-w-[1200px] max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Select Business Rule</DialogTitle>
+                <DialogDescription>
+                  Choose an API registration to configure as a business rule
+                </DialogDescription>
+              </DialogHeader>
 
-            <div className="space-y-6 w-full">
-              {/* API Registration Selection Table */}
-              <div className="space-y-4">
-                <Label>Select API Registration</Label>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-12">Select</TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Description</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {getAvailableApiRegistrations().map((api) => (
-                      <TableRow key={api.id}>
-                        <TableCell>
-                          <Checkbox
-                            checked={selectedApiForParams === api.id}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                handleApiSelection(api.id);
-                              }
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          {api.name}
-                        </TableCell>
-                        <TableCell>{api.description}</TableCell>
+              <div className="space-y-6 w-full">
+                {/* API Registration Selection Table */}
+                <div className="space-y-4">
+                  <Label>Select API Registration</Label>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-12">Select</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Description</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {getAvailableApiRegistrations().map((api) => (
+                        <TableRow key={api.id}>
+                          <TableCell>
+                            <Checkbox
+                              checked={selectedApiForParams === api.id}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  handleApiSelection(api.id);
+                                }
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {api.name}
+                          </TableCell>
+                          <TableCell>{api.description}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+      )}
 
       {/* Parameter Configuration Dialog */}
       <Dialog open={parameterDialogOpen} onOpenChange={setParameterDialogOpen}>
