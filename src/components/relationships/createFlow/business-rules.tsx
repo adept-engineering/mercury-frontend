@@ -623,7 +623,7 @@ export function BusinessRules({
           <div className="flex items-center gap-2">
             <Settings className="h-5 w-5" />
             <h3 className="text-lg font-semibold">
-              Selected Business Rules ({businessRules.length})
+              Selected Business Rules ({Object.keys(groupedBusinessRules).length})
             </h3>
           </div>
           <DndContext
