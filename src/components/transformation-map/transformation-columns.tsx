@@ -53,10 +53,10 @@ const ActionsCell = ({ row }: { row: Row<Map> }) => {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    {/* <DropdownMenuItem onClick={() => router.push(`/transformation-map/${row.original.id}`)}>
-                        <Eye className="mr-2 h-4 w-4" />
-                        View Details
-                    </DropdownMenuItem> */}
+                    <DropdownMenuItem onClick={() => router.push(`/maps/${row.original.id}/edit?map_id=${row.original.map_id}`)}>
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Edit
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => router.push(`/maps/${row.original.id}/rules?map_title=${row.original.map_name}&map_type=${row.original.map_type}&map_id=${row.original.map_id}`)}>
                         <List className="mr-2 h-4 w-4" />
                         View Rules
