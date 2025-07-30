@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, FileText, MoreHorizontal, Trash2,Map, Pencil } from "lucide-react";
+import { Eye, FileText, MoreHorizontal, Trash2,Map, Pencil, MoreVertical } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/use-permissions";
@@ -41,7 +41,7 @@ const ActionCell = ({row}:{row:Row<Relationships>}) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
-          <MoreHorizontal className="h-4 w-4" />
+          <MoreVertical className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

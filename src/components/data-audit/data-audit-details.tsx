@@ -2,7 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowLeftRight, Users, FileText, FolderOpen, Database, Shield } from "lucide-react";
+import { ArrowLeft, ArrowLeftRight, Users, FileText, FolderOpen, Database, Shield, Workflow } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Card } from "../ui/card";
 import { TypeBadge } from "./column";
@@ -14,6 +14,7 @@ import {
 } from "./data-cards";
 import { DataInformation } from "./data-information";
 import { CompliantData } from "./compliace-data";
+import { WorkflowOutputs } from "./workflow-outputs";
 import { MapDataAuditLogObjToArray } from "@/lib/utils";
 
 import { TableInfoContentDesktop, TableInfoContentMobile } from "../table-info-column-content";
@@ -149,6 +150,14 @@ export function DataAuditDetails({ dataAuditLog }: DataAuditDetailsProps) {
                         </TabsContent>
                 </Tabs>
 
+            </Card>
+
+            <Card className="rounded-lg border p-6 mt-3 mb-10 max-w-full overflow-x-auto scrollbar-hide ">
+                <div className="flex items-center space-x-2 mb-6">
+                    <Workflow className="h-5 w-5 text-primary" />
+                    <h3 className="text-lg font-semibold">Workflow Outputs</h3>
+                </div>
+                <WorkflowOutputs workflowOutputs={dataAuditLog.workflow_outputs || []} />
             </Card>
         </div>
     );

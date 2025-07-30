@@ -198,7 +198,7 @@ export function NLPDataCard({ nlpData }: NLPDataCardProps) {
         <CollapsibleContent>
           <CardContent>
             <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
-              <pre className="whitespace-pre-wrap break-words">{nlpData ? nlpData : "No data"}</pre>
+              <ReactMarkdown>{nlpData ? nlpData : "No data"}</ReactMarkdown>
             </div>
           </CardContent>
         </CollapsibleContent>

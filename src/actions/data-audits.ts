@@ -17,6 +17,8 @@ export async function getDataAuditLogs(fromDate: string, toDate: string) {
 export async function getDataAuditLogDetails(id: string) {
   try {
     const response = await axiosLocal.get(`/edi-info/${id}`);
+
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);

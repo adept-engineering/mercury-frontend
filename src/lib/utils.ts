@@ -72,23 +72,29 @@ export const MapEntityObjToArray = (obj: Record<string, any>) => {
   };
   const referenceIDs = obj.references.map((item: any) => {
     const extnObj = item.extn.reduce((acc: any, extn: any) => {
-      if (extn.name === "interchangeID") {
-        acc["Interchange ID"] = extn.value;
-      } else if (extn.name === "groupID") {
-        acc["Group ID"] = extn.value;
-      } else if (extn.name === "applicationID") {
-        acc["Application ID"] = extn.value;
+      console.log("extn:", extn);
+      if (extn.name === "InterchangeID") {
+
+        acc.interchangeID = extn.value;
+      } else if (extn.name === "GroupID") {
+        acc.groupID = extn.value;
+      } else if (extn.name === "ApplicationID") {
+        acc.ApplicationID = extn.value;
       } else {
         acc[extn.name] = extn.value;
       }
       return acc;
     }, {});
+  
     return {
-      docType: item.reference_id_type,
-      ...extnObj,
+      name: item.reference_id_type || item.docType || item.doctype || "Unknown",
+      value: extnObj.ApplicationID
+        ? extnObj.ApplicationID
+        : `${extnObj.interchangeID || ""}/${extnObj.groupID || ""}`,
     };
   });
-  console.log(referenceIDs);
+  
+  console.log(referenceIDs, "referenceIDs");
 
   const array = Object.entries(entity).map(([key, value]) => {
     return {

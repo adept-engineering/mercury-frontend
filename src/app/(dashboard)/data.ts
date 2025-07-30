@@ -123,11 +123,11 @@ export const sidebarItems: SidebarItemType[] = [
         url: "/support",
         icon: Headset,
         menuSubItems: [
-          {
-            title: "Contact Support",
-            url: "/support",
-            icon: Headset,
-          },
+          // {
+          //   title: "Contact Support",
+          //   url: "/support",
+          //   icon: Headset,
+          // },
           {
             title: "APIs",
             url: "/apis",
