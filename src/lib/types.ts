@@ -104,7 +104,7 @@ export interface User {
   name?: string;
   client?: string;
   tenantId?: string;
-  isActive?: boolean;
+  is_active?: boolean;
   role: UserRole;
   entityId?: string; // For sub users, this will be the entity they belong to
 }

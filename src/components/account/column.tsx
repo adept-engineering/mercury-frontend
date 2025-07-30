@@ -6,11 +6,18 @@ import { MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { usePermissions } from "@/hooks/use-permissions";
+import { useDeleteUser } from "@/hooks/use-user";
 
 const ActionsCell = ({ row }: { row: any }) => {
+    const {deleteUserMutation, forgotPasswordMutation} = useDeleteUser();
     const rowUser = row.original as User;
     const { canDelete, canEdit, canResetPassword } = usePermissions(Number(rowUser.id));
-
+    const handleDelete = () => {
+        deleteUserMutation(rowUser.id.toString());
+    }
+    const handleForgotPassword = () => {
+        forgotPasswordMutation(rowUser.email);
+    }
     // Check if current user is system admin
     
 
@@ -26,11 +33,11 @@ const ActionsCell = ({ row }: { row: any }) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 {canEdit && <DropdownMenuItem>Edit</DropdownMenuItem>}
-                {canResetPassword && <DropdownMenuItem>Reset Password</DropdownMenuItem>}
+                {canResetPassword && <DropdownMenuItem onClick={handleForgotPassword}>Reset Password</DropdownMenuItem>}
                 {canDelete && (
                     <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+                        
+                        <DropdownMenuItem variant="destructive" onClick={handleDelete}>Delete</DropdownMenuItem>
                     </>
                 )}
             </DropdownMenuContent>
@@ -55,9 +62,9 @@ const columns: ColumnDef<User>[] = [
         cell: ({ row }) => row.original.role === "system_admin" ? "Admin" : "Sub User",
     },
     {
-        accessorKey: "isActive",
+        accessorKey: "is_active",
         header: "Status",
-        cell: ({ row }) => row.original.isActive ? (
+        cell: ({ row }) => row.original.is_active ? (
             <Badge className="bg-green-100 text-green-700">Active</Badge>
         ) : (
             <Badge variant="destructive" className="bg-red-100 text-red-700">Suspended</Badge>

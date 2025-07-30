@@ -109,7 +109,7 @@ export function CreateUserDialogue({ onCreate }: { onCreate: (email: string, ent
                         </div>)
                     }
                     <DialogFooter>
-                        <Button type="submit" className="bg-pink-500 hover:bg-pink-600 text-white">
+                        <Button type="submit" className="bg-primary hover:bg-primary/90 text-white">
                             Create
                         </Button>
                     </DialogFooter>
