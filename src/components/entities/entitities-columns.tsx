@@ -44,7 +44,7 @@ function ActionsCell({ entity }: { entity: Entities }) {
 export const entititiesColumns: ColumnDef<Entities>[] = [
   {
     accessorKey: "name",
-    header: "ENTITY Name",
+    header: "Entity Name",
     cell: ({ row }) => {
       return (
         <div className="text-sm pl-2 text-foreground">
@@ -55,11 +55,11 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
   },
   {
     accessorKey: "organization_type",
-    header: "ORGANIZATION TYPE",
+    header: "Organization Type",
   },
   {
     accessorKey: "updated_by",
-    header: "UPDATED BY",
+    header: "Updated By",
     cell: ({ row }) => {
       const updatedBy = row.getValue("updated_by") as string;
       return (
@@ -69,7 +69,7 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
   },
   {
     accessorKey: "created_date",
-    header: "DATE",
+    header: "Date",
     cell: ({ row }) => {
       const dateString = row.getValue("created_date") as string;
       // date should be in format MM/DD/YYYY
@@ -87,7 +87,7 @@ export const entititiesColumns: ColumnDef<Entities>[] = [
   },
   {
     accessorKey: "created_date",
-    header: "TIME",
+    header: "Time",
     cell: ({ row }) => {
       const dateString = row.getValue("created_date") as string;
       const date = new Date(dateString);

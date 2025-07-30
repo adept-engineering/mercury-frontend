@@ -9,7 +9,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Eye, Copy, FileText, FileInput ,FileOutput} from "lucide-react"
+import { MoreHorizontal, Eye, Copy, FileText, FileInput ,FileOutput,MoreVertical} from "lucide-react"
 import { cn, typeConfig } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 
@@ -40,14 +40,14 @@ export const columns: ColumnDef<DataAuditLog>[] = [
 
     {
         accessorKey: "client_id_from",
-        header: "CLIENT FROM",
+        header: "Client From",
         cell: ({ row }) => {
             return <div className="text-sm">{row.getValue("client_id_from")}</div>
         },
     },
     {
         accessorKey: "client_id_to",
-        header: "CLIENT TO",
+        header: "Client To",
         cell: ({ row }) => {
             return <div className="text-sm">{row.getValue("client_id_to")}</div>
         },
@@ -55,7 +55,7 @@ export const columns: ColumnDef<DataAuditLog>[] = [
    
     {
         accessorKey: "type",
-        header: "TYPE",
+        header: "Type",
         cell: ({ row }) => {
             return <TypeBadge type={row.getValue("type")} />
         },
@@ -63,21 +63,21 @@ export const columns: ColumnDef<DataAuditLog>[] = [
   
     {
         accessorKey: "interchange_control_number",
-        header: "CONTROL NUMBER",
+        header: "Control Number",
         cell: ({ row }) => {
             return <div className="text-sm font-mono">{row.getValue("interchange_control_number")}</div>
         },
     },
     {
         accessorKey: "transaction_name",
-        header: "TRANSACTION NAME",
+        header: "Transaction Name",
         cell: ({ row }) => {
             return <div className="text-sm font-mono">{row.getValue("transaction_name")}</div>
         },
     },
     {
         accessorKey: "created_at",
-        header: "DATE",
+        header: "Date",
         cell: ({ row }) => {
             const dateString = row.getValue("created_at") as string
             // date should be in format MM/DD/YYYY
@@ -87,7 +87,7 @@ export const columns: ColumnDef<DataAuditLog>[] = [
     },
     {
         accessorKey: "created_at",
-        header: "TIME",
+        header: "Time",
         cell: ({ row }) => {
             const dateString = row.getValue("created_at") as string
             const date = new Date(dateString)
@@ -103,7 +103,7 @@ export const columns: ColumnDef<DataAuditLog>[] = [
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
+                            <MoreVertical className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">

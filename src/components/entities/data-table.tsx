@@ -30,8 +30,10 @@ import {
   ChevronRight,
   ChevronsRight,
   Plus,
+  Filter
 } from "lucide-react";
 import { usePermissions } from "@/hooks/use-permissions";
+import { Input } from "../ui/input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -81,6 +83,20 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
 
+      <div className="flex items-center gap-3 justify-end w-full">
+        <Input
+          placeholder="Filter by name..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <Button variant="outline"  className="h-10 w-10">
+          <Filter className="h-10 w-10" />
+         
+        </Button> 
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -90,7 +106,7 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableHead
                       key={`${header.id}-${index}`}
-                      className="text-xs font-medium text-muted-foreground uppercase pl-2"
+                      className=" font-medium text-muted-foreground  pl-2"
                     >
                       {header.isPlaceholder
                         ? null

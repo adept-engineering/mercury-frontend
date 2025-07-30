@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import {  MultiSelectCombobox } from "@/components/ui/combobox";
 import { useState } from "react";
 import { Funnel } from "lucide-react";
+import { Input } from "../ui/input";
 
 export default function DataAuditContainer({
   data,
@@ -130,8 +131,15 @@ export default function DataAuditContainer({
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold">Data Audit</h1>
+        <h1 className="text-xl font-semibold">Data Audit</h1>
         <div className="flex items-center gap-4">
+        <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter by name..."
+         
+          className="max-w-sm"
+        />
+      </div>
           <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
             <SheetTrigger asChild>
               <Button variant="outline">
