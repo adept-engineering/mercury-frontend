@@ -92,14 +92,14 @@ const ActionsCell = ({ row }: { row: Row<Map> }) => {
 export const transformationMapColumns: ColumnDef<Map>[] = [
     {
         accessorKey: "map_name",
-        header: "MAP NAME",
+        header: "Map Name",
         cell: ({ row }) => {
             return <div className="text-sm font-medium">{row.getValue("map_name")}</div>;
         },
     },
     {
         accessorKey: "map_description",
-        header: "DESCRIPTION",
+        header: "Description",
         cell: ({ row }) => {
             const description = row.getValue("map_description") as string;
             return (
@@ -111,14 +111,14 @@ export const transformationMapColumns: ColumnDef<Map>[] = [
     },
     {
         accessorKey: "map_type",
-        header: "MAP TYPE",
+        header: "Map Type",
         cell: ({ row }) => {
             return <div className="text-sm font-medium">{row.getValue("map_type")}</div>;
         },
     },
     {
         accessorKey: "created_by",
-        header: "UPDATED BY",
+        header: "Updated By",
         cell: ({ row }) => {
             const createdBy = row.getValue("created_by") as string;
             return <div className="text-sm text-muted-foreground">{createdBy.toUpperCase()}</div>;
@@ -127,7 +127,7 @@ export const transformationMapColumns: ColumnDef<Map>[] = [
     
     {
         accessorKey: "created_date",
-        header: "DATE",
+        header: "Date",
         cell: ({ row }) => {
             const dateString = row.getValue("created_date") as string;
             const date = format(new Date(dateString), "MM/dd/yyyy");
@@ -136,7 +136,7 @@ export const transformationMapColumns: ColumnDef<Map>[] = [
     },
     {
         accessorKey: "created_date",
-        header: "TIME",
+        header: "Time",
         cell: ({ row }) => {
             const dateString = row.getValue("created_date") as string;
             const date = format(new Date(dateString), "HH:mm");

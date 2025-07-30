@@ -72,8 +72,8 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-between">
       
         <div>
-            <h1 className="text-2xl font-bold mb-1">Account Management</h1>
-            <p className="text-muted-foreground text-sm">Manage user accounts, profiles, roles, and access permissions.</p>
+            <h1 className="text-xl font-semibold mb-1">Account Management</h1>
+            {/* <p className="text-muted-foreground text-sm">Manage user accounts, profiles, roles, and access permissions.</p> */}
         </div>
     
         <div className="flex items-center gap-3">

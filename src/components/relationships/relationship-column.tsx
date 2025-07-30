@@ -74,7 +74,7 @@ const ActionCell = ({row}:{row:Row<Relationships>}) => {
 export const relationshipColumns: ColumnDef<Relationships>[] = [
   {
     accessorKey: "entityid_id_sender",
-    header: "SENDER ENTITY",
+    header: "Sender Entity",
     cell: ({ row }) => {
       return (
         <div className="text-sm pl-2">{row.getValue("entityid_id_sender")}</div>
@@ -83,7 +83,7 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
   },
   {
     accessorKey: "entityid_id_receiver",
-    header: "RECEIVER ENTITY",
+    header: "Receiver Entity",
     cell: ({ row }) => {
       return (
         <div className="text-sm">{row.getValue("entityid_id_receiver")}</div>
@@ -92,7 +92,7 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
   },
   {
     accessorKey: "transaction_name",
-    header: "TRANSACTION",
+    header: "Transaction",
     cell: ({ row }) => {
       return <div className="text-sm">{row.getValue("transaction_name")}</div>;
     },
@@ -110,7 +110,7 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
   // },
   {
     accessorKey: "std_version",
-    header: "VERSION",
+    header: "Version",
     cell: ({ row }) => {
       return <div className="text-sm">{row.getValue("std_version")}</div>;
     },
@@ -118,7 +118,7 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
   
 {
     accessorKey: "updated_by",
-    header: "UPDATED BY",
+    header: "Updated By",
     cell: ({ row }) => {
         const createdBy = row.getValue("updated_by") as string;
         return <div className="text-sm text-muted-foreground">{createdBy.toUpperCase()}</div>;
@@ -126,7 +126,7 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
 },
 {
     accessorKey: "updated_date",
-    header: "DATE",
+    header: "Date",
     cell: ({ row }) => {
         const dateString = row.getValue("updated_date") as string;
         const date = format(new Date(dateString), "MM/dd/yyyy");
@@ -135,7 +135,7 @@ export const relationshipColumns: ColumnDef<Relationships>[] = [
 },
 {
     accessorKey: "updated_date",
-    header: "TIME",
+    header: "Time",
     cell: ({ row }) => {
         const dateString = row.getValue("updated_date") as string;
         const date = format(new Date(dateString), "HH:mm");

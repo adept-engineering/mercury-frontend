@@ -61,11 +61,11 @@ export function DataTable<TData, TValue>({
   const { isSystemAdmin } = usePermissions();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between">
 
-        <h1 className="text-xl text-foreground font-semibold">Entities</h1>
+        <h1 className="text-xl text-foreground !m-0 !p-0 font-semibold">Entities</h1>
 
 
         <div className="flex items-center gap-3">
@@ -83,7 +83,7 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
 
-      <div className="flex items-center gap-3 justify-end w-full">
+      {/* <div className="flex items-center gap-3 justify-end w-full">
         <Input
           placeholder="Filter by name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -96,7 +96,7 @@ export function DataTable<TData, TValue>({
           <Filter className="h-10 w-10" />
          
         </Button> 
-      </div>
+      </div> */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>

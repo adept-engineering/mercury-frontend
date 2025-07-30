@@ -74,7 +74,7 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableHead
                       key={`${header.id}-${index}`}
-                      className="text-xs font-medium text-muted-foreground uppercase pl-2"
+                      className=" font-medium text-muted-foreground  pl-2"
                     >
                       {header.isPlaceholder
                         ? null
