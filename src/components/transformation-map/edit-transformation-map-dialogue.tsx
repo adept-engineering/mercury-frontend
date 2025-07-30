@@ -15,12 +15,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
 import { usePermissions } from "@/hooks/use-permissions";
 import { toast } from "@/hooks/use-toast";
-import { TransformationMap } from "@/lib/types";
+
 
 interface EditTransformationMapDialogueProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    transformationMap: TransformationMap;
+    transformationMap: {
+        id: string;
+        map_title: string;
+        map_description: string;
+        map_type: string;
+    };
 }
 
 export function EditTransformationMapDialogue({
