@@ -115,21 +115,21 @@ export default function CreateRelationshipFlow() {
         businessRules,
       });
 
-      createRelationshipWithData(
-        senderEntityId || "",
-        receiverEntityId || "",
-        selectedTransactionSet,
-        selectedSenderReference,
-        selectedReceiverReference,
-        selectedVersion,
-        businessRules
-      );
+      // createRelationshipWithData(
+      //   senderEntityId || "",
+      //   receiverEntityId || "",
+      //   selectedTransactionSet,
+      //   selectedSenderReference,
+      //   selectedReceiverReference,
+      //   selectedVersion,
+      //   businessRules
+      // );
       toast({
         title: "Relationship created successfully",
         description: "Relationship created successfully",
         variant: "default",
       });
-      router.push("/relationships");
+      // router.push("/relationships");
     } catch (error) {
       toast({
         title: "Error",

@@ -347,6 +347,37 @@ export function BusinessRules({
     return groups;
   }, {} as Record<string, BusinessRule[]>);
 
+  // Get parameter display name
+  const getParameterDisplayName = (
+    apiId: string,
+    paramName: string
+  ): string => {
+    const inputParams = getInputParametersForApi(apiId);
+    const param = inputParams.find((p) => p.name === paramName);
+    return param?.display_name || paramName;
+  };
+
+  // Get map name by ID
+  const getMapName = (mapId: string): string => {
+    const map = maps?.find((m: any) => m.map_id === mapId || m.id === mapId);
+    return map?.map_name || map?.map_title || mapId;
+  };
+
+  // Check if a value is a map ID
+  const isMapValue = (value: string): boolean => {
+    return (
+      maps?.some((m: any) => m.map_id === value || m.id === value) || false
+    );
+  };
+
+  // Get display value for reference_value
+  const getDisplayValue = (value: string): string => {
+    if (isMapValue(value)) {
+      return getMapName(value);
+    }
+    return value;
+  };
+
   // Sortable Business Rule Component
   function SortableBusinessRule({
     groupKey,
@@ -405,7 +436,12 @@ export function BusinessRules({
             <div className="mt-2 space-y-1">
               {rules.map((rule, ruleIndex) => (
                 <p key={ruleIndex} className="text-sm text-muted-foreground">
-                  Parameter: {rule.reference_name} = {rule.reference_value}
+                  Parameter:{" "}
+                  {getParameterDisplayName(
+                    apiReg?.id || "",
+                    rule.reference_name
+                  )}{" "}
+                  = {getDisplayValue(rule.reference_value)}
                 </p>
               ))}
             </div>

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useCurrentSession } from "@/hooks/use-current-session";
 import { getApiRegistration } from "@/actions/api-registration";
+import { useMaps } from "@/hooks/use-maps";
 
 interface ApiRegistration {
   id: string;
@@ -78,6 +79,7 @@ export function Confirmation({
   isEdit,
 }: ConfirmationProps) {
   const { session } = useCurrentSession();
+  const { maps } = useMaps();
   const [apiRegistrations, setApiRegistrations] = useState<ApiRegistration[]>(
     []
   );
@@ -171,6 +173,27 @@ export function Confirmation({
     const inputParams = getInputParametersForApi(apiReg.id);
     const param = inputParams.find((p) => p.name === paramName);
     return param?.display_name || paramName;
+  };
+
+  // Get map name by ID
+  const getMapName = (mapId: string): string => {
+    const map = maps?.find((m: any) => m.map_id === mapId || m.id === mapId);
+    return map?.map_name || map?.map_title || mapId;
+  };
+
+  // Check if a value is a map ID
+  const isMapValue = (value: string): boolean => {
+    return (
+      maps?.some((m: any) => m.map_id === value || m.id === value) || false
+    );
+  };
+
+  // Get display value for reference_value
+  const getDisplayValue = (value: string): string => {
+    if (isMapValue(value)) {
+      return getMapName(value);
+    }
+    return value;
   };
 
   // Collapsible state for each section
@@ -409,12 +432,14 @@ export function Confirmation({
                                     rule.registrationid,
                                     rule.reference_name
                                   );
+                                  const displayValue = getDisplayValue(
+                                    rule.reference_value
+                                  );
                                   return (
                                     <p
                                       key={ruleIndex}
                                       className="text-sm text-muted-foreground">
-                                      Parameter: {displayName} ={" "}
-                                      {rule.reference_value}
+                                      Parameter: {displayName} = {displayValue}
                                     </p>
                                   );
                                 })}
