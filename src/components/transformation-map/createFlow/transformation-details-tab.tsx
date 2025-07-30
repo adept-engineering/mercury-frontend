@@ -64,7 +64,7 @@ export const TransformationDetailsTab = ({
             <SelectContent>
               <SelectItem value="TRANSFORMATION">Transformation</SelectItem>
               <SelectItem value="COMPLIANCE">Compliance</SelectItem>
-              <SelectItem value="TRACKING">Tracking</SelectItem>
+              {/* <SelectItem value="TRACKING">Tracking</SelectItem> */}
               <SelectItem value="RESEARCH">Research</SelectItem>
             </SelectContent>
           </Select>

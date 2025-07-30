@@ -84,10 +84,10 @@ const ActionsCell = ({ row }: { row: Row<TransformationMap> }) => {
 
 export const transformationMapColumns: ColumnDef<TransformationMap>[] = [
     {
-        accessorKey: "map_title",
+        accessorKey: "map_name",
         header: "MAP NAME",
         cell: ({ row }) => {
-            return <div className="text-sm font-medium">{row.getValue("map_title")}</div>;
+            return <div className="text-sm font-medium">{row.getValue("map_name")}</div>;
         },
     },
     {
