@@ -78,7 +78,12 @@ const ActionsCell = ({ row }: { row: Row<Map> }) => {
             <EditTransformationMapDialogue
                 open={editOpen}
                 onOpenChange={setEditOpen}
-                transformationMap={row.original}
+                transformationMap={{
+                    id: row.original.id,
+                    map_title: row.original.map_name,
+                    map_description: row.original.map_description,
+                    map_type: row.original.map_type,
+                }}
             />
         </>
     );
