@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +20,28 @@ import { MapRelationshipObjToArray } from "@/lib/utils";
 import { useEntities } from "@/hooks/use-entity";
 import { useCurrentSession } from "@/hooks/use-current-session";
 import { Badge } from "../ui/badge";
+import { getApiRegistration } from "@/actions/api-registration";
+
+interface ApiRegistration {
+  id: string;
+  name: string;
+  description: string;
+  registration_id: string;
+  endpoints: Array<{
+    endpoint: string;
+    version: string;
+    input_parameters: string;
+    output_parameters: string;
+  }>;
+}
+
+interface InputParameter {
+  name: string;
+  description: string;
+  display_name: string;
+  mandatory: string;
+  type?: string;
+}
 
 interface RelationshipDetailsProps {
   relationship: any;
@@ -30,10 +53,105 @@ export function RelationshipDetails({
   const router = useRouter();
   const { session } = useCurrentSession();
   const { data: entities } = useEntities(session?.user?.token || "");
+  const [apiRegistrations, setApiRegistrations] = useState<ApiRegistration[]>(
+    []
+  );
+
   const mappedRelationship = MapRelationshipObjToArray(
     relationship,
     entities || []
   );
+
+  // Fetch API registrations
+  useEffect(() => {
+    const fetchApiRegistrations = async () => {
+      if (!session?.user?.token) return;
+
+      try {
+        const data = await getApiRegistration(session.user.token);
+        setApiRegistrations(data);
+      } catch (error) {
+        console.error("Error fetching API registrations:", error);
+      }
+    };
+
+    fetchApiRegistrations();
+  }, [session?.user?.token]);
+
+  // Parse JSON parameters to InputParameter objects (same logic as business rules component)
+  function mapToInputParameterArray(input: string | object) {
+    let obj = input;
+
+    // Step 1: parse once if it's a string
+    if (typeof obj === "string") {
+      try {
+        obj = JSON.parse(obj);
+
+        // Step 2: if it's STILL a string, parse again
+        if (typeof obj === "string") {
+          obj = JSON.parse(obj);
+        }
+      } catch (e) {
+        console.error("Failed to parse JSON:", e);
+        return [];
+      }
+    }
+
+    // Check if it's already an array of parameters
+    if (Array.isArray(obj)) {
+      return obj.map((item) => ({
+        name: item.name || "",
+        description: item.description || "",
+        display_name: item.display_name || "",
+        mandatory: item.mandatory || "no",
+        type: item.type || "",
+      }));
+    }
+
+    // If it's an object, convert to array format
+    if (typeof obj === "object" && obj !== null) {
+      return Object.entries(obj).map(([key, value]) => ({
+        name: key,
+        description: value as string,
+        display_name: "",
+        mandatory: "no",
+        type: "",
+      }));
+    }
+
+    return [];
+  }
+
+  // Parse input parameters from a specific API registration
+  const getInputParametersForApi = (apiId: string): InputParameter[] => {
+    const apiReg = apiRegistrations.find((api) => api.id === apiId);
+    if (!apiReg || !apiReg.endpoints || apiReg.endpoints.length === 0)
+      return [];
+
+    try {
+      const inputParamsStr = apiReg.endpoints[0].input_parameters;
+      const parsedInput = mapToInputParameterArray(inputParamsStr);
+      return parsedInput;
+    } catch (error) {
+      console.error("Error parsing input parameters:", error);
+      return [];
+    }
+  };
+
+  // Get parameter display name
+  const getParameterDisplayName = (
+    registrationId: string,
+    paramName: string
+  ): string => {
+    const apiReg = apiRegistrations.find(
+      (api) => api.registration_id === registrationId
+    );
+    if (!apiReg) return paramName;
+
+    const inputParams = getInputParametersForApi(apiReg.id);
+    const param = inputParams.find((p) => p.name === paramName);
+    return param?.display_name || paramName;
+  };
 
   // Sort business rules by position
   const sortedBusinessRules = mappedRelationship.BusinessRules.sort((a, b) => {
@@ -41,6 +159,16 @@ export function RelationshipDetails({
     const positionB = parseInt(b.position) || 0;
     return positionA - positionB;
   });
+
+  // Group business rules by registrationid and position (same as business rules component)
+  const groupedBusinessRules = sortedBusinessRules.reduce((groups, rule) => {
+    const key = `${rule.registrationid}-${rule.position}`;
+    if (!groups[key]) {
+      groups[key] = [];
+    }
+    groups[key].push(rule);
+    return groups;
+  }, {} as Record<string, typeof sortedBusinessRules>);
 
   const extensionData =
     relationship.extndata?.map((extn: any, index: number) => ({
@@ -135,30 +263,52 @@ export function RelationshipDetails({
           <TabsContent value="business-rules" className="mt-7">
             {sortedBusinessRules.length > 0 ? (
               <div className="space-y-3">
-                {sortedBusinessRules.map((rule, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 border rounded-md bg-background">
-                    <div className="flex items-center gap-3">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <Globe className="h-4 w-4 text-primary" />
-                          <span className="font-medium">{rule.stepName}</span>
-                          <Badge variant="outline">Step {rule.position}</Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          API: {rule.registrationid}
-                        </p>
-                        <div className="mt-2 space-y-1">
-                          <p className="text-sm text-muted-foreground">
-                            Parameter: {rule.reference_name} ={" "}
-                            {rule.reference_value}
-                          </p>
+                {Object.entries(groupedBusinessRules).map(
+                  ([groupKey, rules]) => {
+                    const apiReg = apiRegistrations.find(
+                      (api) => api.registration_id === rules[0].registrationid
+                    );
+
+                    return (
+                      <div
+                        key={groupKey}
+                        className="flex items-center justify-between p-3 border rounded-md bg-background">
+                        <div className="flex items-center gap-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <Globe className="h-4 w-4 text-primary" />
+                              <span className="font-medium">
+                                {rules[0].stepName}
+                              </span>
+                              <Badge variant="outline">
+                                Step {rules[0].position}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              API: {apiReg?.name || "System Defined API"}
+                            </p>
+                            <div className="mt-2 space-y-1">
+                              {rules.map((rule, ruleIndex) => {
+                                const displayName = getParameterDisplayName(
+                                  rule.registrationid,
+                                  rule.reference_name
+                                );
+                                return (
+                                  <p
+                                    key={ruleIndex}
+                                    className="text-sm text-muted-foreground">
+                                    Parameter: {displayName} ={" "}
+                                    {rule.reference_value}
+                                  </p>
+                                );
+                              })}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                ))}
+                    );
+                  }
+                )}
               </div>
             ) : (
               <div className="text-center py-8 text-muted-foreground">
