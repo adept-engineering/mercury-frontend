@@ -146,21 +146,20 @@ export function WorkflowOutputs({ workflowOutputs }: WorkflowOutputsProps) {
                         
                         <CardContent className="space-y-4">
                             {/* Parameters */}
-                            <div>
+                            {/* <div>
                                 <h4 className="font-medium text-sm text-muted-foreground mb-2 flex items-center">
                                     <Code className="h-3 w-3 mr-1" />
                                     Parameters
                                 </h4>
                                 <div className="space-y-2">
-                                    {step.outputs.map((output) => (
-                                        <div key={output.id} className="flex items-center space-x-2">
-                                            <span className="text-sm font-medium">{output.parameter_name}</span>
-                                            <span className="text-sm text-muted-foreground">=</span>
-                                            <Badge variant="outline">{output.parameter_value}</Badge>
-                                        </div>
-                                    ))}
+                                    <div className="flex items-center space-x-2">
+                                        <span className="text-sm font-medium">Parameters:</span>
+                                        <code className="text-sm bg-muted px-2 py-1 rounded">
+                                            {step.outputs.map((output) => output.parameter_name).join(', ')}
+                                        </code>
+                                    </div>
                                 </div>
-                            </div>
+                            </div> */}
 
                             <Separator />
 
